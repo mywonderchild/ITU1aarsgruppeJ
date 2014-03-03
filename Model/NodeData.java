@@ -1,3 +1,5 @@
+package Model;
+
 /**
  * An object storing the raw node data from the krak data file.
  */

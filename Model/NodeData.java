@@ -1,9 +1,7 @@
-package Model;
-
 /**
  * An object storing the raw node data from the krak data file.
  */
-public class NodeData {
+public class NodeData implements Locatable {
 	final int ARC;
 	final int KDV;
 	final int KDV_ID;
@@ -30,5 +28,15 @@ public class NodeData {
 	 */
 	public String toString() {
 		return ARC + "," + KDV + "," + KDV_ID + "," + X_COORD + "," + Y_COORD;
+	}
+
+	public double getX()
+	{
+		return X_COORD;
+	}
+
+	public double getY()
+	{
+		return Y_COORD;
 	}
 }

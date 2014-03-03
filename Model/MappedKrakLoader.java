@@ -48,9 +48,7 @@ public class MappedKrakLoader extends KrakLoader
 
 		String dir = "../data/";
 		mkp.load(dir + "kdv_node_unload.txt", dir + "kdv_unload.txt");
-
-		System.out.println(mkp.ndata.nodeCount);
-		System.out.println(mkp.ndata.insertCalls);
+		
 		System.out.println("High X: " + mkp.hiX);
 		System.out.println("Low X: " + mkp.loX);
 		System.out.println("Middle X: " + (mkp.loX + (mkp.hiX - mkp.loX)/2));

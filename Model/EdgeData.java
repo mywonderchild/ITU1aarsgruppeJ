@@ -1,5 +1,3 @@
-package Model;
-
 /**
  * Represents the raw data from a line in kdv_unload.txt.
  */

@@ -5,8 +5,8 @@ import java.lang.UnsupportedOperationException;
 public class QuadTree
 {
 	private static final int NODE_CAPACITY = 500;
-	private final Locatable[] nodes;
-	private final Boundary bounds;
+	private final Edge[] edges;
+	private final double[][] bounds;
 
 	private QuadTree NW;
 	private QuadTree NE;
@@ -14,21 +14,23 @@ public class QuadTree
 	private QuadTree SE;
 
 	private int n = 0;
+	public static int count = 0;
 
-	public QuadTree(double x, double y, double size)
+	public QuadTree(double[][] bounds)
 	{
-		nodes = new Locatable[NODE_CAPACITY];
-		bounds = new Boundary(x, y, size);
+		edges = new Edge[NODE_CAPACITY];
+		this.bounds = bounds;
+		count++;
 	}
 
-	public boolean insert(Locatable element)
+	public boolean insert(Edge element)
 	{
-		if(!bounds.contains(element))
+		if(!isInside(bounds, element.getCenter()))
 			return false; // Element does not belong here!
 
 		if(n < NODE_CAPACITY)
 		{
-			nodes[n++] = element;
+			edges[n++] = element;
 			return true;
 		}
 
@@ -40,53 +42,59 @@ public class QuadTree
 
 		// Must never happen:
 		throw new RuntimeException(this.toString() + " has reached its maximum capacity, "
-			+ "but failed to insert the element into any of its children. ("
-			+ this.bounds.x + ", " + this.bounds.y + ") Size: " + this.bounds.size
-			+ " n: " + this.n + "/" + NODE_CAPACITY + " Element(" + element.getX()
-			+ ", " + element.getY() + ")");
+			+ "but failed to insert the element into any of its children.");
 	}
 
 	public void subdivide()
 	{
-		double hSize = bounds.size/2;
-		NW = new QuadTree(bounds.x - hSize, bounds.y - hSize, hSize);
-		NE = new QuadTree(bounds.x + hSize, bounds.y - hSize, hSize);
-		SW = new QuadTree(bounds.x - hSize, bounds.y + hSize, hSize);
-		SE = new QuadTree(bounds.x + hSize, bounds.y + hSize, hSize);
+		double[] half = {(bounds[1][0]-bounds[0][0])/2, (bounds[1][1]-bounds[0][1])/2};
+		NW = new QuadTree(new double[][]{{bounds[0][0], bounds[0][1]}, {bounds[0][0]+half[0], bounds[0][1]+half[1]}});
+		NE = new QuadTree(new double[][]{{bounds[0][0]+half[0], bounds[0][1]}, {bounds[1][0], bounds[0][1]+half[1]}});
+		SW = new QuadTree(new double[][]{{bounds[0][0], bounds[0][1]+half[1]}, {bounds[0][0]+half[0], bounds[1][1]}});
+		SE = new QuadTree(new double[][]{{bounds[0][0]+half[0], bounds[0][1]+half[1]}, {bounds[1][0], bounds[1][1]}});
 	}
 
-	public ArrayList<Locatable> queryRange(Boundary range)
+	public ArrayList<Edge> queryRange(double[][] selection)
 	{
-		throw new UnsupportedOperationException();
+		ArrayList<Edge> found = new ArrayList<Edge>();
+
+		if(!isColliding(selection)) return found;
+
+		for (int i = 0; i < n; i++)
+			if (isInside(selection, edges[i].getCenter()))
+				found.add(edges[i]);
+
+		if (NW == null) return found;
+
+		found.addAll(NW.queryRange(selection));
+		found.addAll(NE.queryRange(selection));
+		found.addAll(SW.queryRange(selection));
+		found.addAll(SE.queryRange(selection));
+
+		return found;
 	}
 
-	private static class Boundary
+	public double[][] getBounds()
 	{
-		public final double x, y;
-		public final double size;
-		private final double x1, x2, y1, y2;
+		return bounds;
+	}
 
-		public Boundary(double x, double y, double size)
+	private boolean isInside(double[][] selection, double[] coords)
+	{
+		if(coords[0] >= selection[0][0] && coords[0] < selection[1][0])
 		{
-			this.x = x;
-			this.y = y;
-			this.size = size;
-
-			// Find bounds.
-			x1 = x - size;
-			x2 = x + size;
-			y1 = y - size;
-			y2 = y + size;
+			if(coords[1] >= selection[0][1] && coords[1] < selection[1][1])
+				return true;
 		}
+		return false;
+	}
 
-		public boolean contains(Locatable element)
-		{
-			if(element.getX() >= x1 && element.getX() < x2)
-			{
-				if(element.getY() >= y1 && element.getY() < y2)
-					return true;
-			}
-			return false;
-		}
+	private boolean isColliding(double[][] selection)
+	{
+		if (selection[0][0] > bounds[1][0]) return false;
+		if (selection[1][0] < bounds[0][0]) return false;
+		if (selection[0][1] > bounds[1][1]) return false;
+		if (selection[1][1] < bounds[0][1]) return false;
+		return true;
 	}
 }

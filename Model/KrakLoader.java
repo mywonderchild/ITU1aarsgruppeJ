@@ -60,8 +60,7 @@ public abstract class KrakLoader {
 	/** 
 	 * Example usage. You may need to adjust the java heap-size,
 	 * i.e., -Xmx256M on the command-line. 
-	*/
-	/*
+	 */
 	public static void main(String[] args) throws IOException {
 		String dir = "../data/";
 
@@ -102,6 +101,6 @@ public abstract class KrakLoader {
 		out = new PrintStream(dir + "edges.txt");
 		for (EdgeData edge : edges) out.println(edge);
 		out.close();
-		
-	}*/
+		*/
+	}
 }

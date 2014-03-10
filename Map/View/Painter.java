@@ -1,8 +1,9 @@
-package View;
+package Map.View;
 
 import java.awt.*;
 import java.util.Random;
 import java.awt.Graphics2D;
+import Map.Controller.Line;
 
 public class Painter {
 
@@ -24,6 +25,22 @@ public class Painter {
 				random.nextInt(h),
 				random.nextInt(w),
 				random.nextInt(h)
+			);
+		}
+	}
+
+	public void paintLines(Graphics g, Line[] lines)
+	{
+		if(lines == null) return;
+		System.out.println(lines.length);
+		for(Line line : lines)
+		{
+			g.setColor(line.color);
+			g.drawLine(
+				(int) line.coords[0][0],
+				(int) line.coords[0][1],
+				(int) line.coords[1][0],
+				(int) line.coords[1][1]
 			);
 		}
 	}

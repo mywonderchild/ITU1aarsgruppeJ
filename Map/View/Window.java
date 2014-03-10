@@ -1,4 +1,4 @@
-package View;
+package Map.View;
 
 import javax.swing.JFrame;
 

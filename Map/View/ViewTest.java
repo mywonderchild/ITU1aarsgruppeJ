@@ -1,4 +1,4 @@
-package View;
+package Map.View;
 
 public class ViewTest {
 	public static void main(String[] args) {

@@ -1,3 +1,5 @@
+package Map.Model;
+
 import java.io.PrintStream;
 import java.io.BufferedReader;
 import java.io.FileReader;

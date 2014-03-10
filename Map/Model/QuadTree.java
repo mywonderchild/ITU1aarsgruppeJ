@@ -1,3 +1,5 @@
+package Map.Model;
+
 import java.util.ArrayList;
 import java.lang.RuntimeException;
 import java.lang.UnsupportedOperationException;

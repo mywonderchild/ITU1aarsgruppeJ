@@ -1,3 +1,5 @@
+package Map.Model;
+
 public class Edge
 {
 	private final EdgeData edge;
@@ -25,5 +27,10 @@ public class Edge
 			nodes[0].getLoc()[0] + (nodes[1].getLoc()[0] - nodes[0].getLoc()[0])/2,
 			nodes[0].getLoc()[1] + (nodes[1].getLoc()[1] - nodes[0].getLoc()[1])/2
 		};
+	}
+
+	public int getType()
+	{
+		return edge.TYP;
 	}
 }

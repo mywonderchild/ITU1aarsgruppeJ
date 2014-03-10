@@ -1,3 +1,5 @@
+package Map.Model;
+
 public class Node
 {
 	private final NodeData node;

@@ -1,3 +1,5 @@
+package Map.Model;
+
 import java.util.HashMap;
 
 /**

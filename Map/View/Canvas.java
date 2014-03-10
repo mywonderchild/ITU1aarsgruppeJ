@@ -1,10 +1,11 @@
-package View;
+package Map.View;
 
 import javax.swing.JPanel;
 import java.awt.*;
 import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import Map.Controller.Line;
 
 public class Canvas extends JPanel {
 	
@@ -12,7 +13,7 @@ public class Canvas extends JPanel {
 	private Timer timer;
 	private ActionListener listener;
 	private boolean beauty;
-	// Edge[] edges;
+	private Line[] lines;
 
 	public Canvas() {
 		super();
@@ -22,9 +23,9 @@ public class Canvas extends JPanel {
 		listener = new Listener(this);
 	}
 
-	// public void setEdges(Edge[] edges) {
-	// 	this.edges = edges;
-	// }
+	public void setLines(Line[] lines) {
+		this.lines = lines;
+	}
 
 	@Override
 	public void paintComponent(Graphics g) {
@@ -50,8 +51,7 @@ public class Canvas extends JPanel {
 			beauty = false;
 		}
 
-		painter.paintComplex(g2d, (int)this.getSize().getWidth(), (int)this.getSize().getHeight());
-		// painter.drawEdges(this.edges);
+		painter.paintLines(g2d, this.lines);
 	}
 
 

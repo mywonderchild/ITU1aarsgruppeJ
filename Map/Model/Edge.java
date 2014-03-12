@@ -29,6 +29,14 @@ public class Edge
 		};
 	}
 
+    public double distanceToPoint(double[] point)
+    {
+        double[] center = getCenter();
+        double x = Math.abs(center[0] - point[0]);
+        double y = Math.abs(center[1] - point[1]);
+        return Math.sqrt(x*x + y*y);
+    }
+
 	public int getType()
 	{
 		return edge.TYP;

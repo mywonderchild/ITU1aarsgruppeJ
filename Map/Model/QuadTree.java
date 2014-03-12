@@ -2,7 +2,7 @@ package Map.Model;
 
 import java.util.ArrayList;
 import java.lang.RuntimeException;
-import java.lang.UnsupportedOperationException;
+import Model.Edge;
 
 public class QuadTree
 {
@@ -75,6 +75,38 @@ public class QuadTree
 
 		return found;
 	}
+
+    public Edge search(double[] point)
+    {
+        Edge edge;
+        double size = 10;
+        double[][] range = new double[][] {
+                {point[0] - size, point[1] - size},
+                {point[0] + size, point[1] + size},
+        };
+        while(edge == null)
+        {
+            ArrayList<Edge> edges = queryRange(range);
+            if(edges.isEmpty())
+            {
+                // double size
+                for(int i = 0; i < range.length; i++)
+                    for(int j = 0; j < range[i]; j++)
+                        range[i][j] = range[i][j] * 2;
+            }
+            else
+            {
+                // find closest in arraylist
+                edge = edges.get(0);
+                for(int i = 1; i < edges.size(); i++)
+                {
+                    if(edges.get(i).distanceToPoint(point) < edge.distanceToPoint(point))
+                        edge = edges.get(i);
+                }
+            }
+        }
+        return edge;
+    }
 
 	public double[][] getBounds()
 	{

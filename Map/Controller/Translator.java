@@ -19,33 +19,52 @@ public class Translator
 		this.qt = qt;
 	}
 
-	public Line[] getLines()
+	public ArrayList<Line> getLines()
 	{
 		double qtWidth = qt.getBounds()[1][0] - qt.getBounds()[0][0];
 		double scale = canvas.getSize().width / qtWidth;
 
+		long start = System.currentTimeMillis(); // Timer start
 		ArrayList<Edge> edges = qt.queryRange(qt.getBounds());
-		Line[] lines = new Line[edges.size()];
-		for(int i = 0; i < lines.length; i++)
-		{
+		long stop = System.currentTimeMillis(); // Timer stop
+		System.out.printf(
+			"Query took %d ms\n",
+			(stop - start)
+		);
+		
+		ArrayList<Line> lines = new ArrayList<>();
+		for(int i = 0; i < edges.size(); i++) {
 			Edge edge = edges.get(i);
-			double[][] coords = edge.getCoords();
-			double[][] scaled = new double[2][2];
+			if (isVisible(edge)) {
+				double[][] coords = edge.getCoords();
+				double[][] scaled = new double[2][2];
 
-			for (int j = 0; j < 2; j++)
-			{
-				for (int k = 0; k < 2; k++)
+				for (int j = 0; j < 2; j++)
 				{
-					scaled[j][k] = (coords[j][k] - qt.getBounds()[0][k]) * scale * mainScale;
-					if (k == 1) scaled[j][k] = canvas.getSize().height - scaled[j][k];
+					for (int k = 0; k < 2; k++)
+					{
+						scaled[j][k] = (coords[j][k] - qt.getBounds()[0][k]) * scale;
+						if (k == 1) scaled[j][k] = canvas.getSize().height - scaled[j][k];
+					}
 				}
-			}
 
-			int group = getGroup(edge);
-			Color color = getGroupColor(group);
-			lines[i] = new Line(scaled, color, 0);
+				int group = getGroup(edge);
+				Color color = getGroupColor(group);
+				lines.add(new Line(scaled, color, 0));
+			}
 		}
 		return lines;
+	}
+
+	private boolean isVisible(Edge edge) {
+		int group = getGroup(edge);
+
+		if (mainScale <= 1) {
+			if (group != 0 && group != 1)
+				return false;
+		}
+
+		return true;
 	}
 
 	private int getGroup(Edge edge) {

@@ -2,7 +2,9 @@ package Map.View;
 
 import java.awt.*;
 import java.util.Random;
+import java.util.ArrayList;
 import java.awt.Graphics2D;
+
 import Map.Controller.Line;
 
 public class Painter {
@@ -29,7 +31,7 @@ public class Painter {
 		}
 	}
 
-	public void paintLines(Graphics g, Line[] lines)
+	public void paintLines(Graphics g, ArrayList<Line> lines)
 	{
 		if(lines == null) return;
 		for(Line line : lines)

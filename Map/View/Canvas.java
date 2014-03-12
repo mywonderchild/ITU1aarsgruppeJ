@@ -5,6 +5,7 @@ import java.awt.*;
 import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 import Map.Controller.Line;
 import Map.Controller.Translator;
@@ -15,7 +16,7 @@ public class Canvas extends JPanel {
 	private Timer timer;
 	private ActionListener listener;
 	private boolean beauty;
-	private Line[] lines;
+	private ArrayList<Line> lines;
 	private Translator translator;
 
 	public Canvas() {
@@ -29,7 +30,13 @@ public class Canvas extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 
+		long start = System.currentTimeMillis(); // Timer start
 		lines = translator.getLines();
+		long stop = System.currentTimeMillis(); // Timer stop
+		System.out.printf(
+			"Getting lines took %d ms\n",
+			(stop - start)
+		);
 
 		if (timer == null) {
 			timer = new Timer(500, listener);

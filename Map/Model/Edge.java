@@ -12,7 +12,7 @@ public class Edge
 		// Groups
 		// We view "Motortrafik" and "Sekundærrute" as main roads
 		// We view "Markvej" as a path
-		int[][] groups = new int[4][];
+		int[][] groups = new int[5][];
 		groups[0] = new int[]{1, 21, 31, 41}; // Highways
 		groups[1] = new int[]{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}; // Main roads
 		groups[2] = new int[]{8, 10, 28, 48}; // Paths
@@ -70,6 +70,6 @@ public class Edge
 			}
 		}
 
-		throw RuntimeException("Road group not found");
+		throw new RuntimeException("Road group not found");
 	}
 }

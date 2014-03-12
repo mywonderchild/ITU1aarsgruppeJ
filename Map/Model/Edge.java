@@ -12,22 +12,14 @@ public class Edge
 		// Groups
 		// We view "Motortrafik" and "Sekundærrute" as main roads
 		// We view "Markvej" as a path
-<<<<<<< b190a9508627d677fe6b994c6f7ce21f1028c1fa
 		// Road type 0 and 95 are undocumented but present – we added them to other
 		GROUPS = new int[6][];
-=======
-		GROUPS = new int[5][];
->>>>>>> 016f8237b068dc7f18249caccca0eec87c6d1024
 		GROUPS[0] = new int[]{1, 21, 31, 41}; // Highways
 		GROUPS[1] = new int[]{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}; // Main roads
 		GROUPS[2] = new int[]{8, 10, 28, 48}; // Paths
 		GROUPS[3] = new int[]{11}; // Pedestrian
-<<<<<<< b190a9508627d677fe6b994c6f7ce21f1028c1fa
 		GROUPS[4] = new int[]{80}; // Naval
 		GROUPS[5] = new int[]{0, 5, 6, 25, 26, 35, 45, 46, 95, 99}; // Other
-=======
-		GROUPS[4] = new int[]{5, 6, 25, 26, 35, 45, 46}; // Other
->>>>>>> 016f8237b068dc7f18249caccca0eec87c6d1024
 	}
 
 	public Edge(EdgeData edge, Node[] nodes)

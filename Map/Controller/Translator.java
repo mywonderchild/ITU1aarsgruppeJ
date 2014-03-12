@@ -59,14 +59,14 @@ public class Translator
 		int group = edge.getGroup();
 
 		if (mainScale <= 1) {
-			if (group != 0 && group != 1)
+			if (group != 0 && group != 1 && group != 3)
 				return false;
 		}
 
 		return true;
 	}
 
-	private Color getGroupColor(int group) {
+	private Color getGroupColor(int group) throws RuntimeException {
 
 		// Return color
 		switch(group) {
@@ -77,9 +77,13 @@ public class Translator
 			case 2:
 				return Color.GREEN;
 			case 3:
+				return Color.YELLOW;
+			case 4:
 				return Color.CYAN;
-			default:
+			case 5:
 				return Color.BLACK;
+			default:
+				throw new RuntimeException("Road group " + group + " is not recognized");
 		}
 	}
 }

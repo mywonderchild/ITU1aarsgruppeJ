@@ -7,8 +7,8 @@ import java.io.File;
 public class Loader extends KrakLoader
 {
 	public final Node[] ndata;
-	public final QuadTree qt;
-	public final QuadTree[] groupedqt;
+	public final QuadTree all;
+	public final QuadTree[] groups;
 
 	public Loader()
 	{
@@ -17,10 +17,10 @@ public class Loader extends KrakLoader
 		// Low Y:  6 049 914,43018
 		// High Y: 6 402 050,98297
 		ndata = new Node[700000];
-		qt = new QuadTree(new double[][] {{442254.35659, 6049914.43018}, {892658.21706, 6402050.98297}});
-		groupedqt = new QuadTree[Edge.getGroupLength()];
-		for(int i = 0; i < groupedqt.length; i++)
-			groupedqt[i] = new QuadTree(new double[][] {{442254.35659, 6049914.43018}, {892658.21706, 6402050.98297}});
+		all = new QuadTree(new double[][] {{442254.35659, 6049914.43018}, {892658.21706, 6402050.98297}});
+		groups = new QuadTree[Edge.getGroupLength()];
+		for(int i = 0; i < groups.length; i++)
+			groups[i] = new QuadTree(new double[][] {{442254.35659, 6049914.43018}, {892658.21706, 6402050.98297}});
 		
 		try {
 			System.out.println(new File(".").getCanonicalPath());
@@ -42,7 +42,7 @@ public class Loader extends KrakLoader
 	{
 		Node[] nodes = new Node[] {ndata[edge.FNODE], ndata[edge.TNODE]};
 		Edge e = new Edge(edge, nodes);
-		qt.insert(e);
-		groupedqt[e.getGroup()].insert(e);
+		all.insert(e);
+		groups[e.getGroup()].insert(e);
 	}
 }

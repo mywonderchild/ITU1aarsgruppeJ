@@ -10,7 +10,7 @@ public class Main
 
 		// Set up model
 		long start = System.currentTimeMillis(); // Timer start
-		QuadTree[] qt = (new Loader()).groupedqt;
+		Loader loader = new Loader();
 		long stop = System.currentTimeMillis(); // Timer stop
 		System.out.printf(
 			"Done loading data after %.2f seconds.\n",
@@ -21,7 +21,7 @@ public class Main
 		Canvas canvas = new Canvas();
 		Window window = new Window(canvas);
 
-		Translator translator = new Translator(canvas, qt);
+		Translator translator = new Translator(canvas, loader.all, loader.groups);
 		canvas.setTranslator(translator);
 	}
 }

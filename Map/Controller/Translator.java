@@ -26,9 +26,9 @@ public class Translator
 		double scale = canvas.getSize().width / qtWidth;
 
 		long start = System.currentTimeMillis(); // Timer start
-		ArrayList<Edge> edges;
+		ArrayList<Edge> edges = new ArrayList<>();
 		for (QuadTree group : visibleGroups())
-			edges.addAll(group.queryRange(qt.getBounds()));
+			edges.addAll(group.queryRange(all.getBounds()));
 		long stop = System.currentTimeMillis(); // Timer stop
 		System.out.printf("Query took %d ms\n", stop - start);
 
@@ -40,7 +40,7 @@ public class Translator
 
 			for (int j = 0; j < 2; j++) {
 				for (int k = 0; k < 2; k++) {
-					scaled[j][k] = (coords[j][k] - qt.getBounds()[0][k]) * scale;
+					scaled[j][k] = (coords[j][k] - all.getBounds()[0][k]) * scale;
 					if (k == 1) scaled[j][k] = canvas.getSize().height - scaled[j][k];
 				}
 			}

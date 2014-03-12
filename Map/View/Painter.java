@@ -32,7 +32,6 @@ public class Painter {
 	public void paintLines(Graphics g, Line[] lines)
 	{
 		if(lines == null) return;
-		System.out.println(lines.length);
 		for(Line line : lines)
 		{
 			g.setColor(line.color);

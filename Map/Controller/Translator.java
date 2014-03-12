@@ -10,60 +10,52 @@ import Map.Model.Edge;
 public class Translator
 {
 	private Canvas canvas;
-	private QuadTree qt;
+	private QuadTree all;
+	private QuadTree[] groups;
 	private float mainScale = 1;
 
-	public Translator(Canvas canvas, QuadTree qt)
-	{
+	public Translator(Canvas canvas, QuadTree all, QuadTree[] groups) {
 		this.canvas = canvas;
-		this.qt = qt;
+		this.all = all;
+		this.groups = groups;
 	}
 
 	public ArrayList<Line> getLines()
 	{
-		double qtWidth = qt.getBounds()[1][0] - qt.getBounds()[0][0];
+		double qtWidth = all.getBounds()[1][0] - all.getBounds()[0][0];
 		double scale = canvas.getSize().width / qtWidth;
 
 		long start = System.currentTimeMillis(); // Timer start
-		ArrayList<Edge> edges = qt.queryRange(qt.getBounds());
+		ArrayList<Edge> edges;
+		for (QuadTree group : visibleGroups())
+			edges.addAll(group.queryRange(qt.getBounds()));
 		long stop = System.currentTimeMillis(); // Timer stop
-		System.out.printf(
-			"Query took %d ms\n",
-			(stop - start)
-		);
+		System.out.printf("Query took %d ms\n", stop - start);
 
 		ArrayList<Line> lines = new ArrayList<>();
 		for(int i = 0; i < edges.size(); i++) {
 			Edge edge = edges.get(i);
-			if (isVisible(edge)) {
-				double[][] coords = edge.getCoords();
-				double[][] scaled = new double[2][2];
+			double[][] coords = edge.getCoords();
+			double[][] scaled = new double[2][2];
 
-				for (int j = 0; j < 2; j++)
-				{
-					for (int k = 0; k < 2; k++)
-					{
-						scaled[j][k] = (coords[j][k] - qt.getBounds()[0][k]) * scale;
-						if (k == 1) scaled[j][k] = canvas.getSize().height - scaled[j][k];
-					}
+			for (int j = 0; j < 2; j++) {
+				for (int k = 0; k < 2; k++) {
+					scaled[j][k] = (coords[j][k] - qt.getBounds()[0][k]) * scale;
+					if (k == 1) scaled[j][k] = canvas.getSize().height - scaled[j][k];
 				}
-
-				Color color = getGroupColor(edge.getGroup());
-				lines.add(new Line(scaled, color, 0));
 			}
+
+			Color color = getGroupColor(edge.getGroup());
+			lines.add(new Line(scaled, color, 0));
 		}
 		return lines;
 	}
 
-	private boolean isVisible(Edge edge) {
-		int group = edge.getGroup();
-
-		if (mainScale <= 1) {
-			if (group != 0 && group != 1 && group != 3)
-				return false;
-		}
-
-		return true;
+	private QuadTree[] visibleGroups() {
+		if (mainScale <= 1)
+			return new QuadTree[]{groups[0], groups[1]};
+		else
+			return new QuadTree[]{all};
 	}
 
 	private Color getGroupColor(int group) throws RuntimeException {

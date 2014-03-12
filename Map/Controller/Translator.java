@@ -31,7 +31,7 @@ public class Translator
 			"Query took %d ms\n",
 			(stop - start)
 		);
-		
+
 		ArrayList<Line> lines = new ArrayList<>();
 		for(int i = 0; i < edges.size(); i++) {
 			Edge edge = edges.get(i);
@@ -48,8 +48,7 @@ public class Translator
 					}
 				}
 
-				int group = getGroup(edge);
-				Color color = getGroupColor(group);
+				Color color = getGroupColor(edge.getGroup());
 				lines.add(new Line(scaled, color, 0));
 			}
 		}
@@ -57,7 +56,7 @@ public class Translator
 	}
 
 	private boolean isVisible(Edge edge) {
-		int group = getGroup(edge);
+		int group = edge.getGroup();
 
 		if (mainScale <= 1) {
 			if (group != 0 && group != 1)
@@ -65,29 +64,6 @@ public class Translator
 		}
 
 		return true;
-	}
-
-	private int getGroup(Edge edge) {
-
-		int type = edge.getType();
-
-		// Groups
-		// We view "Motortrafik" and "Sekundærrute" as main roads
-		int[][] groups = new int[4][];
-		groups[0] = new int[]{1, 21, 31, 41}; // Highways
-		groups[1] = new int[]{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}; // Main roads
-		groups[2] = new int[]{8, 28, 48}; // Paths
-		groups[3] = new int[]{11}; // Pedestrian
-
-		// Determine road group
-		for (int i = 0; i < groups.length; i++) {
-			for (int id : groups[i]) {
-				if (type == id) {
-					return i;
-				}
-			}
-		}
-		return -1;
 	}
 
 	private Color getGroupColor(int group) {

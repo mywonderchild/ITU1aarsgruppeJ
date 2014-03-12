@@ -6,6 +6,8 @@ import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
 
 import Map.Controller.Line;
 import Map.Controller.Translator;
@@ -14,7 +16,7 @@ public class Canvas extends JPanel {
 	
 	private Painter painter = new Painter();
 	private Timer timer;
-	private ActionListener listener;
+	private ActionListener resizeListener;
 	private boolean beauty;
 	private ArrayList<Line> lines;
 	private Translator translator;
@@ -24,7 +26,8 @@ public class Canvas extends JPanel {
 
 		this.setPreferredSize(new Dimension(800, 600));
 
-		listener = new Listener(this);
+		resizeListener = new ResizeListener(this);
+		this.addMouseMotionListener(new MouseMoveListener());
 	}
 
 	@Override
@@ -39,7 +42,7 @@ public class Canvas extends JPanel {
 		);
 
 		if (timer == null) {
-			timer = new Timer(500, listener);
+			timer = new Timer(500, resizeListener);
     		timer.setRepeats(false);
     		timer.start();
 		}
@@ -64,11 +67,11 @@ public class Canvas extends JPanel {
 		this.translator = translator;
 	}
 
-	private class Listener implements ActionListener {
+	private class ResizeListener implements ActionListener {
 
 		Canvas canvas;
 
-		public Listener(Canvas canvas) {
+		public ResizeListener(Canvas canvas) {
 			this.canvas = canvas;
 		}
 
@@ -76,5 +79,15 @@ public class Canvas extends JPanel {
 			canvas.beauty = true;
 			canvas.repaint();
 		}
+	}
+
+	private class MouseMoveListener implements MouseMotionListener {
+			public void mouseDragged(MouseEvent e) {
+				// Unimplemented
+			}
+
+			public void mouseMoved(MouseEvent e) {
+				// INSERT CODE FOR LOCATING NEAREST ROAD HERE!
+			}
 	}
 }

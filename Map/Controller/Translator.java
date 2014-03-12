@@ -2,6 +2,7 @@ package Map.Controller;
 
 import java.util.ArrayList;
 import java.awt.Color;
+
 import Map.View.Canvas;
 import Map.Model.QuadTree;
 import Map.Model.Edge;
@@ -10,6 +11,7 @@ public class Translator
 {
 	private Canvas canvas;
 	private QuadTree qt;
+	private float mainScale = 1;
 
 	public Translator(Canvas canvas, QuadTree qt)
 	{
@@ -17,12 +19,12 @@ public class Translator
 		this.qt = qt;
 	}
 
-	public void setLines(double[][] bounds)
+	public Line[] getLines()
 	{
 		double qtWidth = qt.getBounds()[1][0] - qt.getBounds()[0][0];
 		double scale = canvas.getSize().width / qtWidth;
 
-		ArrayList<Edge> edges = qt.queryRange(bounds);
+		ArrayList<Edge> edges = qt.queryRange(qt.getBounds());
 		Line[] lines = new Line[edges.size()];
 		for(int i = 0; i < lines.length; i++)
 		{
@@ -34,40 +36,44 @@ public class Translator
 			{
 				for (int k = 0; k < 2; k++)
 				{
-					scaled[j][k] = (coords[j][k] - qt.getBounds()[0][k]) * scale;
+					scaled[j][k] = (coords[j][k] - qt.getBounds()[0][k]) * scale * mainScale;
 					if (k == 1) scaled[j][k] = canvas.getSize().height - scaled[j][k];
 				}
 			}
 
-			Color color = getColor(edge.getType());
+			int group = getGroup(edge);
+			Color color = getGroupColor(group);
 			lines[i] = new Line(scaled, color, 0);
 		}
-		canvas.setLines(lines);
+		return lines;
 	}
 
-	private Color getColor(int type) {
+	private int getGroup(Edge edge) {
 
-		// Types
+		int type = edge.getType();
+
+		// Groups
 		// We view "Motortrafik" and "Sekundærrute" as main roads
-		int[][] types = new int[4][];
-		types[0] = new int[]{1, 21, 31, 41}; // Highways
-		types[1] = new int[]{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}; // Main roads
-		types[2] = new int[]{8, 28, 48}; // Paths
-		types[3] = new int[]{11}; // Pedestrian
+		int[][] groups = new int[4][];
+		groups[0] = new int[]{1, 21, 31, 41}; // Highways
+		groups[1] = new int[]{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}; // Main roads
+		groups[2] = new int[]{8, 28, 48}; // Paths
+		groups[3] = new int[]{11}; // Pedestrian
 
 		// Determine road group
-		int group = -1;
-		for (int i = 0; i < types.length; i++) {
-			for (int id : types[i]) {
+		for (int i = 0; i < groups.length; i++) {
+			for (int id : groups[i]) {
 				if (type == id) {
-					group = i;
-					break;
+					return i;
 				}
 			}
-			if (group != -1) break; 
 		}
+		return -1;
+	}
 
-		// Set correct color
+	private Color getGroupColor(int group) {
+
+		// Return color
 		switch(group) {
 			case 0:
 				return Color.RED;

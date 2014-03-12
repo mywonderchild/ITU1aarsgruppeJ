@@ -5,7 +5,9 @@ import java.awt.*;
 import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import Map.Controller.Line;
+import Map.Controller.Translator;
 
 public class Canvas extends JPanel {
 	
@@ -14,6 +16,7 @@ public class Canvas extends JPanel {
 	private ActionListener listener;
 	private boolean beauty;
 	private Line[] lines;
+	private Translator translator;
 
 	public Canvas() {
 		super();
@@ -23,12 +26,10 @@ public class Canvas extends JPanel {
 		listener = new Listener(this);
 	}
 
-	public void setLines(Line[] lines) {
-		this.lines = lines;
-	}
-
 	@Override
 	public void paintComponent(Graphics g) {
+
+		lines = translator.getLines();
 
 		if (timer == null) {
 			timer = new Timer(500, listener);
@@ -52,6 +53,9 @@ public class Canvas extends JPanel {
 		painter.paintLines(g2d, this.lines);
 	}
 
+	public void setTranslator(Translator translator) {
+		this.translator = translator;
+	}
 
 	private class Listener implements ActionListener {
 

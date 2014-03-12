@@ -22,6 +22,6 @@ public class Main
 		Window window = new Window(canvas);
 
 		Translator translator = new Translator(canvas, qt);
-		translator.setLines(qt.getBounds());
+		canvas.setTranslator(translator);
 	}
 }

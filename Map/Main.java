@@ -10,7 +10,7 @@ public class Main
 
 		// Set up model
 		long start = System.currentTimeMillis(); // Timer start
-		QuadTree[] qt = (new Loader()).edata;
+		QuadTree[] qt = (new Loader()).groupedqt;
 		long stop = System.currentTimeMillis(); // Timer stop
 		System.out.printf(
 			"Done loading data after %.2f seconds.\n",

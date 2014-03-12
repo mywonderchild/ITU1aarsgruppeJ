@@ -75,7 +75,7 @@ public class Edge
 		throw new RuntimeException("Road group not found, type is: " + type);
 	}
 
-	public int getGroupLength()
+	public static int getGroupLength()
 	{
 		return GROUPS.length;
 	}

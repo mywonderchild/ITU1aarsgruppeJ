@@ -2,7 +2,6 @@ package Map.Model;
 
 import java.util.ArrayList;
 import java.lang.RuntimeException;
-import Model.Edge;
 
 public class QuadTree
 {
@@ -78,7 +77,7 @@ public class QuadTree
 
     public Edge search(double[] point)
     {
-        Edge edge;
+        Edge edge = null;
         double size = 10;
         double[][] range = new double[][] {
                 {point[0] - size, point[1] - size},
@@ -90,8 +89,8 @@ public class QuadTree
             if(edges.isEmpty())
             {
                 // double size
-                for(int i = 0; i < range.length; i++)
-                    for(int j = 0; j < range[i]; j++)
+                for(int i = 0; i < 2; i++)
+                    for(int j = 0; j < 2; j++)
                         range[i][j] = range[i][j] * 2;
             }
             else

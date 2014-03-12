@@ -1,9 +1,24 @@
 package Map.Model;
 
+import java.lang.RuntimeException;
+
 public class Edge
 {
+	private final static int[][] GROUPS;
 	private final EdgeData edge;
 	private final Node[] nodes;
+
+	static {
+		// Groups
+		// We view "Motortrafik" and "Sekundærrute" as main roads
+		// We view "Markvej" as a path
+		int[][] groups = new int[4][];
+		groups[0] = new int[]{1, 21, 31, 41}; // Highways
+		groups[1] = new int[]{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}; // Main roads
+		groups[2] = new int[]{8, 10, 28, 48}; // Paths
+		groups[3] = new int[]{11}; // Pedestrian
+		groups[4] = new int[]{5, 6, 25, 26, 35, 45, 46}; // Other
+	}
 
 	public Edge(EdgeData edge, Node[] nodes)
 	{
@@ -42,26 +57,19 @@ public class Edge
 		return edge.TYP;
 	}
 
-	public int getGroup() {
+	public int getGroup() throws RuntimeException {
 
 		int type = this.getType();
 
-		// Groups
-		// We view "Motortrafik" and "Sekundærrute" as main roads
-		int[][] groups = new int[4][];
-		groups[0] = new int[]{1, 21, 31, 41}; // Highways
-		groups[1] = new int[]{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}; // Main roads
-		groups[2] = new int[]{8, 28, 48}; // Paths
-		groups[3] = new int[]{11}; // Pedestrian
-
 		// Determine road group
-		for (int i = 0; i < groups.length; i++) {
-			for (int id : groups[i]) {
+		for (int i = 0; i < GROUPS.length; i++) {
+			for (int id : GROUPS[i]) {
 				if (type == id) {
 					return i;
 				}
 			}
 		}
-		return -1;
+
+		throw RuntimeException("Road group not found");
 	}
 }

@@ -1,2 +1,8 @@
+# Java
 *.class
+# Data
 data/
+# IntelliJ
+.idea/
+*.iml
+*.bat

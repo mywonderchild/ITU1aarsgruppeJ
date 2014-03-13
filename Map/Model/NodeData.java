@@ -4,8 +4,6 @@ package Map.Model;
  * An object storing the raw node data from the krak data file.
  */
 public class NodeData {
-	final int ARC;
-	final int KDV;
 	final int KDV_ID;
 	final double X_COORD;
 	final double Y_COORD;
@@ -17,8 +15,8 @@ public class NodeData {
 	 */
 	public NodeData(String line) {
 		DataLine dl = new DataLine(line);
-		ARC = dl.getInt();
-		KDV = dl.getInt();
+		dl.getInt();
+		dl.getInt();
 		KDV_ID = dl.getInt();
 		X_COORD = dl.getDouble();
 		Y_COORD = dl.getDouble();
@@ -29,6 +27,6 @@ public class NodeData {
 	 * kdv_node_unload.txt file.
 	 */
 	public String toString() {
-		return ARC + "," + KDV + "," + KDV_ID + "," + X_COORD + "," + Y_COORD;
+		return "";// ARC + "," + KDV + "," + KDV_ID + "," + X_COORD + "," + Y_COORD;
 	}
 }

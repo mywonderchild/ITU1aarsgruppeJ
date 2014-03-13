@@ -21,6 +21,8 @@ public class Canvas extends JPanel {
 	private ArrayList<Line> lines;
 	private Translator translator;
 
+	private ArrayList<Long> queryTimes = new ArrayList<Long>();
+
 	public Canvas() {
 		super();
 
@@ -40,6 +42,12 @@ public class Canvas extends JPanel {
 			"Getting lines took %d ms\n",
 			(stop - start)
 		);
+		queryTimes.add(stop - start);
+		long avg = 0;
+		for(long time : queryTimes)
+			avg += time;
+		avg = avg/queryTimes.size();
+		System.out.printf("Getting lines average took %d ms\n", avg);
 
 		if (timer == null) {
 			timer = new Timer(500, resizeListener);

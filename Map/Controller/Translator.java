@@ -14,6 +14,8 @@ public class Translator
 	private QuadTree[] groups;
 	private float mainScale = 1;
 
+	private ArrayList<Long> queryTimes = new ArrayList<Long>();
+
 	public Translator(Canvas canvas, QuadTree all, QuadTree[] groups) {
 		this.canvas = canvas;
 		this.all = all;
@@ -31,6 +33,12 @@ public class Translator
 			edges.addAll(group.queryRange(all.getBounds()));
 		long stop = System.currentTimeMillis(); // Timer stop
 		System.out.printf("Query took %d ms\n", stop - start);
+		queryTimes.add(stop - start);
+		long avg = 0;
+		for(long time : queryTimes)
+			avg += time;
+		avg = avg/queryTimes.size();
+		System.out.printf("Query average took %d ms\n", avg);
 
 		ArrayList<Line> lines = new ArrayList<>();
 		for(int i = 0; i < edges.size(); i++) {

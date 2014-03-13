@@ -6,7 +6,7 @@ import java.lang.RuntimeException;
 public class QuadTree
 {
 	private static final int NODE_CAPACITY = 500;
-	private final Edge[] edges;
+	private Edge[] edges;
 	private final double[][] bounds;
 
 	private QuadTree NW;
@@ -53,6 +53,13 @@ public class QuadTree
 		NE = new QuadTree(new double[][]{{bounds[0][0]+half[0], bounds[0][1]}, {bounds[1][0], bounds[0][1]+half[1]}});
 		SW = new QuadTree(new double[][]{{bounds[0][0], bounds[0][1]+half[1]}, {bounds[0][0]+half[0], bounds[1][1]}});
 		SE = new QuadTree(new double[][]{{bounds[0][0]+half[0], bounds[0][1]+half[1]}, {bounds[1][0], bounds[1][1]}});
+		for(Edge edge : edges) {
+			NW.insert(edge);
+			NE.insert(edge);
+			SW.insert(edge);
+			SE.insert(edge);
+		}
+		edges = null;
 	}
 
 	public ArrayList<Edge> queryRange(double[][] selection)
@@ -61,16 +68,17 @@ public class QuadTree
 
 		if(!isColliding(selection)) return found;
 
-		for (int i = 0; i < n; i++)
-			if (isInside(selection, edges[i].getCenter()))
-				found.add(edges[i]);
-
-		if (NW == null) return found;
-
-		found.addAll(NW.queryRange(selection));
-		found.addAll(NE.queryRange(selection));
-		found.addAll(SW.queryRange(selection));
-		found.addAll(SE.queryRange(selection));
+		if(isLeaf()) {
+			for (int i = 0; i < n; i++)
+				if (isInside(selection, edges[i].getCenter()))
+					found.add(edges[i]);
+		}
+		else {
+			found.addAll(NW.queryRange(selection));
+			found.addAll(NE.queryRange(selection));
+			found.addAll(SW.queryRange(selection));
+			found.addAll(SE.queryRange(selection));
+		}
 
 		return found;
 	}
@@ -129,5 +137,10 @@ public class QuadTree
 		if (selection[0][1] > bounds[1][1]) return false;
 		if (selection[1][1] < bounds[0][1]) return false;
 		return true;
+	}
+
+	private boolean isLeaf()
+	{
+		return NW == null;
 	}
 }

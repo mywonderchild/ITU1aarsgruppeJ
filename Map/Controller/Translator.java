@@ -74,12 +74,12 @@ public class Translator
 				double[][] coords = edge.getCoords();
 				double[][] scaledCoords = new double[][] {
 					{
-						coords[0][0] * FrameScale,
-						coords[0][1] * FrameScale
+						(coords[0][0] - mapBounds[0][0]) * FrameScale,
+						(coords[0][1] - mapBounds[0][1]) * FrameScale
 					},
 					{
-						coords[1][0] * FrameScale,
-						coords[1][1] * FrameScale
+						(coords[1][0] - mapBounds[0][0]) * FrameScale,
+						(coords[1][1] - mapBounds[0][1]) * FrameScale
 					}
 				};
 				lines.add(new Line(
@@ -89,6 +89,13 @@ public class Translator
 				));
 			}
 		}
+
+		System.out.printf("(%f, %f), (%f, %f)\n",
+			lines.get(0).coords[0][0],
+			lines.get(0).coords[0][1],
+			lines.get(0).coords[1][0],
+			lines.get(0).coords[1][1]
+		);
 
 		return lines;
 	}

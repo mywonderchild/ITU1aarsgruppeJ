@@ -12,47 +12,89 @@ public class Translator
 	private Canvas canvas;
 	private QuadTree all;
 	private QuadTree[] groups;
-	private float mainScale = 1;
+
+	/**
+	 * Coordinate for deciding the viewed area. This field is added
+	 * to the current viewing bounds (negative x will move the
+	 * viewing area to the left etc.)
+	 * The center coordinates are added in the raw scale of the map.
+	 */
+	private double[] center;
+
+	/**
+	 * Scale for deciding how much of the raw map data to view.
+	 * Default value is 1.00 (this would amount to the width and
+	 * height of the raw map data.)
+	 */
+	private double zoomScale;
 
 	public Translator(Canvas canvas, QuadTree all, QuadTree[] groups) {
 		this.canvas = canvas;
 		this.all = all;
 		this.groups = groups;
+
+		center = new double[] { 0.0, 0.0 };
+		zoomScale = 1.0;
 	}
 
 	public ArrayList<Line> getLines()
 	{
-		double qtWidth = all.getBounds()[1][0] - all.getBounds()[0][0];
-		double scale = canvas.getSize().width / qtWidth;
+		/* Since scaling should not be done on both axes (this would
+		skew the map), a single axis must be chosen as the scaling
+		factor. In the following code, the x-axis is used as the
+		scaling axis. */
 
-		long start = System.currentTimeMillis(); // Timer start
-		ArrayList<Edge> edges = new ArrayList<>();
-		for (QuadTree group : visibleGroups())
-			edges.addAll(group.queryRange(all.getBounds()));
-		long stop = System.currentTimeMillis(); // Timer stop
-		System.out.printf("Query took %d ms\n", stop - start);
+		// Width of map bounds (full map size)
+		double[][] mapBounds = all.getBounds();
+		double mapWidth = mapBounds[1][0] - mapBounds[0][0];
 
-		ArrayList<Line> lines = new ArrayList<>();
-		for(int i = 0; i < edges.size(); i++) {
-			Edge edge = edges.get(i);
-			double[][] coords = edge.getCoords();
-			double[][] scaled = new double[2][2];
+		// Width of canvas bounds (size of drawing area in app)
+		double canvasWidth = canvas.getWidth();
 
-			for (int j = 0; j < 2; j++) {
-				for (int k = 0; k < 2; k++) {
-					scaled[j][k] = (coords[j][k] - all.getBounds()[0][k]) * scale;
-					if (k == 1) scaled[j][k] = canvas.getSize().height - scaled[j][k];
-				}
+		// Scale between the width of the canvas and the map.
+		double FrameScale = canvasWidth / mapWidth;
+
+		// Raw bounds of viewed area (corresponding to coordinates
+		// in the raw map data.)
+		double[][] bounds = new double[][] {
+			{
+				(mapBounds[0][0] + center[0]) * zoomScale,
+				(mapBounds[0][1] + center[1]) * zoomScale
+			},
+			{
+				(mapBounds[1][0] + center[0]) * (1 - (zoomScale - 1)),
+				(mapBounds[1][1] + center[1]) * (1 - (zoomScale - 1))
 			}
+		};
 
-			Color color = getGroupColor(edge.getGroup());
-			lines.add(new Line(scaled, color, 0));
+		// Actually viewed roads
+		ArrayList<Line> lines = new ArrayList<Line>();
+		for(QuadTree qt : visibleGroups()) {
+			for(Edge edge : qt.queryRange(bounds)) {
+				double[][] coords = edge.getCoords();
+				double[][] scaledCoords = new double[][] {
+					{
+						coords[0][0] * FrameScale,
+						coords[0][1] * FrameScale
+					},
+					{
+						coords[1][0] * FrameScale,
+						coords[1][1] * FrameScale
+					}
+				};
+				lines.add(new Line(
+					scaledCoords,
+					getGroupColor(edge.getGroup()),
+					1.0
+				));
+			}
 		}
+
 		return lines;
 	}
 
 	private QuadTree[] visibleGroups() {
-		if (mainScale <= 1)
+		if (zoomScale <= 1)
 			return new QuadTree[]{groups[0], groups[1]};
 		else
 			return new QuadTree[]{all};

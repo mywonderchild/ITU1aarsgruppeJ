@@ -33,7 +33,7 @@ public class Translator
 		this.all = all;
 		this.groups = groups;
 
-		center = new double[] { 0.0, 0.0 };
+		center = new double[] { 20000.0, 0.0 };
 		zoomScale = 1.0;
 	}
 
@@ -44,12 +44,16 @@ public class Translator
 		factor. In the following code, the x-axis is used as the
 		scaling axis. */
 
+		/* SCALING AXIS SHOULD PROBABLY BE CHOSEN AS THE LONGEST
+		(or shortest?) CANVAS AXIS TO PREVENT CUTOFF. */
+
 		// Width of map bounds (full map size)
 		double[][] mapBounds = all.getBounds();
 		double mapWidth = mapBounds[1][0] - mapBounds[0][0];
 
 		// Width of canvas bounds (size of drawing area in app)
 		double canvasWidth = canvas.getWidth();
+		double canvasHeight = canvas.getHeight(); // Height used later
 
 		// Scale between the width of the canvas and the map.
 		double FrameScale = canvasWidth / mapWidth;
@@ -67,6 +71,9 @@ public class Translator
 			}
 		};
 
+		/* INCLUDE center IN CODE BELOW TO MOVE MAP ON CANVAS
+		ACCORDING TO center COODRINATES. */
+
 		// Actually viewed roads
 		ArrayList<Line> lines = new ArrayList<Line>();
 		for(QuadTree qt : visibleGroups()) {
@@ -75,11 +82,11 @@ public class Translator
 				double[][] scaledCoords = new double[][] {
 					{
 						(coords[0][0] - mapBounds[0][0]) * FrameScale,
-						(coords[0][1] - mapBounds[0][1]) * FrameScale
+						canvasHeight - (coords[0][1] - mapBounds[0][1]) * FrameScale
 					},
 					{
 						(coords[1][0] - mapBounds[0][0]) * FrameScale,
-						(coords[1][1] - mapBounds[0][1]) * FrameScale
+						canvasHeight - (coords[1][1] - mapBounds[0][1]) * FrameScale
 					}
 				};
 				lines.add(new Line(
@@ -90,18 +97,11 @@ public class Translator
 			}
 		}
 
-		System.out.printf("(%f, %f), (%f, %f)\n",
-			lines.get(0).coords[0][0],
-			lines.get(0).coords[0][1],
-			lines.get(0).coords[1][0],
-			lines.get(0).coords[1][1]
-		);
-
 		return lines;
 	}
 
 	private QuadTree[] visibleGroups() {
-		if (zoomScale <= 1)
+		if (zoomScale <= 2)
 			return new QuadTree[]{groups[0], groups[1]};
 		else
 			return new QuadTree[]{all};

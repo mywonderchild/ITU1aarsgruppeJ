@@ -19,21 +19,21 @@ public class Translator
 	 * viewing area to the left etc.)
 	 * The center coordinates are added in the raw scale of the map.
 	 */
-	private double[] center;
+	public double[] center;
 
 	/**
 	 * Scale for deciding how much of the raw map data to view.
 	 * Default value is 1.00 (this would amount to the width and
 	 * height of the raw map data.)
 	 */
-	private double zoomScale;
+	public double zoomScale;
 
 	public Translator(Canvas canvas, QuadTree all, QuadTree[] groups) {
 		this.canvas = canvas;
 		this.all = all;
 		this.groups = groups;
 
-		center = new double[] { 20000.0, 0.0 };
+		center = new double[] { 0.0, 0.0 };
 		zoomScale = 1.0;
 	}
 
@@ -71,9 +71,6 @@ public class Translator
 			}
 		};
 
-		/* INCLUDE center IN CODE BELOW TO MOVE MAP ON CANVAS
-		ACCORDING TO center COODRINATES. */
-
 		// Actually viewed roads
 		ArrayList<Line> lines = new ArrayList<Line>();
 		for(QuadTree qt : visibleGroups()) {
@@ -81,12 +78,12 @@ public class Translator
 				double[][] coords = edge.getCoords();
 				double[][] scaledCoords = new double[][] {
 					{
-						(coords[0][0] - mapBounds[0][0]) * FrameScale,
-						canvasHeight - (coords[0][1] - mapBounds[0][1]) * FrameScale
+						(coords[0][0] - mapBounds[0][0] - center[0]) * FrameScale,
+						canvasHeight - (coords[0][1] - mapBounds[0][1] - center[1]) * FrameScale
 					},
 					{
-						(coords[1][0] - mapBounds[0][0]) * FrameScale,
-						canvasHeight - (coords[1][1] - mapBounds[0][1]) * FrameScale
+						(coords[1][0] - mapBounds[0][0] - center[0]) * FrameScale,
+						canvasHeight - (coords[1][1] - mapBounds[0][1] - center[1]) * FrameScale
 					}
 				};
 				lines.add(new Line(

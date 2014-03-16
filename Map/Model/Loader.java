@@ -25,7 +25,7 @@ public class Loader extends KrakLoader
 		try {
 			System.out.println(new File(".").getCanonicalPath());
 			String dir = new File(".").getCanonicalPath() + "/Map/data/";
-			load(dir + "kdv_node_unload.txt", dir + "kdv_unload.txt");
+			load(dir + "purged_kdv_node_unload.txt", dir + "purged_kdv_unload.txt");
 		}
 		catch(IOException e)
 		{

@@ -15,8 +15,6 @@ public class NodeData {
 	 */
 	public NodeData(String line) {
 		DataLine dl = new DataLine(line);
-		dl.getInt();
-		dl.getInt();
 		KDV_ID = dl.getInt();
 		X_COORD = dl.getDouble();
 		Y_COORD = dl.getDouble();
@@ -27,6 +25,6 @@ public class NodeData {
 	 * kdv_node_unload.txt file.
 	 */
 	public String toString() {
-		return "";// ARC + "," + KDV + "," + KDV_ID + "," + X_COORD + "," + Y_COORD;
+		return KDV_ID + "," + X_COORD + "," + Y_COORD;
 	}
 }

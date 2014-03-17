@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.Point;
 
 import Map.Controller.Line;
 import Map.Controller.Translator;
@@ -27,7 +29,7 @@ public class Canvas extends JPanel {
 		this.setPreferredSize(new Dimension(800, 600));
 
 		resizeListener = new ResizeListener(this);
-		this.addMouseMotionListener(new MouseMoveListener());
+		this.addMouseMotionListener(new MouseMoveListener(this));
 	}
 
 	@Override
@@ -81,13 +83,50 @@ public class Canvas extends JPanel {
 		}
 	}
 
-	private class MouseMoveListener implements MouseMotionListener {
-			public void mouseDragged(MouseEvent e) {
-				// Unimplemented
-			}
+	private class MouseMoveListener implements MouseListener, MouseMotionListener {
+		private Canvas canvas;
+		private Point clickPoint = null;
 
-			public void mouseMoved(MouseEvent e) {
-				// INSERT CODE FOR LOCATING NEAREST ROAD HERE!
-			}
+		public MouseMoveListener(Canvas canvas) {
+			this.canvas = canvas;
+		}
+
+		public void mouseClicked(MouseEvent e) {
+			clickPoint = e.getPoint();
+		}
+
+		public void mouseEntered(MouseEvent e) {
+
+		}
+
+		public void mouseExited(MouseEvent e) {
+
+		}
+
+		public void mousePressed(MouseEvent e) {
+
+		}
+
+		public void mouseReleased(MouseEvent e) {
+
+		}
+
+
+		public void mouseDragged(MouseEvent e) {
+			translator.center = new double[] {
+				e.getX() - clickPoint.getX(),
+				e.getY() - clickPoint.getY()
+			};
+
+			if(translator.center[0] > translator.center[1])
+				translator.zoomScale = (e.getX() - clickPoint.getX()) / canvas.getWidth();
+			else
+				translator.zoomScale = (e.getY() - clickPoint.getY()) / canvas.getHeight();
+
+		}
+
+		public void mouseMoved(MouseEvent e) {
+			// INSERT CODE FOR LOCATING NEAREST ROAD HERE!
+		}
 	}
 }

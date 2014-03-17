@@ -13,19 +13,7 @@ public class Translator
 	private QuadTree all;
 	private QuadTree[] groups;
 
-	/**
-	 * Coordinate for deciding the viewed area. This field is added
-	 * to the current viewing bounds (negative x will move the
-	 * viewing area to the left etc.)
-	 * The center coordinates are added in the raw scale of the map.
-	 */
 	public double[] center;
-
-	/**
-	 * Scale for deciding how much of the raw map data to view.
-	 * Default value is 1.00 (this would amount to the width and
-	 * height of the raw map data.)
-	 */
 	public double zoomScale;
 
 	public Translator(Canvas canvas, QuadTree all, QuadTree[] groups) {
@@ -33,100 +21,88 @@ public class Translator
 		this.all = all;
 		this.groups = groups;
 
+		// Relative center, {0.5, 0.5} is center of map
 		center = new double[] {0.5, 0.5};
-		zoomScale = 2.0;
+
+		// Relative zoom, 1.2 is 120% of map
+		zoomScale = 1.2;
 	}
 
 	public ArrayList<Line> getLines()
 	{
-		/* Since scaling should not be done on both axes (this would
-		skew the map), a single axis must be chosen as the scaling
-		factor. In the following code, the x-axis is used as the
-		scaling axis. */
-
-		/* SCALING AXIS SHOULD PROBABLY BE CHOSEN AS THE LONGEST
-		(or shortest?) CANVAS AXIS TO PREVENT CUTOFF. */
-
-		// Width of map bounds (full map size)
+		// Load bounds and dimensions of map
 		double[][] mapBounds = all.getBounds();
-		double[] mapDimensions = new double[]{
-			mapBounds[1][0] - mapBounds[0][0],
-			mapBounds[1][1] - mapBounds[0][1]
-		};
+		double[] mapDimensions = new double[2];
+		for (int i = 0; i < 2; i++)
+			mapDimensions[i] = mapBounds[1][i] - mapBounds[0][i];
 
-		// Width of canvas bounds (size of drawing area in app)
-		double[] canvasDimensions = new double[]{
+		// Load dimensions of canvas
+		double[] canvasDimensions = new double[] {
 			canvas.getWidth(),
 			canvas.getHeight()
 		};
 
-		// Biggest axe
+		// Determine biggest and smallest axis (0 is x and y is 1)
 		int biggest = (canvasDimensions[0] > canvasDimensions[1]) ? 0 : 1;
 		int smallest = (biggest == 1) ? 0 : 1;
-		double ratio = canvasDimensions[smallest] / canvasDimensions[biggest];
 
-		// Raw bounds of viewed area (corresponding to coordinates
-		// in the raw map data.)
+		// Ratio – always the relationship between smallest and largest axis
+		double canvasRatio = canvasDimensions[smallest] / canvasDimensions[biggest];
+
+		// Absolute coordinates of center
 		double[] mapCenter = new double[]{
 			center[0] * mapDimensions[0] + mapBounds[0][0],
 			center[1] * mapDimensions[1] + mapBounds[0][1]
 		};
 
-		// UGLY CODE HERE AGAIN
-		double[][] bounds;
+		// Absolute coordinates of bounds in map with zoom and center applied
+		double[][] bounds = new double[2][2];
+		double[] offset = new double[]{
+			(mapDimensions[0] / 2) * zoomScale,
+			(mapDimensions[1] / 2) * zoomScale
+		};
 		if (smallest == 1) {
-			bounds = new double[][] {
-				{
-					mapCenter[0] - (mapDimensions[0] / 2) * zoomScale,
-					mapCenter[1] - (mapDimensions[1] / 2) * zoomScale * ratio
-				},
-				{
-					mapCenter[0] + (mapDimensions[0] / 2) * zoomScale,
-					mapCenter[1] + (mapDimensions[1] / 2) * zoomScale * ratio
-				}
-			};
+			bounds[0][0] = mapCenter[0] - offset[0];
+			bounds[0][1] = mapCenter[1] - offset[1] * canvasRatio;
+			bounds[1][0] = mapCenter[0] + offset[0];
+			bounds[1][1] = mapCenter[1] + offset[1] * canvasRatio;
 		} else {
-			bounds = new double[][] {
-				{
-					mapCenter[0] - (mapDimensions[0] / 2) * zoomScale * ratio,
-					mapCenter[1] - (mapDimensions[1] / 2) * zoomScale
-				},
-				{
-					mapCenter[0] + (mapDimensions[0] / 2) * zoomScale * ratio,
-					mapCenter[1] + (mapDimensions[1] / 2) * zoomScale
-				}
-			};
+			bounds[0][0] = mapCenter[0] - offset[0] * canvasRatio;
+			bounds[0][1] = mapCenter[1] - offset[1];
+			bounds[1][0] = mapCenter[0] + offset[0] * canvasRatio;
+			bounds[1][1] = mapCenter[1] + offset[1];
 		}
-		// UGLY CODE ENDS HERE AGAIN
 
-		for(int i = 0; i < 2; i++)
-			for(int j = 0; j < 2; j++)
-				System.out.println(bounds[i][j]);
+		// for(int i = 0; i < 2; i++)
+		// 	for(int j = 0; j < 2; j++)
+		// 		System.out.println(bounds[i][j]);
 
 		// Actually viewed roads
 		ArrayList<Line> lines = new ArrayList<Line>();
 		for(QuadTree qt : visibleGroups()) {
 			for(Edge edge : qt.queryRange(bounds)) {
 
-				// THIS IS FUCKED UP AND UNOPTIMIZED; FIX THE NUMBER OF OBJECTS USED AND REDUCE RUNTHROUGHS GODAMMIT
-				double[][] coords = edge.getCoords();
-				double[][] scaledCoords = new double[][] {
-					{
-						(coords[0][0] - bounds[0][0]) / (bounds[1][0] - bounds[0][0]) * canvasDimensions[0],
-						(coords[0][1] - bounds[0][1]) / (bounds[1][1] - bounds[0][1]) * canvasDimensions[1]
-					},
-					{
-						(coords[1][0] - bounds[0][0]) / (bounds[1][0] - bounds[0][0]) * canvasDimensions[0],
-						(coords[1][1] - bounds[0][1]) / (bounds[1][1] - bounds[0][1]) * canvasDimensions[1]
-					}
+				// Bounds dimensions
+				double[] dimensions = new double[]{
+					bounds[1][0] - bounds[0][0],
+					bounds[1][1] - bounds[0][1]
 				};
-				// Reverse y-axis
-				for (int i = 0; i < 2; i++)
-					scaledCoords[i][1] = canvasDimensions[1] - scaledCoords[i][1];
-				// HERE ENDS THE SHIT
 
+				// Translate coordinates
+				double[][] coords = edge.getCoords();
+				for (int i = 0; i < 2; i++) {
+					for (int j = 0; j < 2; j++) {
+						coords[i][j] -= bounds[0][j];
+						coords[i][j] /= dimensions[j];
+						coords[i][j] *= canvasDimensions[j];
+						// Reverse y axis
+						if (j == 1) coords[i][j] = canvasDimensions[1] - coords[i][1];
+					}
+				}
+
+				// Add line
 				lines.add(new Line(
-					scaledCoords,
+					coords,
 					getGroupColor(edge.getGroup()),
 					1.0
 				));

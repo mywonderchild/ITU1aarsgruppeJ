@@ -1,4 +1,5 @@
 ./Map/Controller/Line.java
+./Map/Controller/ResizeHandler.java
 ./Map/Controller/Translator.java
 ./Map/Main.java
 ./Map/Model/DataLine.java

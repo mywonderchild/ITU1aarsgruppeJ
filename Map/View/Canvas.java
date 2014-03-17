@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.Point;
 
 import Map.Controller.Line;
 import Map.Controller.Translator;
@@ -15,52 +17,24 @@ import Map.Controller.Translator;
 public class Canvas extends JPanel {
 	
 	private Painter painter = new Painter();
-	private Timer timer;
-	private ActionListener resizeListener;
-	private boolean beauty;
 	private ArrayList<Line> lines;
 	private Translator translator;
 
-	private ArrayList<Long> queryTimes = new ArrayList<Long>();
+	public boolean beauty = true;
 
 	public Canvas() {
 		super();
 
 		this.setPreferredSize(new Dimension(800, 600));
 
-		resizeListener = new ResizeListener(this);
-		this.addMouseMotionListener(new MouseMoveListener());
+		MouseMoveListener mml = new MouseMoveListener(this);
+		this.addMouseMotionListener(mml);
+		this.addMouseListener(mml);
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
-
-		long start = System.currentTimeMillis(); // Timer start
-		lines = translator.getLines();
-		long stop = System.currentTimeMillis(); // Timer stop
-		System.out.printf(
-			"Getting lines took %d ms\n",
-			(stop - start)
-		);
-		queryTimes.add(stop - start);
-		long avg = 0;
-		for(long time : queryTimes)
-			avg += time;
-		avg = avg/queryTimes.size();
-		System.out.printf("Getting lines average took %d ms\n", avg);
-
-		if (timer == null) {
-			timer = new Timer(500, resizeListener);
-    		timer.setRepeats(false);
-    		timer.start();
-		}
-
-		if(timer.isRunning()) {
-			timer.restart();
-		} else if (beauty == false) {
-			timer.start();
-		}
-
+		g.clearRect(0, 0, getWidth(), getHeight());
 		Graphics2D g2d = (Graphics2D)g;
 
 		if (beauty) {
@@ -71,31 +45,65 @@ public class Canvas extends JPanel {
 		painter.paintLines(g2d, this.lines);
 	}
 
+	public void setLines(ArrayList<Line> lines) {
+		this.lines = lines;
+	}
+
 	public void setTranslator(Translator translator) {
 		this.translator = translator;
 	}
 
-	private class ResizeListener implements ActionListener {
+	private class MouseMoveListener implements MouseListener, MouseMotionListener {
+		private Canvas canvas;
+		private Point clickPoint = null;
 
-		Canvas canvas;
-
-		public ResizeListener(Canvas canvas) {
+		public MouseMoveListener(Canvas canvas) {
 			this.canvas = canvas;
 		}
 
-		public void actionPerformed(ActionEvent e) {
-			canvas.beauty = true;
-			canvas.repaint();
+		public void mouseClicked(MouseEvent e) {
+			
 		}
-	}
 
-	private class MouseMoveListener implements MouseMotionListener {
-			public void mouseDragged(MouseEvent e) {
-				// Unimplemented
-			}
+		public void mouseEntered(MouseEvent e) {
 
-			public void mouseMoved(MouseEvent e) {
-				// INSERT CODE FOR LOCATING NEAREST ROAD HERE!
+		}
+
+		public void mouseExited(MouseEvent e) {
+
+		}
+
+		public void mousePressed(MouseEvent e) {
+			/*System.out.println("Clicked");
+			clickPoint = e.getPoint();*/
+		}
+
+		public void mouseReleased(MouseEvent e) {
+			/*System.out.println("Released");
+			translator.center = new double[] {
+				(clickPoint.getX() + (e.getX() - clickPoint.getX())/2.0)/canvas.getWidth(),
+				(clickPoint.getY() + (e.getY() - clickPoint.getY())/2.0)/canvas.getHeight()
+			};
+
+			if(translator.center[0] > translator.center[1]) {
+				translator.zoomScale = (e.getX() - clickPoint.getX()) / canvas.getWidth();
 			}
+			else {
+				translator.zoomScale = (e.getY() - clickPoint.getY()) / canvas.getHeight();
+			}
+			System.out.println("zoomScale: " + translator.zoomScale);
+			System.out.println("center: " + translator.center[0] + ", " + translator.center[1]);
+
+			canvas.repaint();*/
+		}
+
+
+		public void mouseDragged(MouseEvent e) {
+
+		}
+
+		public void mouseMoved(MouseEvent e) {
+			// INSERT CODE FOR LOCATING NEAREST ROAD HERE!
+		}
 	}
 }

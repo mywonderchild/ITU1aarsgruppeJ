@@ -6,9 +6,9 @@ public class Line
 {
 	public double[][] coords;
 	public Color color;
-	public int width;
+	public double width;
 
-	public Line(double[][] coords, Color color, int width)
+	public Line(double[][] coords, Color color, double width)
 	{
 		this.coords = coords;
 		this.color = color;

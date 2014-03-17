@@ -12,55 +12,134 @@ public class Translator
 	private Canvas canvas;
 	private QuadTree all;
 	private QuadTree[] groups;
-	private float mainScale = 1;
 
-	private ArrayList<Long> queryTimes = new ArrayList<Long>();
+	public double[] center;
+	public double zoomScale;
+
+	private double[] canvasDimensions;
+
+	private double[][] bounds;
+	private double[] boundsDimensions;
 
 	public Translator(Canvas canvas, QuadTree all, QuadTree[] groups) {
 		this.canvas = canvas;
 		this.all = all;
 		this.groups = groups;
+
+		// Relative center, {0.5, 0.5} is center of map
+		center = new double[] {0.5, 0.5};
+		zoomScale = 2.0;
 	}
 
 	public ArrayList<Line> getLines()
 	{
-		double qtWidth = all.getBounds()[1][0] - all.getBounds()[0][0];
-		double scale = canvas.getSize().width / qtWidth;
+		// Load bounds and dimensions of model
+		double[][] modelBounds = all.getBounds();
+		double[] modelDimensions = new double[2];
+		for (int i = 0; i < 2; i++)
+			modelDimensions[i] = modelBounds[1][i] - modelBounds[0][i];
 
-		long start = System.currentTimeMillis(); // Timer start
-		ArrayList<Edge> edges = new ArrayList<>();
-		for (QuadTree group : visibleGroups())
-			edges.addAll(group.queryRange(all.getBounds()));
-		long stop = System.currentTimeMillis(); // Timer stop
-		System.out.printf("Query took %d ms\n", stop - start);
-		queryTimes.add(stop - start);
-		long avg = 0;
-		for(long time : queryTimes)
-			avg += time;
-		avg = avg/queryTimes.size();
-		System.out.printf("Query average took %d ms\n", avg);
+		// Load dimensions of canvas
+		canvasDimensions = new double[] {
+			canvas.getWidth(),
+			canvas.getHeight()
+		};
 
-		ArrayList<Line> lines = new ArrayList<>();
-		for(int i = 0; i < edges.size(); i++) {
-			Edge edge = edges.get(i);
-			double[][] coords = edge.getCoords();
-			double[][] scaled = new double[2][2];
+		// Determine biggest and smallest axis (0 is x and y is 1)
+		int biggest = (canvasDimensions[0] > canvasDimensions[1]) ? 0 : 1;
+		int smallest = (biggest == 1) ? 0 : 1;
 
-			for (int j = 0; j < 2; j++) {
-				for (int k = 0; k < 2; k++) {
-					scaled[j][k] = (coords[j][k] - all.getBounds()[0][k]) * scale;
-					if (k == 1) scaled[j][k] = canvas.getSize().height - scaled[j][k];
-				}
-			}
+		// Ratio – always the relationship between smallest and largest axis
+		double canvasRatio = canvasDimensions[smallest] / canvasDimensions[biggest];
 
-			Color color = getGroupColor(edge.getGroup());
-			lines.add(new Line(scaled, color, 0));
+		// Absolute coordinates of center
+		double[] modelCenter = new double[]{
+			center[0] * modelDimensions[0] + modelBounds[0][0],
+			center[1] * modelDimensions[1] + modelBounds[0][1]
+		};
+
+		// Absolute coordinates of bounds in map with zoom and center applied
+		bounds = new double[2][2];
+		double[] offset = new double[]{
+			(modelDimensions[0] / 2) * zoomScale,
+			(modelDimensions[1] / 2) * zoomScale
+		};
+		if (smallest == 1) {
+			bounds[0][0] = modelCenter[0] - offset[0];
+			bounds[0][1] = modelCenter[1] - offset[1] * canvasRatio;
+			bounds[1][0] = modelCenter[0] + offset[0];
+			bounds[1][1] = modelCenter[1] + offset[1] * canvasRatio;
+		} else {
+			bounds[0][0] = modelCenter[0] - offset[0] * canvasRatio;
+			bounds[0][1] = modelCenter[1] - offset[1];
+			bounds[1][0] = modelCenter[0] + offset[0] * canvasRatio;
+			bounds[1][1] = modelCenter[1] + offset[1];
 		}
+
+		// Bounds dimensions
+		boundsDimensions = new double[]{
+			bounds[1][0] - bounds[0][0],
+			bounds[1][1] - bounds[0][1]
+		};
+
+		// for(int i = 0; i < 2; i++)
+		// 	for(int j = 0; j < 2; j++)
+		// 		System.out.println(bounds[i][j]);
+
+		// Actually viewed roads
+		ArrayList<Line> lines = new ArrayList<Line>();
+		for(QuadTree qt : visibleGroups()) {
+			for(Edge edge : qt.queryRange(bounds)) {
+
+				// Translate coordinates
+				double[][] coords = edge.getCoords();
+				for (int i = 0; i < 2; i++)
+					coords[i] = translateToView(coords[i]);
+
+				// Add line
+				lines.add(new Line(
+					coords,
+					getGroupColor(edge.getGroup()),
+					1.0
+				));
+			}
+		}
+
 		return lines;
 	}
 
+	double[] translateToView(double[] coord) {
+
+		for (int i = 0; i < 2; i++) {
+			coord[i] -= bounds[0][i];
+			coord[i] /= boundsDimensions[i];
+			coord[i] *= canvasDimensions[i];
+		}
+
+		// Reverse y axis
+		coord[1] = canvasDimensions[1] - coord[1];
+
+		return coord;
+	}
+
+	double[] translateToModel(double[] coord) {
+
+		// This is just the reverse of translate to view...
+
+		// Reverse y axis
+		coord[1] = canvasDimensions[1] - coord[1];
+
+		for (int i = 0; i < 2; i++) {
+			coord[i] /= canvasDimensions[i];
+			coord[i] *= boundsDimensions[i];
+			coord[i] += bounds[0][i];
+		}
+
+		return coord;
+	}
+
 	private QuadTree[] visibleGroups() {
-		if (mainScale <= 1)
+		if (zoomScale <= 2)
 			return new QuadTree[]{groups[0], groups[1]};
 		else
 			return new QuadTree[]{all};

@@ -22,6 +22,6 @@ public class Main
 		Window window = new Window(canvas);
 
 		Translator translator = new Translator(canvas, loader.all, loader.groups);
-		canvas.setTranslator(translator);
+		canvas.addComponentListener(new ResizeHandler(canvas, translator));
 	}
 }

@@ -1,3 +1,5 @@
+package Map;
+
 import java.io.*;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class DataPurger
 			data.add(purgedLine);
 		}
 
+		out.println(""); // initial empty line
 		for(String[] dataLine : data) {
 			String concat = "";
 			for(String s : dataLine)
@@ -49,16 +52,24 @@ public class DataPurger
 	}
 
 	public static void main(String[] args) throws IOException {
-		if(args.length != 3) {
-			System.out.println("DataPurger takes exactly 3 arguments: input file, outputfile and comma separated indexes");
-			return;
+		if(args.length == 0) {
+			DataPurger dp1 = new DataPurger("Map/data/kdv_node_unload.txt", "Map/data/purged_kdv_node_unload.txt");
+			dp1.purge(new int[] {2, 3, 4});
+			DataPurger dp2 = new DataPurger("Map/data/kdv_unload.txt", "Map/data/purged_kdv_unload.txt");
+			dp2.purge(new int[] {0, 1, 5, 6});
 		}
-
-		DataPurger dataPurger = new DataPurger(args[0], args[1]);
-		String[] split = args[2].split(",");
-		int[] indexes = new int[split.length];
-		for(int i = 0; i < split.length; i++)
-			indexes[i] = Integer.parseInt(split[i]);
-		dataPurger.purge(indexes);
+		else if(args.length == 3) {
+			DataPurger dataPurger = new DataPurger(args[0], args[1]);
+			String[] split = args[2].split(",");
+			int[] indexes = new int[split.length];
+			for(int i = 0; i < split.length; i++)
+				indexes[i] = Integer.parseInt(split[i]);
+			dataPurger.purge(indexes);
+		}
+		else {
+			System.out.println("DataPurger takes exactly 0 or 3 arguments.");
+			System.out.println("0 args: Default behaviour on krak-data.");
+			System.out.println("3 args: <input file> <output file> <index1,index2,index3...>");
+		}
 	}
 }

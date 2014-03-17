@@ -28,9 +28,13 @@ public class Translator
 
 		// Relative center, {0.5, 0.5} is center of map
 		center = new double[] {0.5, 0.5};
+<<<<<<< Updated upstream
 
 		// Relative zoom, 1.5 is 150% of map
 		zoomScale = 1.5;
+=======
+		zoomScale = 1.0;
+>>>>>>> Stashed changes
 	}
 
 	public ArrayList<Line> getLines()

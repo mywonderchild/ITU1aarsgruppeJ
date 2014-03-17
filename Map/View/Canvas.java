@@ -17,44 +17,24 @@ import Map.Controller.Translator;
 public class Canvas extends JPanel {
 	
 	private Painter painter = new Painter();
-	private Timer timer;
-	private ActionListener resizeListener;
-	private boolean beauty;
 	private ArrayList<Line> lines;
 	private Translator translator;
+
+	public boolean beauty = true;
 
 	public Canvas() {
 		super();
 
 		this.setPreferredSize(new Dimension(800, 600));
 
-		resizeListener = new ResizeListener(this);
-		this.addMouseMotionListener(new MouseMoveListener(this));
+		MouseMoveListener mml = new MouseMoveListener(this);
+		this.addMouseMotionListener(mml);
+		this.addMouseListener(mml);
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
-
-		long start = System.currentTimeMillis(); // Timer start
-		lines = translator.getLines();
-		long stop = System.currentTimeMillis(); // Timer stop
-		System.out.printf(
-			"Getting lines took %d ms\n",
-			(stop - start)
-		);
-
-		if (timer == null) {
-			timer = new Timer(500, resizeListener);
-    		timer.setRepeats(false);
-    		timer.start();
-		}
-
-		if(timer.isRunning()) {
-			timer.restart();
-		} else if (beauty == false) {
-			timer.start();
-		}
-
+		g.clearRect(0, 0, getWidth(), getHeight());
 		Graphics2D g2d = (Graphics2D)g;
 
 		if (beauty) {
@@ -65,22 +45,12 @@ public class Canvas extends JPanel {
 		painter.paintLines(g2d, this.lines);
 	}
 
-	public void setTranslator(Translator translator) {
-		this.translator = translator;
+	public void setLines(ArrayList<Line> lines) {
+		this.lines = lines;
 	}
 
-	private class ResizeListener implements ActionListener {
-
-		Canvas canvas;
-
-		public ResizeListener(Canvas canvas) {
-			this.canvas = canvas;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			canvas.beauty = true;
-			canvas.repaint();
-		}
+	public void setTranslator(Translator translator) {
+		this.translator = translator;
 	}
 
 	private class MouseMoveListener implements MouseListener, MouseMotionListener {
@@ -92,7 +62,7 @@ public class Canvas extends JPanel {
 		}
 
 		public void mouseClicked(MouseEvent e) {
-			clickPoint = e.getPoint();
+			
 		}
 
 		public void mouseEntered(MouseEvent e) {
@@ -104,24 +74,31 @@ public class Canvas extends JPanel {
 		}
 
 		public void mousePressed(MouseEvent e) {
-
+			/*System.out.println("Clicked");
+			clickPoint = e.getPoint();*/
 		}
 
 		public void mouseReleased(MouseEvent e) {
+			/*System.out.println("Released");
+			translator.center = new double[] {
+				(clickPoint.getX() + (e.getX() - clickPoint.getX())/2.0)/canvas.getWidth(),
+				(clickPoint.getY() + (e.getY() - clickPoint.getY())/2.0)/canvas.getHeight()
+			};
 
+			if(translator.center[0] > translator.center[1]) {
+				translator.zoomScale = (e.getX() - clickPoint.getX()) / canvas.getWidth();
+			}
+			else {
+				translator.zoomScale = (e.getY() - clickPoint.getY()) / canvas.getHeight();
+			}
+			System.out.println("zoomScale: " + translator.zoomScale);
+			System.out.println("center: " + translator.center[0] + ", " + translator.center[1]);
+
+			canvas.repaint();*/
 		}
 
 
 		public void mouseDragged(MouseEvent e) {
-			translator.center = new double[] {
-				e.getX() - clickPoint.getX(),
-				e.getY() - clickPoint.getY()
-			};
-
-			if(translator.center[0] > translator.center[1])
-				translator.zoomScale = (e.getX() - clickPoint.getX()) / canvas.getWidth();
-			else
-				translator.zoomScale = (e.getY() - clickPoint.getY()) / canvas.getHeight();
 
 		}
 

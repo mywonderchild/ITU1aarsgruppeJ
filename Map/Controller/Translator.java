@@ -34,6 +34,8 @@ public class Translator
 
 	public ArrayList<Line> getLines() {
 
+		long timer = System.currentTimeMillis();
+
 		Box modelBox = all.getBox();
 		Box canvasBox = canvas.getBox();
 
@@ -74,6 +76,11 @@ public class Translator
 				));
 			}
 		}
+
+		System.out.printf(
+			"Getting lines took %d ms\n",
+			System.currentTimeMillis() - timer
+		);
 
 		return lines;
 	}

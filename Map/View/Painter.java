@@ -4,20 +4,24 @@ import java.awt.*;
 import java.util.Random;
 import java.util.ArrayList;
 import java.awt.Graphics2D;
+import java.awt.geom.GeneralPath;
 
 import Map.Controller.Line;
 
 public class Painter {
-	public void paintLines(Graphics g, ArrayList<Line> lines)
-	{
+	public void paintLines(Graphics g, ArrayList<Line> lines) {
+		long timer = System.currentTimeMillis();
 		if(lines == null) return;
-		for(Line line : lines)
-		{
+		for(Line line : lines) {
 			g.setColor(line.color);
 			g.drawLine(
 				(int) line.start.x, (int) line.start.y,
 				(int) line.stop.x, (int) line.stop.y
 			);
 		}
+		System.out.printf(
+			"Painting lines took %d ms\n",
+			System.currentTimeMillis() - timer
+		);
 	}
 }

@@ -3,6 +3,9 @@ package Map.Model;
 import java.util.ArrayList;
 import java.lang.RuntimeException;
 
+import Map.Box;
+import Map.Vector;
+
 public class QuadTree
 {
 	private static final int NODE_CAPACITY = 500;
@@ -118,6 +121,12 @@ public class QuadTree
 	public double[][] getBounds()
 	{
 		return bounds;
+	}
+
+	public Box getBox() {
+		Vector start = new Vector(bounds[0][0], bounds[0][1]);
+		Vector stop = new Vector(bounds[1][0], bounds[1][1]);
+		return new Box(start, stop);
 	}
 
 	private boolean isInside(double[][] selection, double[] coords)

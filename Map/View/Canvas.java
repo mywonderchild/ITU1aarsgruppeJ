@@ -14,6 +14,9 @@ import java.awt.Point;
 import Map.Controller.Line;
 import Map.Controller.Translator;
 
+import Map.Box;
+import Map.Vector;
+
 public class Canvas extends JPanel {
 	
 	private Painter painter = new Painter();
@@ -51,6 +54,12 @@ public class Canvas extends JPanel {
 
 	public void setTranslator(Translator translator) {
 		this.translator = translator;
+	}
+
+	public Box getBox() {
+		Vector start = new Vector(0, 0);
+		Vector stop = new Vector(getWidth(), getHeight());
+		return new Box(start, stop);
 	}
 
 	private class MouseMoveListener implements MouseListener, MouseMotionListener {

@@ -1,3 +1,4 @@
+./Map/Box.java
 ./Map/Controller/Line.java
 ./Map/Controller/ResizeHandler.java
 ./Map/Controller/Translator.java
@@ -11,6 +12,9 @@
 ./Map/Model/Node.java
 ./Map/Model/NodeData.java
 ./Map/Model/QuadTree.java
+./Map/Vector.java
 ./Map/View/Canvas.java
 ./Map/View/Painter.java
 ./Map/View/Window.java
+./Tests/TestBox.java
+./Tests/TestVector.java

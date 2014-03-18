@@ -2,6 +2,8 @@ package Map.Model;
 
 import java.lang.RuntimeException;
 
+import Map.Vector;
+
 public class Edge
 {
 	private final static int[][] GROUPS;
@@ -36,6 +38,10 @@ public class Edge
 	public double[][] getCoords()
 	{
 		return new double[][] {nodes[0].getLoc(), nodes[1].getLoc()};
+	}
+
+	public Vector[] getVectors() {
+		return new Vector[]{nodes[0].vector.copy(), nodes[1].vector.copy()};
 	}
 
 	public double[] getCenter()

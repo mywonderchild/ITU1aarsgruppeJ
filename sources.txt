@@ -1,5 +1,6 @@
 ./Map/Box.java
 ./Map/Controller/Line.java
+./Map/Controller/MouseHandler.java
 ./Map/Controller/ResizeHandler.java
 ./Map/Controller/Translator.java
 ./Map/DataPurger.java

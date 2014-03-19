@@ -10,6 +10,7 @@ import java.awt.Point;
 
 import Map.Controller.Line;
 import Map.Controller.Translator;
+import Map.Controller.MouseHandler;
 
 import Map.Box;
 import Map.Vector;
@@ -19,6 +20,7 @@ public class Canvas extends JPanel {
 	private Painter painter = new Painter();
 	private ArrayList<Line> lines;
 	private Translator translator;
+	private Box selectionBox = null;
 
 	public boolean beauty = true;
 
@@ -26,6 +28,9 @@ public class Canvas extends JPanel {
 		super();
 
 		this.setPreferredSize(new Dimension(800, 600));
+		MouseHandler mouseHandler = new MouseHandler(this);
+		addMouseListener(mouseHandler);
+		addMouseMotionListener(mouseHandler);
 	}
 
 	@Override
@@ -38,7 +43,9 @@ public class Canvas extends JPanel {
 			beauty = false;
 		}
 
-		painter.paintLines(g2d, this.lines);
+		painter.setGraphics(g2d);
+		painter.paintLines(this.lines);
+		if (selectionBox != null) painter.paintBox(selectionBox);
 	}
 
 	public void setLines(ArrayList<Line> lines) {
@@ -47,6 +54,10 @@ public class Canvas extends JPanel {
 
 	public void setTranslator(Translator translator) {
 		this.translator = translator;
+	}
+
+	public void setSelectionBox(Box box) {
+		selectionBox = box;
 	}
 
 	public Box getBox() {

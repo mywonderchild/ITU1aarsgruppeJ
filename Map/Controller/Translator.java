@@ -1,17 +1,15 @@
 package Map.Controller;
 
 import java.util.ArrayList;
-import java.awt.Color;
-
-import Map.View.Canvas;
-import Map.Model.QuadTree;
-import Map.Model.Edge;
 
 import Map.Box;
 import Map.Vector;
+import Map.Model.QuadTree;
+import Map.Model.Edge;
+import Map.View.Canvas;
+import Map.Controller.Groups;
 
-public class Translator
-{
+public class Translator {
 	private Canvas canvas;
 	public QuadTree all;
 	private QuadTree[] groups;
@@ -85,7 +83,7 @@ public class Translator
 
 			lines.add(linePool.get(i).set(
 				vectors[0], vectors[1],
-				getGroupColor(edge.getGroup()),
+				Groups.getGroupColor(edge.getGroup()),
 				1.0
 			));
 		}
@@ -117,26 +115,5 @@ public class Translator
 			return new QuadTree[]{groups[0], groups[1]};
 		else
 			return new QuadTree[]{all};
-	}
-
-	private Color getGroupColor(int group) throws RuntimeException {
-
-		// Return color
-		switch(group) {
-			case 0:
-				return Color.RED;
-			case 1:
-				return Color.BLUE;
-			case 2:
-				return Color.GREEN;
-			case 3:
-				return Color.YELLOW;
-			case 4:
-				return Color.CYAN;
-			case 5:
-				return Color.BLACK;
-			default:
-				throw new RuntimeException("Road group " + group + " is not recognized");
-		}
 	}
 }

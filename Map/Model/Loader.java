@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.io.File;
 
+import Map.Controller.Groups;
+
 public class Loader extends KrakLoader
 {
 	public final Node[] ndata;
@@ -18,7 +20,7 @@ public class Loader extends KrakLoader
 		// High Y: 6 402 050,98297
 		ndata = new Node[700000];
 		all = new QuadTree(new double[][] {{442254.35659, 6049914.43018}, {892658.21706, 6402050.98297}});
-		groups = new QuadTree[Edge.getGroupLength()];
+		groups = new QuadTree[Groups.GROUPS.length];
 		for(int i = 0; i < groups.length; i++)
 			groups[i] = new QuadTree(new double[][] {{442254.35659, 6049914.43018}, {892658.21706, 6402050.98297}});
 		

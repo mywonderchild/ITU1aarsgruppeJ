@@ -25,7 +25,7 @@ public class ResizeHandler implements ComponentListener {
 		timer = new Timer();
 		timer.schedule(new BeautyTask(), 500);
 
-		canvas.setLines(translator.getLines());
+		translator.setLines();
 		canvas.repaint();
     }
 

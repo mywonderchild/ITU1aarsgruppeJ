@@ -82,7 +82,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			canvas.selectionBox = null;
 		}
 		lastDrag = null; // Reset paning
-		canvas.setLines(translator.getLines());
+		translator.setLines();
 		canvas.repaint();
 	}
 
@@ -109,7 +109,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			System.out.println("center: " + translator.center);
 			lastDrag = stop;
 
-			canvas.setLines(translator.getLines());
+			translator.setLines();
 			canvas.repaint();
 		}
 	}

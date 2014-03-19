@@ -31,7 +31,7 @@ public class KeyboardHandler{
 			}
 		    public void actionPerformed(ActionEvent e) {
 		        innerTranslator.zoom *= 0.8;
-		        innerCanvas.setLines(innerTranslator.getLines());
+		        innerTranslator.setLines();
 				innerCanvas.repaint();
 				System.out.print("zoomIn");
 
@@ -48,7 +48,7 @@ public class KeyboardHandler{
 			}
 		    public void actionPerformed(ActionEvent e) {
 		        innerTranslator.zoom *= 1.2;
-		        innerCanvas.setLines(innerTranslator.getLines());
+		        innerTranslator.setLines();
 				innerCanvas.repaint();
 				System.out.print("zoomOut");
 
@@ -65,7 +65,7 @@ public class KeyboardHandler{
 			}
 		    public void actionPerformed(ActionEvent e) {
 		        innerTranslator.zoom = standardZoom;
-		        innerCanvas.setLines(innerTranslator.getLines());
+		        innerTranslator.setLines();
 				innerCanvas.repaint();
 				System.out.print("zoomReset");
 

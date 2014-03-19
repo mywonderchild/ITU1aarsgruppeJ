@@ -16,7 +16,9 @@ public class Translator
 	public QuadTree all;
 	private QuadTree[] groups;
 
-	public ArrayList<Line> linePool = new ArrayList<Line>();
+	private ArrayList<Line> linePool = new ArrayList<Line>();
+	private ArrayList<Edge> edges = new ArrayList<>();
+	private ArrayList<Line> lines = new ArrayList<>();
 
 	public Vector center;
 	public double zoom;
@@ -30,6 +32,8 @@ public class Translator
 		this.all = all;
 		this.groups = groups;
 
+		canvas.setLines(lines);
+
 		modelBox = all.getBox();
 
 		// Relative center, {0.5, 0.5} is center of map
@@ -37,14 +41,14 @@ public class Translator
 		zoom = 5.0;
 	}
 
-	public ArrayList<Line> getLines() {
+	public void setLines() {
 
 		long timer = System.currentTimeMillis();
 
 		canvasBox = canvas.getBox();
 
+		// Make querybox
 		Vector modelCenter = modelBox.relativeToAbsolute(center);
-
 		Vector offset = modelBox.dimensions()
 			.div(2)
 			.mult(zoom)
@@ -59,15 +63,14 @@ public class Translator
 			.mult(ratio)
 			.add(modelCenter);
 		queryBox = new Box(start, stop);
-		
-		ArrayList<Edge> edges = new ArrayList<>();
 
 		// Get edges
+		edges.clear();
 		for(QuadTree tree : visibleGroups())
 			edges.addAll(tree.queryRange(queryBox.toArray()));
 
 		// Save lines
-		ArrayList<Line> lines = new ArrayList<>();
+		lines.clear();
 		for (int i = 0; i < edges.size(); i++) {
 
 			Edge edge = edges.get(i);
@@ -91,8 +94,6 @@ public class Translator
 			"Getting lines took %d ms\n",
 			System.currentTimeMillis() - timer
 		);
-
-		return lines;
 	}
 
 	Vector translateToView(Vector vector) {

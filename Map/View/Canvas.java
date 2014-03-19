@@ -6,9 +6,6 @@ import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.Point;
 
 import Map.Controller.Line;
@@ -29,10 +26,6 @@ public class Canvas extends JPanel {
 		super();
 
 		this.setPreferredSize(new Dimension(800, 600));
-
-		MouseMoveListener mml = new MouseMoveListener(this);
-		this.addMouseMotionListener(mml);
-		this.addMouseListener(mml);
 	}
 
 	@Override

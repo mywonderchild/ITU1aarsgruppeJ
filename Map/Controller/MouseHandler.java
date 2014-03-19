@@ -17,6 +17,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	private Translator translator;
 	private boolean action;
 	private Vector origin = new Vector(0, 0);
+	private Vector lastDrag = new Vector(0, 0);
 
 	public MouseHandler(Canvas canvas, Translator translator) {
 		this.canvas = canvas;
@@ -40,6 +41,8 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		System.out.println(origin);
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			action = true;
+			Box box = canvas.getBox();
+			lastDrag = translator.translateToModel(new Vector(e.getX(), e.getY()));
 			System.out.println("Left mouse button clicked");
 		} else if (SwingUtilities.isRightMouseButton(e)) {
 			action = false;
@@ -76,15 +79,35 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 			canvas.selectionBox = null;
 		}
-
+		lastDrag = null; // Reset paning
 		canvas.setLines(translator.getLines());
 		canvas.repaint();
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		if (!action) {
+		if (!action) { // Right mouse button
 			Vector stop = new Vector(e.getX(), e.getY());
 			canvas.selectionBox = new Box(origin, stop);
+			canvas.repaint();
+		}
+		else { // Left mouse button
+			Box box = translator.all.getBox();//canvas.getBox();
+
+			System.out.println("lastDrag: " + lastDrag);
+
+			Vector stop = translator.translateToModel(new Vector(e.getX(), e.getY()));
+			System.out.println("stop: " + stop);
+			Vector movement = stop.copy().sub(lastDrag);
+			System.out.println("movement: " + movement);
+			Vector relative = movement.copy().div(box.dimensions());
+			//relative.mult(translator.zoom);
+
+			System.out.println("relative: " + relative);
+			translator.center.add(relative);
+			System.out.println("center: " + translator.center);
+			lastDrag = stop;
+
+			canvas.setLines(translator.getLines());
 			canvas.repaint();
 		}
 	}

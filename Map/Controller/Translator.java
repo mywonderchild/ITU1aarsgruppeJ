@@ -13,7 +13,7 @@ import Map.Vector;
 public class Translator
 {
 	private Canvas canvas;
-	private QuadTree all;
+	public QuadTree all;
 	private QuadTree[] groups;
 
 	public Vector center;
@@ -35,7 +35,7 @@ public class Translator
 
 		// Relative center, {0.5, 0.5} is center of map
 		center = new Vector(0.5, 0.5);
-		zoom = 2.0;
+		zoom = 5.0;
 	}
 
 	public ArrayList<Line> getLines() {
@@ -105,7 +105,7 @@ public class Translator
 	}
 
 	private QuadTree[] visibleGroups() {
-		if (zoom <= 2)
+		if (zoom <= 10)
 			return new QuadTree[]{groups[0], groups[1]};
 		else
 			return new QuadTree[]{all};

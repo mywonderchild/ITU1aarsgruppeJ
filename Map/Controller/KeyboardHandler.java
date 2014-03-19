@@ -13,8 +13,6 @@ public class KeyboardHandler{
 	private Translator translator;
 	public double standardZoom;
 
-
-
 	public KeyboardHandler(Canvas canvas, Translator translator){
 		this.canvas = canvas;
 		this.translator = translator;
@@ -22,19 +20,15 @@ public class KeyboardHandler{
 
 
 		class zoomInClass extends AbstractAction{
-			Canvas innerCanvas;
 			Translator innerTranslator;
 
-			public zoomInClass(Canvas canvas, Translator translator){
-				innerCanvas = canvas;
+			public zoomInClass(Translator translator){
 				innerTranslator = translator;
 			}
 		    public void actionPerformed(ActionEvent e) {
 		        innerTranslator.zoom *= 0.8;
 		        innerTranslator.setLines();
-				innerCanvas.repaint();
 				System.out.print("zoomIn");
-
 		   	};
 		};
 
@@ -42,39 +36,34 @@ public class KeyboardHandler{
 			Canvas innerCanvas;
 			Translator innerTranslator;
 
-			public zoomOutClass(Canvas canvas, Translator translator){
-				innerCanvas = canvas;
+			public zoomOutClass(Translator translator){
 				innerTranslator = translator;
 			}
 		    public void actionPerformed(ActionEvent e) {
 		        innerTranslator.zoom *= 1.2;
 		        innerTranslator.setLines();
-				innerCanvas.repaint();
 				System.out.print("zoomOut");
 
 		   	};
 		};
 
 		class zoomResetClass extends AbstractAction{
-			Canvas innerCanvas;
 			Translator innerTranslator;
 
-			public zoomResetClass(Canvas canvas, Translator translator){
-				innerCanvas = canvas;
+			public zoomResetClass(Translator translator){
 				innerTranslator = translator;
 			}
 		    public void actionPerformed(ActionEvent e) {
 		        innerTranslator.zoom = standardZoom;
 		        innerTranslator.setLines();
-				innerCanvas.repaint();
 				System.out.print("zoomReset");
 
 		   	};
 		};
 		
-		Action zoomOut = new zoomOutClass(canvas, translator);
-		Action zoomIn = new zoomInClass(canvas, translator);
-		Action zoomReset = new zoomResetClass(canvas, translator);
+		Action zoomOut = new zoomOutClass(translator);
+		Action zoomIn = new zoomInClass(translator);
+		Action zoomReset = new zoomResetClass(translator);
 
 		Bindkey("ADD","ZoomIn",zoomIn);
 		Bindkey("SPACE","ZoomReset",zoomReset);

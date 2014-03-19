@@ -45,12 +45,8 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			action = true;
 			Box box = canvas.getBox();
 			lastDrag = translator.translateToModel(new Vector(e.getX(), e.getY()));
-			System.out.println("Left mouse button clicked");
 		} else if (SwingUtilities.isRightMouseButton(e)) {
 			action = false;
-			System.out.println("Right mouse button clicked");
-		} else {
-			System.out.println("Other mouse button clicked");
 		}
 	}
 
@@ -62,7 +58,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			// Translate selection to model
 			selection.start = translator.translateToModel(selection.start);
 			selection.stop = translator.translateToModel(selection.stop);
-			System.out.println(selection);
 
 			// Find and set relative center
 			Vector center = selection.getCenter();
@@ -73,7 +68,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			Vector ratio = selection.ratio();
 			Vector dimensions = selection.dimensions();
 			Vector zoom = dimensions.div(translator.modelBox.dimensions());
-			System.out.println(zoom);
 			if (zoom.x > zoom.y)
 				translator.zoom = zoom.x;
 			else
@@ -83,7 +77,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		}
 		lastDrag = null; // Reset paning
 		translator.setLines();
-		canvas.repaint();
 	}
 
 	public void mouseDragged(MouseEvent e) {
@@ -110,7 +103,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			lastDrag = stop;
 
 			translator.setLines();
-			canvas.repaint();
 		}
 	}
 

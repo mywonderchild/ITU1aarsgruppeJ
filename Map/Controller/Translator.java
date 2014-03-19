@@ -91,9 +91,11 @@ public class Translator
 		}
 
 		System.out.printf(
-			"Getting lines took %d ms\n",
+			"Setting lines took %d ms\n",
 			System.currentTimeMillis() - timer
 		);
+
+		canvas.repaint();
 	}
 
 	Vector translateToView(Vector vector) {

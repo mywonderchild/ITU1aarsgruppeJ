@@ -11,7 +11,7 @@ import Map.Controller.Groups;
 
 public class Translator {
 	private Canvas canvas;
-	public QuadTree all;
+	private QuadTree all;
 	private QuadTree[] groups;
 
 	private ArrayList<Line> linePool = new ArrayList<Line>();

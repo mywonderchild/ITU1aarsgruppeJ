@@ -18,7 +18,8 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	private Translator translator;
 	private boolean action;
 	private Vector origin = new Vector(0, 0);
-	private Vector lastDrag = new Vector(0, 0);
+
+	private Vector panCenter;
 
 	public MouseHandler(Window window, Translator translator) {
 		this.window = window;
@@ -43,7 +44,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			action = true;
 			Box box = canvas.getBox();
-			lastDrag = translator.translateToModel(new Vector(e.getX(), e.getY()));
+			panCenter = translator.center;
 		} else if (SwingUtilities.isRightMouseButton(e)) {
 			action = false;
 		}
@@ -74,7 +75,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 			canvas.selectionBox = null;
 		}
-		lastDrag = null; // Reset paning
+		// lastDrag = null; // Reset paning
 		translator.setLines();
 	}
 
@@ -85,22 +86,16 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			canvas.repaint();
 		}
 		else { // Left mouse button
-			Box box = translator.all.getBox();//canvas.getBox();
+			Vector stop = new Vector(e.getX(), e.getY());
+			if(stop.equals(origin)) return; // Mouse was not dragged
 
-			System.out.println("lastDrag: " + lastDrag);
+			Box box = translator.modelBox;
+			Vector center = translator.translateToModel(stop)
+							.sub(translator.translateToModel(origin.copy()))
+							.div(box.dimensions());
+			translator.center = panCenter.copy().sub(center);
 
-			Vector stop = translator.translateToModel(new Vector(e.getX(), e.getY()));
-			System.out.println("stop: " + stop);
-			Vector movement = stop.copy().sub(lastDrag);
-			System.out.println("movement: " + movement);
-			Vector relative = movement.copy().div(box.dimensions());
-			//relative.mult(translator.zoom);
-
-			System.out.println("relative: " + relative);
-			translator.center.add(relative);
-			System.out.println("center: " + translator.center);
-			lastDrag = stop;
-
+			// Render
 			translator.setLines();
 		}
 	}

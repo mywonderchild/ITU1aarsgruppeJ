@@ -16,11 +16,10 @@ public class Translator
 	public QuadTree all;
 	private QuadTree[] groups;
 
+	public ArrayList<Line> linePool = new ArrayList<Line>();
+
 	public Vector center;
 	public double zoom;
-
-	private double[][] bounds;
-	private double[] boundsDimensions;
 
 	public Box modelBox;
 	public Box canvasBox;
@@ -60,26 +59,32 @@ public class Translator
 			.mult(ratio)
 			.add(modelCenter);
 		queryBox = new Box(start, stop);
-
-		ArrayList<Line> lines = new ArrayList<Line>();
 		
-		// Get edges and save lines
-		for(QuadTree qt : visibleGroups()) {
-			for(Edge edge : qt.queryRange(queryBox.toArray())) {
+		ArrayList<Edge> edges = new ArrayList<>();
 
-				Vector[] vectors = edge.getVectors();
+		// Get edges
+		for(QuadTree tree : visibleGroups())
+			edges.addAll(tree.queryRange(queryBox.toArray()));
 
-				// Translate vectors
-				for (int i = 0; i < 2; i++)
-					vectors[i] = translateToView(vectors[i]);
+		// Save lines
+		ArrayList<Line> lines = new ArrayList<>();
+		for (int i = 0; i < edges.size(); i++) {
 
-				// Add line
-				lines.add(new Line(
-					vectors[0], vectors[1],
-					getGroupColor(edge.getGroup()),
-					1.0
-				));
-			}
+			Edge edge = edges.get(i);
+			Vector[] vectors = edge.getVectors();
+
+			// Translate vectors
+			for (int j = 0; j < 2; j++)
+				vectors[j] = translateToView(vectors[j]);
+
+			// Add new line to linepool if needed
+			if (i >= linePool.size()) linePool.add(new Line());
+
+			lines.add(linePool.get(i).set(
+				vectors[0], vectors[1],
+				getGroupColor(edge.getGroup()),
+				1.0
+			));
 		}
 
 		System.out.printf(

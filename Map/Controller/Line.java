@@ -6,14 +6,15 @@ import Map.Vector;
 
 public class Line {
 
-	public final Vector start, stop;
-	public final Color color;
-	public final double width;
+	public Vector start, stop;
+	public Color color;
+	public double width;
 
-	public Line(Vector start, Vector stop, Color color, double width) {
+	public Line set(Vector start, Vector stop, Color color, double width) {
 		this.start = start;
 		this.stop = stop;
 		this.color = color;
 		this.width = width;
+		return this;
 	}
 }

@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class Window extends JFrame {
 
-	private Canvas canvas;
+	public Canvas canvas;
 	private JPanel buttomPanel;
 	private JLabel label;
 

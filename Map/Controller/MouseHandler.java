@@ -13,14 +13,16 @@ import Map.Box;
 
 public class MouseHandler implements MouseListener, MouseMotionListener {
 
+	private Window window;
 	private Canvas canvas;
 	private Translator translator;
 	private boolean action;
 	private Vector origin = new Vector(0, 0);
 	private Vector lastDrag = new Vector(0, 0);
 
-	public MouseHandler(Canvas canvas, Translator translator) {
-		this.canvas = canvas;
+	public MouseHandler(Window window, Translator translator) {
+		this.window = window;
+		canvas = window.canvas;
 		this.translator = translator;
 	}
 

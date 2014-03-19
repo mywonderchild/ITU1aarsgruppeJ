@@ -26,7 +26,7 @@ public class Main
 
 		// Event listeners
 		canvas.addComponentListener(new ResizeHandler(canvas, translator));
-		MouseHandler mouseHandler = new MouseHandler(canvas, translator);
+		MouseHandler mouseHandler = new MouseHandler(window, translator);
 		canvas.addMouseListener(mouseHandler);
 		canvas.addMouseMotionListener(mouseHandler);
 		KeyboardHandler keyboardHandler = new KeyboardHandler(canvas, translator);

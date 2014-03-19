@@ -30,6 +30,10 @@ public class Box {
 
 	@Override
 	public String toString() {
-		return "[" + start.toString() + ", " + stop.toString() + "]";
+		return String.format(
+			"[%s, %s]",
+			start.toString(),
+			stop.toString()
+		);
 	}
 }

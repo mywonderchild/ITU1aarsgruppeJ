@@ -185,4 +185,16 @@ public class TestVector {
 		vector.mirrorY(box);
 		assertEquals(1, vector.y, delta);
 	}
+
+	@Test
+	public void equals() {
+		Vector v1 = new Vector(7, 21);
+		Vector v2 = new Vector(7, 21);
+		Vector v3 = new Vector(21, 7);
+		Vector v4 = new Vector(0, -90);
+		assertEquals(true, v1.equals(v2));
+		assertEquals(true, v2.equals(v1));
+		assertEquals(false, v1.equals(v3));
+		assertEquals(false, v1.equals(v4));
+	}
 }

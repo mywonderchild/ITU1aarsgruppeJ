@@ -65,7 +65,7 @@ public class Translator {
 		// Get edges
 		edges.clear();
 		for(QuadTree tree : visibleGroups())
-			edges.addAll(tree.queryRange(queryBox.toArray()));
+			edges.addAll(tree.queryRange(queryBox));
 
 		// Save lines
 		lines.clear();

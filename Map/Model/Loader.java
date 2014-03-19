@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.io.File;
 
+import Map.Vector;
+import Map.Box;
 import Map.Controller.Groups;
 
 public class Loader extends KrakLoader
@@ -19,10 +21,13 @@ public class Loader extends KrakLoader
 		// Low Y:  6 049 914,43018
 		// High Y: 6 402 050,98297
 		ndata = new Node[700000];
-		all = new QuadTree(new double[][] {{442254.35659, 6049914.43018}, {892658.21706, 6402050.98297}});
+		Vector start = new Vector(442254.35659, 6049914.43018);
+		Vector stop = new Vector(892658.21706, 6402050.98297);
+		Box box = new Box(start, stop);
+		all = new QuadTree(box);
 		groups = new QuadTree[Groups.GROUPS.length];
 		for(int i = 0; i < groups.length; i++)
-			groups[i] = new QuadTree(new double[][] {{442254.35659, 6049914.43018}, {892658.21706, 6402050.98297}});
+			groups[i] = new QuadTree(box);
 		
 		try {
 			System.out.println(new File(".").getCanonicalPath());
@@ -35,15 +40,12 @@ public class Loader extends KrakLoader
 		}
 	}
 
-	public void processNode(NodeData node)
-	{
+	public void processNode(NodeData node) {
 		ndata[node.KDV_ID] = new Node(node);
 	}
 
-	public void processEdge(EdgeData edge)
-	{
-		Node[] nodes = new Node[] {ndata[edge.FNODE], ndata[edge.TNODE]};
-		Edge e = new Edge(edge, nodes);
+	public void processEdge(EdgeData edge) {
+		Edge e = new Edge(edge, ndata[edge.FNODE], ndata[edge.TNODE]);
 		all.insert(e);
 		groups[e.getGroup()].insert(e);
 	}

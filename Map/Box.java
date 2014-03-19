@@ -36,6 +36,14 @@ public class Box {
 		return this;
 	}
 
+	public boolean overlapping(Box box) {
+		if (box.start.x > stop.x) return false;
+		if (box.stop.x < start.x) return false;
+		if (box.start.y > stop.y) return false;
+		if (box.stop.y < start.y) return false;
+		return true;
+	}
+
 	public Vector getCenter() {
 		return start.copy().add(stop).div(2);
 	}

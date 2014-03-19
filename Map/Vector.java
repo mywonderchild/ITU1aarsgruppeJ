@@ -76,6 +76,14 @@ public class Vector {
 		return mult(scale);
 	}
 
+	// Determine if vector is inside box
+	public boolean isInside(Box box) {
+		if (x >= box.start.x && x < box.stop.x)
+			if (y >= box.start.y && y < box.stop.y)
+				return true;
+		return false;
+	}
+
 	// Mirror on the y axis in relation to box
 	public Vector mirrorY(Box box) {
 		y = box.dimensions().y - y;

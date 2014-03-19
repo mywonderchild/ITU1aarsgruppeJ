@@ -22,13 +22,16 @@ public class Translator
 	private double[][] bounds;
 	private double[] boundsDimensions;
 
-	private Box canvasBox;
-	private Box queryBox;
+	public Box modelBox;
+	public Box canvasBox;
+	public Box queryBox;
 
 	public Translator(Canvas canvas, QuadTree all, QuadTree[] groups) {
 		this.canvas = canvas;
 		this.all = all;
 		this.groups = groups;
+
+		modelBox = all.getBox();
 
 		// Relative center, {0.5, 0.5} is center of map
 		center = new Vector(0.5, 0.5);
@@ -39,7 +42,6 @@ public class Translator
 
 		long timer = System.currentTimeMillis();
 
-		Box modelBox = all.getBox();
 		canvasBox = canvas.getBox();
 
 		Vector modelCenter = modelBox.relativeToAbsolute(center);

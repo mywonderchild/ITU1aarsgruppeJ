@@ -19,7 +19,8 @@ public class Canvas extends JPanel {
 	private Painter painter = new Painter();
 	private ArrayList<Line> lines;
 	private Translator translator;
-	private Box selectionBox = null;
+
+	public Box selectionBox = null;
 
 	public boolean beauty = true;
 
@@ -50,10 +51,6 @@ public class Canvas extends JPanel {
 
 	public void setTranslator(Translator translator) {
 		this.translator = translator;
-	}
-
-	public void setSelectionBox(Box box) {
-		selectionBox = box;
 	}
 
 	public Box getBox() {

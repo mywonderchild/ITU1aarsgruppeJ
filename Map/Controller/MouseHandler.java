@@ -50,14 +50,41 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		canvas.setSelectionBox(null);
+
+		if (!action) {
+			Box selection = canvas.selectionBox;
+
+			// Translate selection to model
+			selection.start = translator.translateToModel(selection.start);
+			selection.stop = translator.translateToModel(selection.stop);
+			System.out.println(selection);
+
+			// Find and set relative center
+			Vector center = selection.getCenter();
+			center = translator.modelBox.absoluteToRelative(center);
+			translator.center = center;
+
+			// Set zoom
+			Vector ratio = selection.ratio();
+			Vector dimensions = selection.dimensions();
+			Vector zoom = dimensions.div(translator.modelBox.dimensions());
+			System.out.println(zoom);
+			if (zoom.x > zoom.y)
+				translator.zoom = zoom.x;
+			else
+				translator.zoom = zoom.y;
+
+			canvas.selectionBox = null;
+		}
+
+		canvas.setLines(translator.getLines());
 		canvas.repaint();
 	}
 
 	public void mouseDragged(MouseEvent e) {
 		if (!action) {
 			Vector stop = new Vector(e.getX(), e.getY());
-			canvas.setSelectionBox(new Box(origin, stop));
+			canvas.selectionBox = new Box(origin, stop);
 			canvas.repaint();
 		}
 	}

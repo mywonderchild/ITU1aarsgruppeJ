@@ -82,6 +82,13 @@ public class Vector {
 		return this;
 	}
 
+	// Convert to absolute values
+	public Vector abs() {
+		x = Math.abs(x);
+		y = Math.abs(y);
+		return this;
+	}
+
 	// To array
 	public double[] toArray() {
 		return new double[]{x, y};

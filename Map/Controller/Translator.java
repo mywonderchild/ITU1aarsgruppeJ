@@ -41,7 +41,10 @@ public class Translator
 
 		Vector modelCenter = modelBox.relativeToAbsolute(center);
 
-		Vector offset = modelBox.dimensions().div(2).mult(zoom);
+		Vector offset = modelBox.dimensions()
+			.div(2)
+			.mult(zoom)
+			.div(modelBox.ratio());
 		Vector ratio = canvasBox.ratio();
 		Vector start = (new Vector(0, 0))
 			.sub(offset)

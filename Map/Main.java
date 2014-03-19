@@ -20,7 +20,7 @@ public class Main
 		Canvas canvas = new Canvas();
 		Window window = new Window(canvas);
 
-<<<<<<< Updated upstream
+
 		// Translator...
 		Translator translator = new Translator(canvas, loader.all, loader.groups);
 
@@ -29,13 +29,9 @@ public class Main
 		MouseHandler mouseHandler = new MouseHandler(canvas, translator);
 		canvas.addMouseListener(mouseHandler);
 		canvas.addMouseMotionListener(mouseHandler);
-=======
-
-
-		Translator translator = new Translator(canvas, loader.all, loader.groups);
 		KeyboardHandler keyboardHandler = new KeyboardHandler(canvas, translator);
-		canvas.addComponentListener(new ResizeHandler(canvas, translator));
 
->>>>>>> Stashed changes
+
+
 	}
 }

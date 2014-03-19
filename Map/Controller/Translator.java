@@ -22,6 +22,9 @@ public class Translator
 	private double[][] bounds;
 	private double[] boundsDimensions;
 
+	private Box canvasBox;
+	private Box queryBox;
+
 	public Translator(Canvas canvas, QuadTree all, QuadTree[] groups) {
 		this.canvas = canvas;
 		this.all = all;
@@ -37,7 +40,7 @@ public class Translator
 		long timer = System.currentTimeMillis();
 
 		Box modelBox = all.getBox();
-		Box canvasBox = canvas.getBox();
+		canvasBox = canvas.getBox();
 
 		Vector modelCenter = modelBox.relativeToAbsolute(center);
 
@@ -54,7 +57,7 @@ public class Translator
 			.add(offset)
 			.mult(ratio)
 			.add(modelCenter);
-		Box queryBox = new Box(start, stop);
+		queryBox = new Box(start, stop);
 
 		ArrayList<Line> lines = new ArrayList<Line>();
 		
@@ -66,10 +69,7 @@ public class Translator
 
 				// Translate vectors
 				for (int i = 0; i < 2; i++)
-					vectors[i] = vectors[i]
-						.sub(queryBox.start)
-						.translate(queryBox, canvasBox)
-						.mirrorY(canvasBox);
+					vectors[i] = translateToView(vectors[i]);
 
 				// Add line
 				lines.add(new Line(
@@ -86,6 +86,20 @@ public class Translator
 		);
 
 		return lines;
+	}
+
+	Vector translateToView(Vector vector) {
+		return vector
+			.sub(queryBox.start)
+			.translate(queryBox, canvasBox)
+			.mirrorY(canvasBox);
+	}
+
+	Vector translateToModel(Vector vector) {
+		return vector
+			.mirrorY(canvasBox)
+			.translate(canvasBox, queryBox)
+			.add(queryBox.start);
 	}
 
 	private QuadTree[] visibleGroups() {

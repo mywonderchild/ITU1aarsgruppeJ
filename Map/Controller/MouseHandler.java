@@ -27,7 +27,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -107,6 +106,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	}
 
 	public void mouseMoved(MouseEvent e) {
-		// INSERT CODE FOR LOCATING NEAREST ROAD HERE!
+		Vector target = new Vector(e.getX(), e.getY());
+		target = translator.translateToModel(target);
+		Edge closest = translator.all.findClosest(target);
+		// Code that updates label goes here
 	}
 }

@@ -78,37 +78,38 @@ public class QuadTree
 		return result;
 	}
 
-    // public Edge search(double[] point)
-    // {
-    //     Edge edge = null;
-    //     double size = 10;
-    //     double[][] range = new double[][] {
-    //             {point[0] - size, point[1] - size},
-    //             {point[0] + size, point[1] + size},
-    //     };
-    //     while(edge == null)
-    //     {
-    //         ArrayList<Edge> edges = queryRange(range);
-    //         if(edges.isEmpty())
-    //         {
-    //             // double size
-    //             for(int i = 0; i < 2; i++)
-    //                 for(int j = 0; j < 2; j++)
-    //                     range[i][j] = range[i][j] * 2;
-    //         }
-    //         else
-    //         {
-    //             // find closest in arraylist
-    //             edge = edges.get(0);
-    //             for(int i = 1; i < edges.size(); i++)
-    //             {
-    //                 if(edges.get(i).distanceToPoint(point) < edge.distanceToPoint(point))
-    //                     edge = edges.get(i);
-    //             }
-    //         }
-    //     }
-    //     return edge;
-    // }
+    public Edge findClosest(Vector target) {
+
+        Edge closest = null;
+        double size = 10;
+
+        Box query = new Box(
+        	new Vector(target.x - size, target.y - size),
+        	new Vector(target.x + size, target.y + size)
+        );
+
+        int iterations = 0;
+
+        while(closest == null) {
+
+            ArrayList<Edge> edges = queryRange(query);
+
+            if (edges.isEmpty()) {
+                query.scale(2);
+            } else {
+                closest = edges.get(0);
+                for (Edge edge : edges)
+                	if (edge.getCenter().dist(target) < closest.getCenter().dist(target))
+                		closest = edge;
+            }
+
+            iterations++;
+        }
+
+        System.out.println("Iteratios: " + iterations);
+
+        return closest;
+    }
 
 	public Box getBox() {
 		return box;

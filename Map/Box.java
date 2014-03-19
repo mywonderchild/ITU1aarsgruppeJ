@@ -52,6 +52,15 @@ public class Box {
 		return new double[][]{start.toArray(), stop.toArray()};
 	}
 
+	// Scales the box keeping the center in place
+	public Box scale(double scalar) {
+		Vector center = getCenter();
+		Vector offset = center.copy().sub(start).mult(scalar);
+		start = center.copy().sub(offset);
+		stop = center.copy().add(offset);
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return String.format(

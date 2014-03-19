@@ -72,4 +72,14 @@ public class TestBox {
 		assertEquals(ratio.x, 0.5, delta);
 		assertEquals(ratio.y, 1, delta);
 	}
+
+	// Scale
+	@Test
+	public void scale() {
+		box.scale(2);
+		assertEquals(box.start.x, 0, delta);
+		assertEquals(box.start.y, 1, delta);
+		assertEquals(box.stop.x, 4, delta);
+		assertEquals(box.stop.y, 5, delta);
+	}
 }

@@ -14,11 +14,13 @@ import Map.Box;
 public class MouseHandler implements MouseListener, MouseMotionListener {
 
 	private Canvas canvas;
+	private Translator translator;
 	private boolean action;
 	private Vector origin = new Vector(0, 0);
 
-	public MouseHandler(Canvas canvas) {
+	public MouseHandler(Canvas canvas, Translator translator) {
 		this.canvas = canvas;
+		this.translator = translator;
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -49,6 +51,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 	public void mouseReleased(MouseEvent e) {
 		canvas.setSelectionBox(null);
+		canvas.repaint();
 	}
 
 	public void mouseDragged(MouseEvent e) {

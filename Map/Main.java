@@ -20,7 +20,13 @@ public class Main
 		Canvas canvas = new Canvas();
 		Window window = new Window(canvas);
 
+		// Translator...
 		Translator translator = new Translator(canvas, loader.all, loader.groups);
+
+		// Event listeners
 		canvas.addComponentListener(new ResizeHandler(canvas, translator));
+		MouseHandler mouseHandler = new MouseHandler(canvas, translator);
+		canvas.addMouseListener(mouseHandler);
+		canvas.addMouseMotionListener(mouseHandler);
 	}
 }

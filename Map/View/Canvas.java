@@ -10,7 +10,6 @@ import java.awt.Point;
 
 import Map.Controller.Line;
 import Map.Controller.Translator;
-import Map.Controller.MouseHandler;
 
 import Map.Box;
 import Map.Vector;
@@ -28,9 +27,6 @@ public class Canvas extends JPanel {
 		super();
 
 		this.setPreferredSize(new Dimension(800, 600));
-		MouseHandler mouseHandler = new MouseHandler(this);
-		addMouseListener(mouseHandler);
-		addMouseMotionListener(mouseHandler);
 	}
 
 	@Override

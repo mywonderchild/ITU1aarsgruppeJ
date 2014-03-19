@@ -2,11 +2,12 @@ package Map.View;
 
 import javax.swing.JPanel;
 import java.awt.*;
-import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.awt.Point;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import Map.Controller.Line;
 import Map.Controller.Translator;
@@ -18,6 +19,7 @@ public class Canvas extends JPanel {
 	
 	private Painter painter = new Painter();
 	private ArrayList<Line> lines;
+	private Timer timer;
 
 	public Box selectionBox = null;
 
@@ -31,12 +33,19 @@ public class Canvas extends JPanel {
 
 	@Override
 	public void paintComponent(Graphics g) {
+		if(timer != null)
+			timer.cancel();
+
 		g.clearRect(0, 0, getWidth(), getHeight());
 		Graphics2D g2d = (Graphics2D)g;
 
 		if (beauty) {
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			beauty = false;
+		}
+		else {
+			timer = new Timer();
+			timer.schedule(new BeautyTask(), 500);
 		}
 
 		painter.setGraphics(g2d);
@@ -52,5 +61,13 @@ public class Canvas extends JPanel {
 		Vector start = new Vector(0, 0);
 		Vector stop = new Vector(getWidth(), getHeight());
 		return new Box(start, stop);
+	}
+
+	private class BeautyTask extends TimerTask {
+
+		public void run() {
+			beauty = true;
+			repaint();
+		}
 	}
 }

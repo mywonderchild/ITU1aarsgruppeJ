@@ -19,12 +19,6 @@ public class ResizeHandler implements ComponentListener {
 	}
 
 	public void componentResized(ComponentEvent e) {
-		if(timer != null) {
-			timer.cancel();
-		}
-		timer = new Timer();
-		timer.schedule(new BeautyTask(), 500);
-
 		translator.setLines();
     }
 

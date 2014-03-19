@@ -88,25 +88,17 @@ public class QuadTree
         	new Vector(target.x + size, target.y + size)
         );
 
-        int iterations = 0;
-
         while(closest == null) {
 
             ArrayList<Edge> edges = queryRange(query);
 
-            if (edges.isEmpty()) {
-                query.scale(2);
-            } else {
-                closest = edges.get(0);
-                for (Edge edge : edges)
-                	if (edge.getCenter().dist(target) < closest.getCenter().dist(target))
-                		closest = edge;
-            }
+	        for (Edge edge : edges)
+	        	if (edge.getName().trim().length() > 0) // Does not accept edges without names
+	        		if (closest == null || edge.getCenter().dist(target) < closest.getCenter().dist(target))
+	        			closest = edge;
 
-            iterations++;
+	        if (closest == null) query.scale(2); // Expand search
         }
-
-        System.out.println("Iteratios: " + iterations);
 
         return closest;
     }

@@ -37,6 +37,10 @@ public class Edge {
 		return edge.TYP;
 	}
 
+	public String getName() {
+		return edge.VEJNAVN;
+	}
+
 	public int getGroup() throws RuntimeException {
 
 		int type = this.getType();

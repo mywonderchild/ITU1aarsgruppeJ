@@ -8,7 +8,6 @@
 ./Map/DataPurger.java
 ./Map/Main.java
 ./Map/Model/Edge.java
-./Map/Model/KrakLoader.java
 ./Map/Model/Loader.java
 ./Map/Model/Node.java
 ./Map/Model/QuadTree.java

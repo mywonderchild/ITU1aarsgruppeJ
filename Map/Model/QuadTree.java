@@ -93,7 +93,7 @@ public class QuadTree
             ArrayList<Edge> edges = queryRange(query);
 
 	        for (Edge edge : edges)
-	        	if (edge.getName().trim().length() > 0) // Does not accept edges without names
+	        	if (edge.NAME.length() > 0) // Does not accept edges without names
 	        		if (closest == null || edge.getCenter().dist(target) < closest.getCenter().dist(target))
 	        			closest = edge;
 

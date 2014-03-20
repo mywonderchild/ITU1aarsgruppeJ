@@ -98,7 +98,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	public void mouseMoved(MouseEvent e) {
 		Vector target = new Vector(e.getX(), e.getY());
 		target = translator.translateToModel(target);
-		String closest = translator.all.findClosest(target).getName();
+		String closest = translator.all.findClosest(target).NAME;
 		System.out.println(closest);
 		// Code that updates label goes here
 	}

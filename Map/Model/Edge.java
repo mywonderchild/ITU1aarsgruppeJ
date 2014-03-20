@@ -7,42 +7,27 @@ import Map.Vector;
 import Map.Controller.Groups;
 
 public class Edge {
-	public final int FNODE, TNODE, TYP;
-	public final String VEJNAVN;
-	private Node start, stop;
+	private final Node START, STOP;
+	public final String NAME;
+	public final int TYPE;
 
-	public Edge(String line) {
-		StringTokenizer tokenizer = new StringTokenizer(line, ",");
-		FNODE = Integer.parseInt(tokenizer.nextToken());
-		TNODE = Integer.parseInt(tokenizer.nextToken());
-		TYP = Integer.parseInt(tokenizer.nextToken());
-		String name = tokenizer.nextToken();
-		VEJNAVN = name.substring(1, name.length() - 1);
-	}
-
-	public void setNodes(Node start, Node stop) {
-		this.start = start;
-		this.stop = stop;
+	public Edge(Node start, Node stop, String name, int type) {
+		START = start;
+		STOP = stop;
+		NAME = name;
+		TYPE = type;
 	}
 
 	public Vector[] getVectors() {
-		return new Vector[] {start.vector.copy(), stop.vector.copy()};
+		return new Vector[] {START.VECTOR.copy(), STOP.VECTOR.copy()};
 	}
 
 	public Vector getCenter()
 	{
-		return start.vector
+		return START.VECTOR
 			.copy()
-			.add(stop.vector)
+			.add(STOP.VECTOR)
 			.div(2);
-	}
-
-	public int getType() {
-		return TYP;
-	}
-
-	public String getName() {
-		return VEJNAVN;
 	}
 
 	public int getGroup() throws RuntimeException {
@@ -50,16 +35,9 @@ public class Edge {
 		// Determine road group
 		for (int i = 0; i < Groups.GROUPS.length; i++)
 			for (int id : Groups.GROUPS[i])
-				if (TYP == id)
+				if (TYPE == id)
 					return i;
 
-		throw new RuntimeException("Road group not found, type is: " + TYP);
-	}
-
-	public String toString() {
-		return String.format(
-			"%d, %d, %d, '%s'",
-			FNODE, TNODE, TYP, VEJNAVN
-		);
+		throw new RuntimeException("Road group not found, type is: " + TYPE);
 	}
 }

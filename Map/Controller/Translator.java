@@ -83,7 +83,7 @@ public class Translator {
 
 			lines.add(linePool.get(i).set(
 				vectors[0], vectors[1],
-				Groups.getGroupColor(edge.getGroup()),
+				Groups.getGroupColor(Groups.getGroup(edge.TYPE)),
 				1.0
 			));
 		}

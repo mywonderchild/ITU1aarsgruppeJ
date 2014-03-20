@@ -20,6 +20,17 @@ public class Groups {
 		GROUPS[5] = new int[]{0, 5, 6, 25, 26, 35, 45, 46, 95, 99}; // Other
 	}
 
+	public static int getGroup(int type) throws RuntimeException {
+
+		// Determine road group
+		for (int i = 0; i < GROUPS.length; i++)
+			for (int id : GROUPS[i])
+				if (type == id)
+					return i;
+
+		throw new RuntimeException("Road group not found, type is: " + type);
+	}
+
 	public static Color getGroupColor(int group) throws RuntimeException {
 
 		// Return color

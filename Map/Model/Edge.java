@@ -29,15 +29,4 @@ public class Edge {
 			.add(STOP.VECTOR)
 			.div(2);
 	}
-
-	public int getGroup() throws RuntimeException {
-
-		// Determine road group
-		for (int i = 0; i < Groups.GROUPS.length; i++)
-			for (int id : Groups.GROUPS[i])
-				if (TYPE == id)
-					return i;
-
-		throw new RuntimeException("Road group not found, type is: " + TYPE);
-	}
 }

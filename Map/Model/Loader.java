@@ -87,6 +87,6 @@ public class Loader {
 
 		Edge edge = new Edge(start, stop, name, type);
 		all.insert(edge);
-		groups[edge.getGroup()].insert(edge);
+		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 	}
 }

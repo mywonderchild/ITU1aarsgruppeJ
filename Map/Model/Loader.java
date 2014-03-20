@@ -28,25 +28,22 @@ public class Loader extends KrakLoader
 		groups = new QuadTree[Groups.GROUPS.length];
 		for(int i = 0; i < groups.length; i++)
 			groups[i] = new QuadTree(box);
-		
 		try {
 			System.out.println(new File(".").getCanonicalPath());
 			String dir = new File(".").getCanonicalPath() + "/Map/data/";
 			load(dir + "purged_kdv_node_unload.txt", dir + "purged_kdv_unload.txt");
-		}
-		catch(IOException e)
-		{
+		} catch(IOException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 
-	public void processNode(NodeData node) {
-		ndata[node.KDV_ID] = new Node(node);
+	public void processNode(Node node) {
+		ndata[node.KDV_ID] = node;
 	}
 
-	public void processEdge(EdgeData edge) {
-		Edge e = new Edge(edge, ndata[edge.FNODE], ndata[edge.TNODE]);
-		all.insert(e);
-		groups[e.getGroup()].insert(e);
+	public void processEdge(Edge edge) {
+		edge.setNodes(ndata[edge.FNODE], ndata[edge.TNODE]);
+		all.insert(edge);
+		groups[edge.getGroup()].insert(edge);
 	}
 }

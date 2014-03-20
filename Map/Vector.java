@@ -103,11 +103,9 @@ public class Vector {
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if(this == obj) return true;
 		if(!(obj instanceof Vector)) return false;
-
 		Vector v = (Vector) obj;
 		return x == v.x && y == v.y;
 	}

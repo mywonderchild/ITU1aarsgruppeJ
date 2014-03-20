@@ -6,19 +6,21 @@ import Map.Vector;
 import Map.Controller.Groups;
 
 public class Edge {
-	private final EdgeData edge;
-	private final Node start, stop;
+	public final int FNODE, TNODE, TYP;
+	public final String VEJNAVN;
+	private Node start, stop;
 
-	public Edge(EdgeData edge, Node start, Node stop)
-	{
-		this.edge = edge;
-		this.start = start;
-		this.stop = stop;
+	public Edge(String line) {
+		DataLine dl = new DataLine(line);
+		FNODE = dl.getInt();
+		TNODE = dl.getInt();
+		TYP = dl.getInt();
+		VEJNAVN = dl.getString();
 	}
 
-	public String toString()
-	{
-		return edge.toString();
+	public void setNodes(Node start, Node stop) {
+		this.start = start;
+		this.stop = stop;
 	}
 
 	public Vector[] getVectors() {
@@ -34,26 +36,31 @@ public class Edge {
 	}
 
 	public int getType() {
-		return edge.TYP;
+		return TYP;
 	}
 
 	public String getName() {
-		return edge.VEJNAVN;
+		return VEJNAVN;
 	}
 
 	public int getGroup() throws RuntimeException {
 
-		int type = this.getType();
-
 		// Determine road group
 		for (int i = 0; i < Groups.GROUPS.length; i++) {
 			for (int id : Groups.GROUPS[i]) {
-				if (type == id) {
+				if (TYP == id) {
 					return i;
 				}
 			}
 		}
 
-		throw new RuntimeException("Road group not found, type is: " + type);
+		throw new RuntimeException("Road group not found, type is: " + TYP);
+	}
+
+	public String toString() {
+		return String.format(
+			"%d, %d, %d, '%s'",
+			FNODE, TNODE, TYP, VEJNAVN
+		);
 	}
 }

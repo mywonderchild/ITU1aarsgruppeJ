@@ -27,12 +27,4 @@ public class ResizeHandler implements ComponentListener {
     public void componentMoved(ComponentEvent e) {}
 
     public void componentShown(ComponentEvent e) {}
-
-	private class BeautyTask extends TimerTask {
-
-		public void run() {
-			canvas.beauty = true;
-			canvas.repaint();
-		}
-	}
 }

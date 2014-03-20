@@ -1,19 +1,16 @@
 package Map.View;
 
 import javax.swing.JPanel;
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.awt.Point;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import Map.Controller.Line;
-import Map.Controller.Translator;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import Map.Box;
 import Map.Vector;
+import Map.Controller.Line;
 
 public class Canvas extends JPanel {
 	
@@ -24,12 +21,6 @@ public class Canvas extends JPanel {
 	public Box selectionBox = null;
 
 	public boolean beauty = true;
-
-	public Canvas() {
-		super();
-
-		this.setPreferredSize(new Dimension(800, 600));
-	}
 
 	@Override
 	public void paintComponent(Graphics g) {

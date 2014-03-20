@@ -16,7 +16,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	private Window window;
 	private Canvas canvas;
 	private Translator translator;
-	private boolean action;
+	private boolean isLeft;
 	private Vector origin = new Vector(0, 0);
 
 	private Vector panCenter;
@@ -37,20 +37,20 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	}
 
 	public void mousePressed(MouseEvent e) {
+
 		origin.set(e.getX(), e.getY());
-		System.out.println(origin);
+
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			action = true;
-			Box box = canvas.getBox();
+			isLeft = true;
 			panCenter = translator.center;
 		} else if (SwingUtilities.isRightMouseButton(e)) {
-			action = false;
+			isLeft = false;
 		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
 
-		if (!action) {
+		if (!isLeft) {
 			Box selection = canvas.selectionBox;
 
 			// Translate selection to model
@@ -73,28 +73,25 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 			canvas.selectionBox = null;
 		}
-		// lastDrag = null; // Reset paning
 		translator.setLines();
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		if (!action) { // Right mouse button
-			Vector stop = new Vector(e.getX(), e.getY());
-			canvas.selectionBox = new Box(origin, stop);
-			canvas.repaint();
-		}
-		else { // Left mouse button
+		if (isLeft) {
 			Vector stop = new Vector(e.getX(), e.getY());
 			if(stop.equals(origin)) return; // Mouse was not dragged
 
 			Box box = translator.modelBox;
 			Vector center = translator.translateToModel(stop)
-							.sub(translator.translateToModel(origin.copy()))
-							.div(box.dimensions());
-			translator.center = panCenter.copy().sub(center);
+				.sub(translator.translateToModel(origin.copy()))
+				.div(box.dimensions());
 
-			// Render
+			translator.center = panCenter.copy().sub(center);
 			translator.setLines();
+		} else {
+			Vector stop = new Vector(e.getX(), e.getY());
+			canvas.selectionBox = new Box(origin, stop);
+			canvas.repaint();
 		}
 	}
 

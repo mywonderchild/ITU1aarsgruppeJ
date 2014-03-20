@@ -111,14 +111,10 @@ public class Translator {
 	}
 
 	private QuadTree[] visibleGroups() {
-		if (zoom >= 0.5)
-			return new QuadTree[]{groups[0], groups[1]};
-		else if (zoom >= 0.35)
-			return new QuadTree[]{groups[0], groups[1], groups[2]};
-		else if (zoom >= 0.25)
-			return new QuadTree[]{groups[0], groups[1], groups[2], groups[3]};
-		else if (zoom >= 0.08)
-			return new QuadTree[]{groups[0], groups[1], groups[2], groups[3], groups[4]};
+		if (zoom >= 0.15)
+			return new QuadTree[]{groups[0], groups[1], groups[4]};
+		else if (zoom >= 0.05)
+			return new QuadTree[]{groups[0], groups[1], groups[4], groups[5]};
 		else
 			return new QuadTree[]{all};
 	}

@@ -1,6 +1,7 @@
 package Map.Model;
 
 import java.lang.RuntimeException;
+import java.util.StringTokenizer;
 
 import Map.Vector;
 import Map.Controller.Groups;
@@ -11,11 +12,12 @@ public class Edge {
 	private Node start, stop;
 
 	public Edge(String line) {
-		DataLine dl = new DataLine(line);
-		FNODE = dl.getInt();
-		TNODE = dl.getInt();
-		TYP = dl.getInt();
-		VEJNAVN = dl.getString();
+		StringTokenizer tokenizer = new StringTokenizer(line, ",");
+		FNODE = Integer.parseInt(tokenizer.nextToken());
+		TNODE = Integer.parseInt(tokenizer.nextToken());
+		TYP = Integer.parseInt(tokenizer.nextToken());
+		String name = tokenizer.nextToken();
+		VEJNAVN = name.substring(1, name.length() - 1);
 	}
 
 	public void setNodes(Node start, Node stop) {
@@ -46,13 +48,10 @@ public class Edge {
 	public int getGroup() throws RuntimeException {
 
 		// Determine road group
-		for (int i = 0; i < Groups.GROUPS.length; i++) {
-			for (int id : Groups.GROUPS[i]) {
-				if (TYP == id) {
+		for (int i = 0; i < Groups.GROUPS.length; i++)
+			for (int id : Groups.GROUPS[i])
+				if (TYP == id)
 					return i;
-				}
-			}
-		}
 
 		throw new RuntimeException("Road group not found, type is: " + TYP);
 	}

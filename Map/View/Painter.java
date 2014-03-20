@@ -4,10 +4,11 @@ import java.awt.*;
 import java.util.Random;
 import java.util.ArrayList;
 import java.awt.Graphics2D;
-import java.awt.geom.GeneralPath;
+import java.awt.Color;
 
-import Map.Controller.Line;
+import Map.Vector;
 import Map.Box;
+import Map.Controller.Line;
 
 public class Painter {
 
@@ -34,10 +35,19 @@ public class Painter {
 	}
 
 	public void paintBox(Box box) {
-		// Draw lines in the following sequence: North, east, south, west
-		g.drawLine((int)box.start.x, (int)box.start.y, (int)box.stop.x, (int)box.start.y);
-		g.drawLine((int)box.stop.x, (int)box.start.y, (int)box.stop.x, (int)box.stop.y);
-		g.drawLine((int)box.stop.x, (int)box.stop.y, (int)box.start.x, (int)box.stop.y);
-		g.drawLine((int)box.start.x, (int)box.stop.y, (int)box.start.x, (int)box.start.y);
+
+		Vector dimensions = box.dimensions();
+
+		g.setColor(Color.BLACK);
+		g.drawRect(
+			(int)box.start.x, (int)box.start.y,
+			(int)dimensions.x, (int)dimensions.y
+		);
+
+		g.setColor(new Color(0f, 0f, 0f, 0.15f)); // Semi-transparent
+		g.fillRect(
+			(int)box.start.x, (int)box.start.y,
+			(int)dimensions.x, (int)dimensions.y
+		);
 	}
 }

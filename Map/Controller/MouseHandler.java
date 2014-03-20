@@ -90,7 +90,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			translator.setLines();
 		} else {
 			Vector stop = new Vector(e.getX(), e.getY());
-			canvas.selectionBox = new Box(origin, stop);
+			canvas.selectionBox = new Box(origin, stop).properCorners();
 			canvas.repaint();
 		}
 	}

@@ -68,6 +68,35 @@ public class Box {
 		return this;
 	}
 
+	// Makes start vector top-left corner and stop vector bottom-right corner
+	public Box properCorners() {
+		if(start.x > stop.x)
+			flipX();
+		if(start.y > stop.y)
+			flipY();
+		return this;
+	}
+	
+	// Flips the x-axis of the box
+	public Box flipX() {
+		start = start.copy(); // Prevents possibly unwanted changes
+		stop = stop.copy();   // to vector objects.
+		double temp = start.x;
+		start.x = stop.x;
+		stop.x = temp;
+		return this;
+	}
+	
+	// Flips the y-axis of the box
+	public Box flipY() {
+		start = start.copy(); // Prevents possibly unwanted changes
+		stop = stop.copy();   // to vector objects.
+		double temp = start.y;
+		start.y = stop.y;
+		stop.y = temp;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return String.format(

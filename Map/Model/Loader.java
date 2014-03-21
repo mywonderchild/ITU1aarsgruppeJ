@@ -13,13 +13,14 @@ import Map.Controller.Groups;
 
 public class Loader {
 
-	public final Node[] ndata;
+	public final Node[] nodes;
 	public final QuadTree all;
 	public final QuadTree[] groups;
+	StringTokenizer tokenizer;
 
 	public Loader() {
 		
-		ndata = new Node[700000];
+		nodes = new Node[700000];
 
 		Vector start = new Vector(442254.35659, 6049914.43018);
 		Vector stop = new Vector(892658.21706, 6402050.98297);
@@ -65,28 +66,43 @@ public class Loader {
 
 	public void processNode(String line) {
 
-		StringTokenizer tokenizer = new StringTokenizer(line, ",");
-		int id = Integer.parseInt(tokenizer.nextToken());
-		Vector vector = new Vector(
-			Double.parseDouble(tokenizer.nextToken()),
-			Double.parseDouble(tokenizer.nextToken())
-		);
+		tokenizer = new StringTokenizer(line, ",");
+		int id = readInt();
+		Vector vector = new Vector(readDouble(), readDouble());
 
 		Node node = new Node(id, vector);
-		ndata[node.KDV_ID] = node;
+		nodes[node.KDV_ID] = node;
 	}
 
 	public void processEdge(String line) {
 
-		StringTokenizer tokenizer = new StringTokenizer(line, ",");
-		Node start = ndata[Integer.parseInt(tokenizer.nextToken())];
-		Node stop = ndata[Integer.parseInt(tokenizer.nextToken())];
-		int type = Integer.parseInt(tokenizer.nextToken());
-		String name = tokenizer.nextToken();
-		name = name.substring(1, name.length() - 1);
+		tokenizer = new StringTokenizer(line, ",");
+		Node start = nodes[readInt()];
+		Node stop = nodes[readInt()];
+		int type = readInt();
+		String name = readName();
 
 		Edge edge = new Edge(start, stop, name, type);
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
+	}
+
+	private int readInt() {
+		return Integer.parseInt(tokenizer.nextToken());
+	}
+
+	private double readDouble() {
+		return Double.parseDouble(tokenizer.nextToken());
+	}
+
+	private String readName() {
+		tokenizer.nextToken("'"); // Switch delimiter, first token is ","
+		String name = "";
+		if (tokenizer.hasMoreTokens()) name = tokenizer.nextToken();
+		tokenizer.nextToken(","); // Switch delimiter, first token is "'"
+		if (name.trim().length() > 0)
+			return name;
+		else
+			return null;
 	}
 }

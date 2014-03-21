@@ -16,7 +16,8 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	private Window window;
 	private Canvas canvas;
 	private Translator translator;
-	private boolean isLeft;
+	private boolean leftDown;
+	private boolean rightDown;
 	private Vector origin = new Vector(0, 0);
 
 	private Vector panCenter;
@@ -38,19 +39,24 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 	public void mousePressed(MouseEvent e) {
 
-		origin.set(e.getX(), e.getY());
-
-		if (SwingUtilities.isLeftMouseButton(e)) {
-			isLeft = true;
+		if (!rightDown && SwingUtilities.isLeftMouseButton(e)) {
+			System.out.println("leftDown");
+			origin.set(e.getX(), e.getY());
 			panCenter = translator.center;
-		} else if (SwingUtilities.isRightMouseButton(e)) {
-			isLeft = false;
+			leftDown = true;
+		} else if (!leftDown && SwingUtilities.isRightMouseButton(e)) {
+			System.out.println("rightDown");
+			origin.set(e.getX(), e.getY());
+			rightDown = true;
 		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
 
-		if (!isLeft) {
+		if (rightDown && SwingUtilities.isRightMouseButton(e)) {
+			System.out.println("rightUp");
+
+			if (canvas.selectionBox == null) return; // Mouse was not dragged
 			Box selection = canvas.selectionBox;
 
 			// Translate selection to model
@@ -72,12 +78,16 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 				translator.zoom = zoom.y;
 
 			canvas.selectionBox = null;
+			translator.setLines();
+			rightDown = false;
+		} else if (leftDown && SwingUtilities.isLeftMouseButton(e)) {
+			System.out.println("leftUp");
+			leftDown = false;
 		}
-		translator.setLines();
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		if (isLeft) {
+		if (leftDown) {
 			Vector stop = new Vector(e.getX(), e.getY());
 			if(stop.equals(origin)) return; // Mouse was not dragged
 
@@ -88,7 +98,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 			translator.center = panCenter.copy().sub(center);
 			translator.setLines();
-		} else {
+		} else if (rightDown) {
 			Vector stop = new Vector(e.getX(), e.getY());
 			canvas.selectionBox = new Box(origin, stop).properCorners();
 			canvas.repaint();

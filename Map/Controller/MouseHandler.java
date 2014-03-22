@@ -39,13 +39,23 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 	public void mousePressed(MouseEvent e) {
 
-		if (!rightDown && SwingUtilities.isLeftMouseButton(e)) {
-			System.out.println("leftDown");
+		// Left and right button pressed are not exclusive.
+		// Both can be pressed at the same time.
+		boolean left = SwingUtilities.isLeftMouseButton(e);
+		boolean right = SwingUtilities.isRightMouseButton(e);
+
+		if (left && right) {
+			// Reset
+			leftDown = false;
+			rightDown = false;
+			canvas.selectionBox = null;
+		} else if (left) {
+			// Prepare for panning
 			origin.set(e.getX(), e.getY());
 			panCenter = translator.center;
 			leftDown = true;
-		} else if (!leftDown && SwingUtilities.isRightMouseButton(e)) {
-			System.out.println("rightDown");
+		} else if (right) {
+			// Prepare for selection zoom
 			origin.set(e.getX(), e.getY());
 			rightDown = true;
 		}
@@ -53,10 +63,11 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 	public void mouseReleased(MouseEvent e) {
 
-		if (rightDown && SwingUtilities.isRightMouseButton(e)) {
-			System.out.println("rightUp");
+		if (rightDown) {
 
-			if (canvas.selectionBox == null) return; // Mouse was not dragged
+			rightDown = false;
+			if (canvas.selectionBox == null) return;
+
 			Box selection = canvas.selectionBox;
 
 			// Translate selection to model
@@ -79,10 +90,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
 			canvas.selectionBox = null;
 			translator.setLines();
-			rightDown = false;
-		} else if (leftDown && SwingUtilities.isLeftMouseButton(e)) {
-			System.out.println("leftUp");
-			leftDown = false;
+			
+		} else if (leftDown) {
+			leftDown = false; // Reset
 		}
 	}
 
@@ -109,7 +119,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		Vector target = new Vector(e.getX(), e.getY());
 		target = translator.translateToModel(target);
 		String closest = translator.all.findClosest(target).NAME;
-		System.out.println(closest);
+		// System.out.println(closest);
 		// Code that updates label goes here
 	}
 }

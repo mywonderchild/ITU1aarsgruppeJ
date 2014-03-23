@@ -11,13 +11,14 @@ public class Groups {
 		// We view "Motortrafik" and "Sekundærrute" as main roads
 		// We view "Markvej" as a path
 		// Road type 0 and 95 are undocumented but present – we added them to other
-		GROUPS = new int[6][];
+		GROUPS = new int[7][];
 		GROUPS[0] = new int[]{1, 21, 31, 41}; // Highways
 		GROUPS[1] = new int[]{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}; // Main roads
 		GROUPS[2] = new int[]{8, 10, 28, 48}; // Paths
 		GROUPS[3] = new int[]{11}; // Pedestrian
 		GROUPS[4] = new int[]{80}; // Naval
-		GROUPS[5] = new int[]{0, 5, 6, 25, 26, 35, 45, 46, 95, 99}; // Other
+		GROUPS[5] = new int[]{81}; // Coastline
+		GROUPS[6] = new int[]{0, 5, 6, 25, 26, 35, 45, 46, 95, 99}; // Other
 	}
 
 	public static int getGroup(int type) throws RuntimeException {
@@ -42,10 +43,12 @@ public class Groups {
 			case 2:
 				return Color.GREEN;
 			case 3:
-				return Color.YELLOW;
+				return Color.MAGENTA;
 			case 4:
 				return Color.CYAN;
 			case 5:
+				return Color.BLACK;
+			case 6:
 				return Color.BLACK;
 			default:
 				throw new RuntimeException("Road group " + group + " is not recognized");

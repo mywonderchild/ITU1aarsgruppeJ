@@ -20,9 +20,8 @@ public class Main
 		Canvas canvas = new Canvas();
 		Window window = new Window(canvas);
 
-
 		// Translator...
-		Translator translator = new Translator(canvas, loader.all, loader.groups);
+		Translator translator = new Translator(canvas, loader);
 
 		// Event listeners
 		canvas.addComponentListener(new ResizeHandler(canvas, translator));
@@ -30,8 +29,5 @@ public class Main
 		canvas.addMouseListener(mouseHandler);
 		canvas.addMouseMotionListener(mouseHandler);
 		KeyboardHandler keyboardHandler = new KeyboardHandler(canvas, translator);
-
-
-
 	}
 }

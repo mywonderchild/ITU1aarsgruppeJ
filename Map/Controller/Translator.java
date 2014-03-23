@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Map.Box;
 import Map.Vector;
+import Map.Model.Loader;
 import Map.Model.QuadTree;
 import Map.Model.Edge;
 import Map.View.Canvas;
@@ -25,10 +26,10 @@ public class Translator {
 	public Box canvasBox;
 	public Box queryBox;
 
-	public Translator(Canvas canvas, QuadTree all, QuadTree[] groups) {
+	public Translator(Canvas canvas, Loader loader) {
 		this.canvas = canvas;
-		this.all = all;
-		this.groups = groups;
+		this.all = loader.all;
+		this.groups = loader.groups;
 
 		canvas.setLines(lines);
 
@@ -112,9 +113,9 @@ public class Translator {
 
 	private QuadTree[] visibleGroups() {
 		if (zoom >= 0.15)
-			return new QuadTree[]{groups[0], groups[1], groups[4]};
-		else if (zoom >= 0.05)
 			return new QuadTree[]{groups[0], groups[1], groups[4], groups[5]};
+		else if (zoom >= 0.05)
+			return new QuadTree[]{groups[0], groups[1], groups[4], groups[5], groups[6]};
 		else
 			return new QuadTree[]{all};
 	}

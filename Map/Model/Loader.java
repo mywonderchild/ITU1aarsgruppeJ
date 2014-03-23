@@ -13,6 +13,7 @@ import Map.Controller.Groups;
 
 public class Loader {
 
+	private String nodePath, edgePath, coastPath;
 	public final Node[] nodes;
 	public final QuadTree all;
 	public final QuadTree[] groups;
@@ -27,37 +28,46 @@ public class Loader {
 		Box box = new Box(start, stop);
 
 		all = new QuadTree(box);
+
 		groups = new QuadTree[Groups.GROUPS.length];
 		for(int i = 0; i < groups.length; i++)
 			groups[i] = new QuadTree(box);
 
 		try {
-			String dir = new File(".").getCanonicalPath() + "/Map/data/";
-			load(dir + "purged_kdv_node_unload.txt", dir + "purged_kdv_unload.txt");
+			String dir = new File(".").getCanonicalPath() + "/Map/Data/";
+			nodePath = dir + "purged_nodes.txt";
+			edgePath = dir + "purged_edges.txt";
+			coastPath = dir + "coastline.txt";
+			load();
 		} catch(IOException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 
-	public void load(String nodeFile, String edgeFile) throws IOException {
+	public void load() throws IOException {
 
 		BufferedReader br;
 		String line;
 
 		// Nodes
-		br = new BufferedReader(new FileReader(nodeFile));
-		br.readLine(); // First line is column names, not data
+		br = new BufferedReader(new FileReader(nodePath));
 
 		while((line = br.readLine()) != null)
 			processNode(line);
 		br.close();
 
 		// Edges
-		br = new BufferedReader(new FileReader(edgeFile));
-		br.readLine(); // First line is column names, not data
+		br = new BufferedReader(new FileReader(edgePath));
 
 		while((line = br.readLine()) != null)
 			processEdge(line);
+		br.close();
+
+		// Coastline
+		br = new BufferedReader(new FileReader(coastPath));
+
+		while((line = br.readLine()) != null)
+			processCoast(line);
 		br.close();
 
 		// Garbage collect
@@ -67,22 +77,36 @@ public class Loader {
 	public void processNode(String line) {
 
 		tokenizer = new StringTokenizer(line, ",");
+
 		int id = readInt();
 		Vector vector = new Vector(readDouble(), readDouble());
-
-		Node node = new Node(id, vector);
+		Node node = new Node(vector, id);
+		
 		nodes[node.KDV_ID] = node;
 	}
 
 	public void processEdge(String line) {
 
 		tokenizer = new StringTokenizer(line, ",");
+
 		Node start = nodes[readInt()];
 		Node stop = nodes[readInt()];
 		int type = readInt();
 		String name = readName();
-
 		Edge edge = new Edge(start, stop, name, type);
+
+		all.insert(edge);
+		groups[Groups.getGroup(edge.TYPE)].insert(edge);
+	}
+
+	public void processCoast(String line) {
+
+		tokenizer = new StringTokenizer(line, ",");
+
+		Node start = new Node(new Vector(readDouble(), readDouble()));
+		Node stop = new Node(new Vector(readDouble(), readDouble()));
+		Edge edge = new Edge(start, stop, null, 81);
+
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 	}

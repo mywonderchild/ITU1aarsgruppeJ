@@ -69,7 +69,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			if (canvas.selectionBox == null) return;
 
 			Box selection = canvas.selectionBox;
-			if (selection == null) return;
 
 			// Translate selection to model
 			selection.start = translator.translateToModel(selection.start);

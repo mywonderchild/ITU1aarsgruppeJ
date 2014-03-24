@@ -45,20 +45,25 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		boolean right = SwingUtilities.isRightMouseButton(e);
 
 		if (left && right) {
-			// Reset
+			// Reset (special case for mac users)
 			leftDown = false;
 			rightDown = false;
-			canvas.selectionBox = null;
+			reset(e);
 		} else if (left) {
 			// Prepare for panning
-			origin.set(e.getX(), e.getY());
-			panCenter = translator.center;
 			leftDown = true;
+			reset(e);
 		} else if (right) {
 			// Prepare for selection zoom
-			origin.set(e.getX(), e.getY());
 			rightDown = true;
+			reset(e);
 		}
+	}
+
+	private void reset(MouseEvent e) {
+			origin.set(e.getX(), e.getY());
+			panCenter = translator.center;
+			canvas.selectionBox = null;
 	}
 
 	public void mouseReleased(MouseEvent e) {

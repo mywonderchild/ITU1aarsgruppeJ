@@ -44,6 +44,12 @@ public class Translator {
 		zoom = startZoom;
 	}
 
+	public void reset() {
+		zoom = startZoom;
+		center = startCenter;
+		setLines();
+	}
+
 	public void setLines() {
 
 		long timer = System.currentTimeMillis();

@@ -16,12 +16,8 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	private Window window;
 	private Canvas canvas;
 	private Translator translator;
-	private boolean leftDown;
-	private boolean rightDown;
-	private boolean middleDown;
+	private boolean leftDown, rightDown;
 	private Vector origin = new Vector(0, 0);
-
-
 	private Vector panCenter;
 
 	public MouseHandler(Window window, Translator translator) {
@@ -30,13 +26,15 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		this.translator = translator;
 	}
 
+	private void reset() {
+		leftDown = false;
+		rightDown = false;
+		canvas.selectionBox = null;
+	}
+
 	public void mouseClicked(MouseEvent e) {
-	}
-
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	public void mouseExited(MouseEvent e) {
+		if (SwingUtilities.isMiddleMouseButton(e))
+			translator.reset();
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -47,37 +45,24 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		boolean right = SwingUtilities.isRightMouseButton(e);
 		boolean middle = SwingUtilities.isMiddleMouseButton(e);
 
-		if (left && right) {
-			// Reset
-			leftDown = false;
-			rightDown = false;
-			canvas.selectionBox = null;
+		if (left && right || leftDown && right || rightDown && left || middle) {
+			reset();
 		} else if (left) {
 			// Prepare for panning
 			origin.set(e.getX(), e.getY());
 			panCenter = translator.center;
 			leftDown = true;
-			reset(e);
 		} else if (right) {
 			// Prepare for selection zoom
 			origin.set(e.getX(), e.getY());
 			rightDown = true;
-		} else if (middle){
-			middleDown = true;
 		}
-	}
-
-	private void reset(MouseEvent e) {
-			origin.set(e.getX(), e.getY());
-			panCenter = translator.center;
-			canvas.selectionBox = null;
 	}
 
 	public void mouseReleased(MouseEvent e) {
 
 		if (rightDown) {
-
-			rightDown = false;
+			
 			if (canvas.selectionBox == null) return;
 
 			Box selection = canvas.selectionBox;
@@ -99,17 +84,11 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 				translator.zoom = zoom.x;
 			else
 				translator.zoom = zoom.y;
-
-			canvas.selectionBox = null;
-			translator.setLines();
 			
-		} else if (leftDown) {
-			leftDown = false; // Reset
-		} else if (middleDown){
-			translator.zoom = translator.startZoom;
-			translator.center = translator.startCenter;
 			translator.setLines();
 		}
+
+		reset();
 	}
 
 	public void mouseDragged(MouseEvent e) {
@@ -137,5 +116,11 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		String closest = translator.all.findClosest(target).NAME;
 		// System.out.println(closest);
 		// Code that updates label goes here
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
 	}
 }

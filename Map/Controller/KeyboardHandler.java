@@ -62,9 +62,7 @@ public class KeyboardHandler{
 		private class zoomResetClass extends AbstractAction{
 
 		    public void actionPerformed(ActionEvent e) {
-		        translator.zoom = translator.startZoom;
-		        translator.center = translator.startCenter;
-		        translator.setLines();
+		        translator.reset();
 				System.out.print("zoomReset");
 
 		   	};

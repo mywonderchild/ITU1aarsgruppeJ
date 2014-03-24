@@ -97,6 +97,20 @@ public class Box {
 		return this;
 	}
 
+	// Grows the box in all directions
+	public Box grow(double amount) {
+		start.x -= amount;
+		start.y -= amount;
+		stop.x += amount;
+		stop.y += amount;
+		return this;
+	}
+
+	// Copies the box and its start and stop vectors
+	public Box copy() {
+		return new Box(start.copy(), stop.copy());
+	}
+
 	@Override
 	public String toString() {
 		return String.format(

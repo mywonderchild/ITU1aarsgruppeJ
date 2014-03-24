@@ -127,6 +127,6 @@ public class Translator {
 		else if (zoom >= 0.05)
 			return new QuadTree[]{groups[0], groups[1], groups[4], groups[5], groups[6]};
 		else
-			return new QuadTree[]{all};
+			return groups;
 	}
 }

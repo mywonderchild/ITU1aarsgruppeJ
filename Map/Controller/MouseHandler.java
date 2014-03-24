@@ -18,7 +18,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 	private Translator translator;
 	private boolean leftDown;
 	private boolean rightDown;
+	private boolean middleDown;
 	private Vector origin = new Vector(0, 0);
+
 
 	private Vector panCenter;
 
@@ -43,20 +45,25 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		// Both can be pressed at the same time.
 		boolean left = SwingUtilities.isLeftMouseButton(e);
 		boolean right = SwingUtilities.isRightMouseButton(e);
+		boolean middle = SwingUtilities.isMiddleMouseButton(e);
 
 		if (left && right) {
-			// Reset (special case for mac users)
+			// Reset
 			leftDown = false;
 			rightDown = false;
-			reset(e);
+			canvas.selectionBox = null;
 		} else if (left) {
 			// Prepare for panning
+			origin.set(e.getX(), e.getY());
+			panCenter = translator.center;
 			leftDown = true;
 			reset(e);
 		} else if (right) {
 			// Prepare for selection zoom
+			origin.set(e.getX(), e.getY());
 			rightDown = true;
-			reset(e);
+		} else if (middle){
+			middleDown = true;
 		}
 	}
 
@@ -98,6 +105,10 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 			
 		} else if (leftDown) {
 			leftDown = false; // Reset
+		} else if (middleDown){
+			translator.zoom = translator.startZoom;
+			translator.center = translator.startCenter;
+			translator.setLines();
 		}
 	}
 

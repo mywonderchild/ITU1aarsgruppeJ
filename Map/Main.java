@@ -28,6 +28,8 @@ public class Main
 		MouseHandler mouseHandler = new MouseHandler(window, translator);
 		canvas.addMouseListener(mouseHandler);
 		canvas.addMouseMotionListener(mouseHandler);
+		MouseWheelHandler mouseWheelHandler = new MouseWheelHandler(translator);
+		window.addMouseWheelListener(mouseWheelHandler);
 		KeyboardHandler keyboardHandler = new KeyboardHandler(canvas, translator);
 	}
 }

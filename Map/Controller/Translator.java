@@ -20,7 +20,9 @@ public class Translator {
 	private ArrayList<Line> lines = new ArrayList<>();
 
 	public Vector center;
+	public Vector startCenter;
 	public double zoom;
+	public double startZoom;
 
 	public Box modelBox;
 	public Box canvasBox;
@@ -36,8 +38,10 @@ public class Translator {
 		modelBox = all.getBox();
 
 		// Relative center, {0.5, 0.5} is center of map
-		center = new Vector(0.5, 0.5);
-		zoom = 5.0;
+		startCenter = new Vector(0.5, 0.5);
+		center = startCenter;
+		startZoom = 1.3;
+		zoom = startZoom;
 	}
 
 	public void setLines() {

@@ -19,6 +19,8 @@ public class QuadTree
 	private int n = 0;
 	private double maxLen = 0;
 
+	private Box query;
+
 	public QuadTree(Box box) {
 		this.box = box;
 		edges = new Edge[NODE_CAPACITY];
@@ -35,7 +37,7 @@ public class QuadTree
 
 			// Update max edge length, but skip sea edges
 			double edgeLen = edge.getVectors()[0].dist(edge.getVectors()[1]);
-			if(edge.TYPE != 80 && edgeLen > maxLen) maxLen = edgeLen;
+			if(edgeLen > maxLen) maxLen = edgeLen;
 
 			return true;
 		}
@@ -67,18 +69,22 @@ public class QuadTree
 	}
 
 	public ArrayList<Edge> queryRange(Box query) {
-		Box newQuery = query.copy().grow(maxLen);
+		this.query = query.copy().grow(maxLen);
+		return queryRange();
+	}
+
+	public ArrayList<Edge> queryRange() {
 		ArrayList<Edge> result = new ArrayList<Edge>();
 
-		if(!box.overlapping(newQuery)) return result;
+		if(!box.overlapping(query)) return result;
 
 		if (children == null) {
 			for (int i = 0; i < n; i++)
-				if (edges[i].getCenter().isInside(newQuery))
+				if (edges[i].getCenter().isInside(query))
 					result.add(edges[i]);
 		} else {
 			for (QuadTree child : children)
-				result.addAll(child.queryRange(newQuery));
+				result.addAll(child.queryRange(query));
 		}
 
 		return result;

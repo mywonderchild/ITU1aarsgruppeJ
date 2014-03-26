@@ -14,85 +14,73 @@ public class KeyboardHandler{
 	private Canvas canvas;
 	private final Translator translator;
 
-
 	public KeyboardHandler(Canvas canvas, Translator translator){
+
 		this.canvas = canvas;
 		this.translator = translator;
-
-
-
-
-
 		
-		Action zoomOut = new zoomClass(1.2);
-		Action zoomIn = new zoomClass(0.8);
-		Action zoomReset = new zoomResetClass();
-		Action panLeft = new panClass(new Vector (-100,0));
+		Action zoomOut = new Zoomer(1.2);
+		Action zoomIn = new Zoomer(0.8);
+		Action zoomReset = new ZoomResetter();
+		Action panLeft = new Panner(new Vector(100, 0));
+		Action panRight = new Panner(new Vector(-100, 0));
+		Action panUp = new Panner(new Vector(0, 100));
+		Action panDown = new Panner(new Vector(0, -100));
 
-		Bindkey("ADD","ZoomIn",zoomIn);
-		Bindkey("SPACE","ZoomReset",zoomReset);
-		Bindkey("SUBTRACT","ZoomOut",zoomOut);
-		Bindkey("I","ZoomIn",zoomIn);
-		Bindkey("O","ZoomOut",zoomOut);
-		Bindkey("R","ZoomReset",zoomReset);
-		Bindkey("BACK_SPACE","ZoomReset",zoomReset);
-		Bindkey("PLUS","ZoomIn",zoomIn);
-		Bindkey("MINUS","ZoomOut",zoomOut);
-		Bindkey("B","Pan",panLeft);
+		Bindkey("ADD", "ZoomIn", zoomIn);
+		Bindkey("SPACE", "ZoomReset", zoomReset);
+		Bindkey("SUBTRACT", "ZoomOut", zoomOut);
+		Bindkey("I", "ZoomIn", zoomIn);
+		Bindkey("O", "ZoomOut", zoomOut);
+		Bindkey("R", "ZoomReset", zoomReset);
+		Bindkey("BACK_SPACE", "ZoomReset", zoomReset);
+		Bindkey("PLUS", "ZoomIn", zoomIn);
+		Bindkey("MINUS", "ZoomOut", zoomOut);
+		Bindkey("LEFT", "PanLeft", panLeft);
+		Bindkey("RIGHT", "PanRight", panRight);
+		Bindkey("UP", "PanUp", panUp);
+		Bindkey("DOWN", "PanDown", panDown);
 	};
 
 
-			private class zoomClass extends AbstractAction{
-			
-			double zoom;
+	private class Zoomer extends AbstractAction{
+		
+		double zoom;
 
-			public zoomClass(double zoom){
-				this.zoom = zoom;
+		public Zoomer(double zoom){
+			this.zoom = zoom;
+		}
 
-
-			}
-		    public void actionPerformed(ActionEvent e) {
-		        translator.zoom *= zoom;
-		        translator.setLines();
-				System.out.print("zoomOut");
-
-		   	};
+		public void actionPerformed(ActionEvent e) {
+			translator.zoom *= zoom;
+			translator.setLines();
 		};
+	};
 
-		private class zoomResetClass extends AbstractAction{
+	private class ZoomResetter extends AbstractAction{
 
-		    public void actionPerformed(ActionEvent e) {
-		        translator.reset();
-				System.out.print("zoomReset");
-
-		   	};
+		public void actionPerformed(ActionEvent e) {
+			translator.reset();
 		};
+	};
 
-		private class panClass extends AbstractAction{
-			
-			Vector distance;
+	private class Panner extends AbstractAction{
 
-			public panClass(Vector distance){
+		Vector distance;
 
+		public Panner(Vector distance){
 			this.distance = distance;
-				
-			}
-		    public void actionPerformed(ActionEvent e) {
+		}
+
+		public void actionPerformed(ActionEvent e) {
 			Box box = translator.modelBox;
 			Vector center = translator.translateToModel(translator.canvasBox.getCenter().add(distance))
 				.sub(translator.translateToModel(translator.canvasBox.getCenter()))
 				.div(box.dimensions());
-
 			translator.center = translator.center.copy().sub(center);
 			translator.setLines();
-
-		        // Vector pandistance = distance.div(translator.modelBox.dimensions());
-		        // translator.center = translator.center.copy().sub(pandistance);
-		        // translator.setLines();
-		        System.out.print(translator.center);
-
-		   	};
 		};
+	};
 
 
 	private void Bindkey(String key, String actionName, Action action){

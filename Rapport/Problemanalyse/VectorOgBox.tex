@@ -1,0 +1,13 @@
+\section{Vector og Box}
+
+Til at starte med valgte vi at repræsentere vektorer og bokse (rektangler) som henholdsvis én- og flerdimensionale tabeller (arrays).
+
+Dette virkede umiddelbart som et smart valg, da man på den måde kunne nøjes med at have én variabel per punkt eller boks. Det viste sig dog at være problematisk efterhånden som vi fik skrevet kode der foretog beregninger med vektorer og bokse, da de indeks som værdierne havde i tabellen ikke fortalte noget om hvad værdien indeholdt.
+
+Et andet problem var at vi foretog de samme operationer på tabellerne mange gange i forskellige klasser. Vi indså derfor at vi havde brug for at samle funktionaliteten der havde at gøre med vektorer og bokse for at undgå unødig kode-duplikering der gjorde kodebasen svær at vedligeholde.
+
+Vores løsning på begge ovenstående problemstillinger blev at implementere to klasser, Vector og Box, der begge er datastrukturer med tilhørende hjælpemetoder.
+
+Ved at implementere datastrukturer fik vi løst problemet med navngivningen af værdier, der nu blev mere sigende. For eksempel gik vektorens koordinatsæt fra at være værdien tilhørende indeks 0 og 1 i en tabel, til at være værdien tilknyttet x og y feltet i et Vector objekt.
+
+Ved at implementere hjælpefunktioner. Derudover muliggjorde det testing af funktionaliteten, hvilket viste sig at være meget brugbart, da der i perioder under udviklingen var mange fejl i den kode der var afhængig af vektorer og bokse som var svære at udbedre. Ved at teste Vector og Box klassernes hjælpefunktioner havde vi et solidt udgangspunkt, og kunne koncentrere os om de logiske fejl.

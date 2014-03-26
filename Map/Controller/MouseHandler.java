@@ -5,13 +5,15 @@ import Map.View.*;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.MouseWheelEvent;
 
 import javax.swing.SwingUtilities;
 
 import Map.Vector;
 import Map.Box;
 
-public class MouseHandler implements MouseListener, MouseMotionListener {
+public class MouseHandler implements MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private Window window;
 	private Canvas canvas;
@@ -114,9 +116,18 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 		Vector target = new Vector(e.getX(), e.getY());
 		target = translator.translateToModel(target);
 		String closest = translator.all.findClosest(target).NAME;
-		// System.out.println(closest);
-		// Code that updates label goes here
+		if (closest != window.label.getText())
+			window.label.setText(closest);
 	}
+
+	public void mouseWheelMoved(MouseWheelEvent e){
+    	int movement = e.getWheelRotation();
+    	if (movement < 0)
+    		translator.zoom *= 0.9;
+		else
+    	    translator.zoom *= 1.1;
+    	translator.setLines();
+    }
 
 	public void mouseEntered(MouseEvent e) {
 	}

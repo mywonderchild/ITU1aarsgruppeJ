@@ -4,3 +4,5 @@
 .idea/
 *.iml
 *.bat
+# KDV data files
+Map/Data/kdv*

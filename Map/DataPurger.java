@@ -39,7 +39,6 @@ public class DataPurger
 			data.add(purgedLine);
 		}
 
-		out.println(""); // initial empty line
 		for(String[] dataLine : data) {
 			String concat = "";
 			for(String s : dataLine)
@@ -53,9 +52,9 @@ public class DataPurger
 
 	public static void main(String[] args) throws IOException {
 		if(args.length == 0) {
-			DataPurger dp1 = new DataPurger("Map/data/kdv_node_unload.txt", "Map/data/purged_kdv_node_unload.txt");
+			DataPurger dp1 = new DataPurger("Map/data/kdv_node_unload.txt", "Map/data/purged_nodes.txt");
 			dp1.purge(new int[] {2, 3, 4});
-			DataPurger dp2 = new DataPurger("Map/data/kdv_unload.txt", "Map/data/purged_kdv_unload.txt");
+			DataPurger dp2 = new DataPurger("Map/data/kdv_unload.txt", "Map/data/purged_edges.txt");
 			dp2.purge(new int[] {0, 1, 5, 6});
 		}
 		else if(args.length == 3) {

@@ -11,7 +11,7 @@ public class Window extends JFrame {
 
 	public Canvas canvas;
 	private JPanel bottomPanel;
-	private JLabel label;
+	public JLabel label;
 
 	public Window(Canvas canvas) {
 		

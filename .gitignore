@@ -8,7 +8,6 @@
 *.aux
 *.log
 *.out
-*.pdf
 *.gz
 *.toc
 # KDV data files

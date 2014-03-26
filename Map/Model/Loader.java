@@ -5,7 +5,8 @@ import java.util.StringTokenizer;
 import java.io.IOException;
 import java.io.File;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
 
 import Map.Vector;
 import Map.Box;
@@ -50,21 +51,21 @@ public class Loader {
 		String line;
 
 		// Nodes
-		br = new BufferedReader(new FileReader(nodePath));
+		br = new BufferedReader(new InputStreamReader(new FileInputStream(nodePath), "UTF8"));
 
 		while((line = br.readLine()) != null)
 			processNode(line);
 		br.close();
 
 		// Edges
-		br = new BufferedReader(new FileReader(edgePath));
+		br = new BufferedReader(new InputStreamReader(new FileInputStream(edgePath), "UTF8"));
 
 		while((line = br.readLine()) != null)
 			processEdge(line);
 		br.close();
 
 		// Coastline
-		br = new BufferedReader(new FileReader(coastPath));
+		br = new BufferedReader(new InputStreamReader(new FileInputStream(coastPath), "UTF8"));
 
 		while((line = br.readLine()) != null)
 			processCoast(line);

@@ -4,5 +4,12 @@
 .idea/
 *.iml
 *.bat
+# Tex
+*.aux
+*.log
+*.out
+*.pdf
+*.gz
+*.toc
 # KDV data files
 Map/Data/kdv*

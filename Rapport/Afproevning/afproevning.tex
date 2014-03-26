@@ -1,13 +1,21 @@
-	\section{Afprøvning}
-	\label{sec:afproevning}
-	I bestræbelse efter sikring af applikationens kvalitet og pålidelighed er en række afprøvninger af dennes bestanddele udført løbende med udviklingen. Afprøvningen er ikke foretaget med en målsætning om at udtømme samtlige muligheder for systemfejl, men derimod blot for fyldestgørende at forhindre invaliderende defekter samt bidrage til udviklingsprocessen.
+\section{Afprøvning}
+\label{sec:afproevning}
+I bestræbelse efter sikring af applikationens kvalitet og pålidelighed er en række afprøvninger af dennes bestanddele udført løbende med udviklingen. Afprøvningen er ikke foretaget med en målsætning om at udtømme samtlige muligheder for systemfejl, men derimod blot for fyldestgørende at forhindre invaliderende defekter samt bidrage til udviklingsprocessen.
 
-	\subsection{Metode}
-	\label{subsec:metode}
-	% evt. nævn, at der findes et hav af testmetoder
-	Da afprøvningsmetoden, som anvendes under udarbejdelsen af programprøver, er afgørende for afprøvningens dækningsgrad, fastsattes den indledningsvist som \emph{white-box testing} med \emph{branch coverage}. Det er således påkrævet at samtlige kodesegmenter i en afprøvet kodeblok køres én gang som minimum.
-	
-	Da udviklingen er foretaget i Java, er afprøvning udført i samspil med prøvemiljøet JUnit - et populært Java værktøj til netop afprøvning. JUnit er således anvendt under kørsel af prøverne, hvorfor disse også er skrevet op imod JUnits API.
+\subsection{Metode}
+\label{subsec:metode}
+% evt. nævn, at der findes et hav af testmetoder
+Da afprøvningsmetoden, som anvendes under udarbejdelsen af programprøver, er afgørende for afprøvningens dækningsgrad, fastsattes den indledningsvist som \emph{black-box testing}. Det er således påkrævet at samtlige kodesegmenter i en afprøvet kodeblok køres én gang som minimum.
 
-	\subsection{Ækvivalensklasser}
-	\label{subsec:aekvivalensklasser}
+Eftersom udviklingen er foretaget i Java, er afprøvning udført i samspil med prøvemiljøet JUnit - et populært Java værktøj til netop afprøvning. JUnit er således anvendt under kørsel af prøverne, hvorfor disse også er skrevet op imod JUnits API.
+
+Som nævnt er formålet med afprøvningen ikke at gennemteste samtlige kodefragmenter i applikationen, hvorfor kun en række konkrete klasser og deres metoder er afprøvet. Især \emph{Vector} og \emph{Box} klasserne ses brugt på tværs af applikationen, og derfor er netop disse udvalgt.
+
+\subsection{Ækvivalensklasser}
+\label{subsec:aekvivalensklasser}
+Vector og Box klasserne er dataklasser, som indeholder værktøjsmetoder til hyppige operationer. Derfor håndterer samtlige metoder i bund og grund kommatal. Ækvivalensklasserne for afprøvning af klassernes metoder er således negative input, positive input samt nul-input.
+
+\subsection{Forventningstabel}
+\label{subsec:forventningstabel}
+\input{Afproevning/forventningstabelVector}
+\input{Afproevning/forventningstabelBox}

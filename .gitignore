@@ -13,3 +13,4 @@
 *.toc
 # KDV data files
 Map/Data/kdv*
+*.db

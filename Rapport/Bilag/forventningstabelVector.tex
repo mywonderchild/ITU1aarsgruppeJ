@@ -1,46 +1,45 @@
+\newcolumntype{L}{>{\centering\arraybackslash}m{4cm}}
+
 \begin{table}[ht]
 	\caption{Vector:Constructor}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		vec(1,2) & vec(1,2) & vec(1,2) \\
 		\hline
 	\end{tabular}
-	\label{table:vectorConstructor}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:Set}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		vec(2,3) & vec(2,3) & vec(2,3) \\
 		\hline
 	\end{tabular}
-	\label{table:vectorSet}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:Copy}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		vec(1,2) & vec(1,2) & vec(1,2) \\
 		\hline
 	\end{tabular}
-	\label{table:vectorCopy}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:Add}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
@@ -49,13 +48,12 @@
 		vec(1,2)+vec(0,0) & vec(1,2) & vec(1,2)\\
 		\hline
 	\end{tabular}
-	\label{table:vectorAdd}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:Subtract}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
@@ -64,13 +62,12 @@
 		vec(1,2)-vec(0,0) & vec(1,2) & vec(1,2)\\
 		\hline
 	\end{tabular}
-	\label{table:vectorSubtract}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:Multiplication}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
@@ -79,13 +76,12 @@
 		vec(1,2)*1 & vec(1,2) & vec(1,2)\\
 		\hline
 	\end{tabular}
-	\label{table:vectorMultiplication}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:Division}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
@@ -94,13 +90,12 @@
 		vec(1,2)/1 & vec(1,2) & vec(1,2)\\
 		\hline
 	\end{tabular}
-	\label{table:vectorDivision}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:Distance}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
@@ -109,39 +104,36 @@
 		vec(1,2) to vec(1,2) & 0 & 0\\
 		\hline
 	\end{tabular}
-	\label{table:vectorDistance}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:Translate}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		vec(1,2) from box(0,0;2,4) to box(0,0;4,8) & vec(2,4) & vec(2,4)\\
 		\hline
 	\end{tabular}
-	\label{table:vectorTranslate}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:MirrorY}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		vec(1,2) in box(0,0;1,3) & vec(1,1) & vec(1,1)\\
 		\hline
 	\end{tabular}
-	\label{table:vectorMirrorY}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Vector:Equals}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
@@ -150,5 +142,4 @@
 		vec(7,21) og vec(0,-90) & false & false\\
 		\hline
 	\end{tabular}
-	\label{table:vectorEquals}
 \end{table}

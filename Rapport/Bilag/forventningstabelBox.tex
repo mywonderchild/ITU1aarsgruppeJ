@@ -1,46 +1,45 @@
+\newcolumntype{L}{>{\centering\arraybackslash}m{4cm}}
+
 \begin{table}[ht]
 	\caption{Box:Constructor}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		vec(1,2) og vec(3,4) & box(1,2;3,4) & box(1,2;3,4)\\
 		\hline
 	\end{tabular}
-	\label{table:boxConstructor}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Box:Dimensions}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		box(1,2;3,4) & vec(2,2) & vec(2,2)\\
 		\hline
 	\end{tabular}
-	\label{table:boxDimensions}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Box:RelativeToAbsolute}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		vec(0.5,0.5) i box(1,2;3,4) & vec(2,3) & vec(2,3)\\
 		\hline
 	\end{tabular}
-	\label{table:boxRelativeToAbsolute}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Box:Ratio}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
@@ -49,57 +48,52 @@
 		box(0,0;1,2) & vec(0.5,1) & vec(0.5,1)\\
 		\hline
 	\end{tabular}
-	\label{table:boxRatio}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Box:Scale}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		box(1,2;3,4)*2 & box(0,1;4,5) & box(0,1;4,5)\\
 		\hline
 	\end{tabular}
-	\label{table:boxScale}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Box:FlipX}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		box(11,0;-3,0) & box(-3,0;11,0) & box(-3,0;11,0)\\
 		\hline
 	\end{tabular}
-	\label{table:boxFlipX}
 \end{table}
 
 \begin{table}[ht]
 	\caption{Box:FlipY}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		box(0,11;0,-3) & box(0,-3;0,11) & box(0,-3;0,11)\\
 		\hline
 	\end{tabular}
-	\label{table:boxFlipY}
 \end{table}
 
 \begin{table}[ht]
 	\caption{BoxProperCorners}
 	\centering
-	\begin{tabular}{c c c c}
+	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		box(51,-10;0,80) & box(0,-10;51,80) & box(0,-10;51,80)\\
 		\hline
 	\end{tabular}
-	\label{table:boxProperCorners}
 \end{table}

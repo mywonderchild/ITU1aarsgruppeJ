@@ -1,0 +1,9 @@
+\section{Anti-aliasing}
+
+Under vores indlende eksperimenter med tegnemetoderne i Swing fandt vi ud af at det var langt mere omkostningsfuldt at tegne kortet med anti-aliasing slået til. I den nuværende implementation tager der i praksis \~5 gange længere tid at tegne kortet med anti-aliasing, end det gør at tegne det uden.
+
+Derfor besluttede vi os for at tegne kortet uden anti-aliasing når brugeren interagerede med kortet, med det formål at opnå høje opdateringsfrekvenser. Når brugeren er færdig med at interagere med kortet tegnes det igen efter en kort pause, denne gang med anti-aliasing slået til. Denne idé var blandt andet inspireret af Adobe InDesign der anvender en lignende løsning.
+
+Vi overvejede også at anvende et stilbillede af det tegnede kort som kunne flyttes og skaleres imens brugeren interagerede med kortet, hvilket vi formoder ville give meget høje opdateringsfrekvenser. I stedet valgte vi den nuværende løsning fordi den konstant opdaterer kortet, og samtidig er tilstrækkeligt effektiv.
+
+Havde vi haft behov for at tegne mange flere linjer havde vi muligvis haft brug for en mere effektiv løsning.

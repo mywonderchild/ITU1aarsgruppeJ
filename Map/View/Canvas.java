@@ -22,8 +22,6 @@ public class Canvas extends JPanel {
 
 	public boolean beauty = true;
 
-	private long lastDrawn = 0;
-
 	@Override
 	public void paintComponent(Graphics g) {
 

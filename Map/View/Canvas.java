@@ -22,10 +22,12 @@ public class Canvas extends JPanel {
 
 	public boolean beauty = true;
 
+	private long lastDrawn = 0;
+
 	@Override
 	public void paintComponent(Graphics g) {
-		if(timer != null)
-			timer.cancel();
+
+		if (timer != null) timer.cancel();
 
 		g.clearRect(0, 0, getWidth(), getHeight());
 		Graphics2D g2d = (Graphics2D)g;
@@ -33,8 +35,7 @@ public class Canvas extends JPanel {
 		if (beauty) {
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			beauty = false;
-		}
-		else {
+		} else {
 			timer = new Timer();
 			timer.schedule(new BeautyTask(), 500);
 		}

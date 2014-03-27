@@ -28,6 +28,8 @@ public class Translator {
 	public Box canvasBox;
 	public Box queryBox;
 
+	private long lastSet;
+
 	public Translator(Canvas canvas, Loader loader) {
 		this.canvas = canvas;
 		this.all = loader.all;
@@ -51,6 +53,10 @@ public class Translator {
 	}
 
 	public void setLines() {
+
+		// Don't set lines if last time was less than ~1000/60 ms ago
+		if (System.currentTimeMillis() - lastSet < 16) return;
+		lastSet = System.currentTimeMillis();
 
 		long timer = System.currentTimeMillis();
 

@@ -69,14 +69,14 @@ public class QuadTree
 	}
 
 	public ArrayList<Edge> queryRange(Box query) {
-		this.query = query.copy().grow(maxLen);
-		return queryRange();
+		ArrayList<Edge> result = new ArrayList<>();
+		queryRange(query.copy().grow(maxLen), result);
+		return result;
 	}
 
-	public ArrayList<Edge> queryRange() {
-		ArrayList<Edge> result = new ArrayList<Edge>();
+	public void queryRange(Box query, ArrayList<Edge> result) {
 
-		if(!box.overlapping(query)) return result;
+		if(!box.overlapping(query)) return;
 
 		if (children == null) {
 			for (int i = 0; i < n; i++)
@@ -84,10 +84,8 @@ public class QuadTree
 					result.add(edges[i]);
 		} else {
 			for (QuadTree child : children)
-				result.addAll(child.queryRange(query));
+				child.queryRange(query, result);
 		}
-
-		return result;
 	}
 
     public Edge findClosest(Vector target) {

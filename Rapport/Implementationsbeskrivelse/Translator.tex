@@ -1,0 +1,17 @@
+\section{Translator}
+
+Translator klassen er ansvarlig for at oversætte data fra view til model. I en naturlig forlængelse af dette holder den også styr på tilstanden (center og zoom) af det nuværende udsnit af kortet.
+
+\subsection{setLines()}
+
+\emph{setLines()} henter Edges fra model og konverterer dem til Lines som den sender til view.
+
+Indledningsvis initialiseres en \emph{Box} (\emph{queryBox}) der definerer hvilket udsnit af kortet der skal hentes fra modellen. Dernæst hentes \emph{Edges} fra model, og de konverteres til \emph{Lines} ved hjælp af \emph{translateToView()}. For at undgå at oprette unødvendigt mange \emph{Line} objekter anvendes en simplificeret object-pool (\emph{linePool}).
+
+\subsection{translateToView() og translateToModel()}
+
+\emph{translateToView()} og \emph{translateToModel()} står henholdvis for konvertering af \emph{Vectors} fra model til view, og fra view til model.
+
+\emph{translateToView()} trækker først startvektoren for \emph{queryBox} fra vektoren, og vektoren tager dermed udgangspunkt i øverste venstre hjørne af \emph{queryBox}. Derefter benyttes \emph{translate()} til at skalere vektoren fra \emph{queryBox} til \emph{canvasBox}. Endelig spejlvendes vektorens y-koordinat i forhold til \emph{canvasBox} med \emph{mirrorY()}, hvilket er nødvendigt eftersom koordinatsystemet i model og view tager udgangspunkt i henholdsvis nederste venstre hjørne og øverste venstre hjørne.
+
+\emph{translateToModel} foretager samme proces, blot i omvendt rækkefølge.

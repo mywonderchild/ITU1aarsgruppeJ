@@ -166,6 +166,12 @@ public class TestVector {
 		assertEquals(Math.sqrt(2), vector.dist(new Vector(0, 1)), delta);
 	}
 
+	@Test
+	public void zeroDistance() {
+		// Distance has been calculated correctly
+		assertEquals(0, vector.dist(new Vector(1, 2)), delta);
+	}
+
 	// Translate
 
 	@Test

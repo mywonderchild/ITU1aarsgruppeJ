@@ -6,7 +6,7 @@ import java.awt.Color;
 
 import Map.Vector;
 import Map.Box;
-import Map.Controller.Line;
+import Map.Line;
 
 public class Painter {
 

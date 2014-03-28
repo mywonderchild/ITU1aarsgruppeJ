@@ -1,11 +1,11 @@
 ./Map/Box.java
 ./Map/Controller/Groups.java
 ./Map/Controller/KeyboardHandler.java
-./Map/Controller/Line.java
 ./Map/Controller/MouseHandler.java
 ./Map/Controller/ResizeHandler.java
 ./Map/Controller/Translator.java
 ./Map/DataPurger.java
+./Map/Line.java
 ./Map/Main.java
 ./Map/Model/Edge.java
 ./Map/Model/Loader.java

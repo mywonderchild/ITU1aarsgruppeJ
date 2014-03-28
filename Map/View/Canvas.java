@@ -10,7 +10,7 @@ import java.awt.RenderingHints;
 
 import Map.Box;
 import Map.Vector;
-import Map.Controller.Line;
+import Map.Line;
 
 public class Canvas extends JPanel {
 	

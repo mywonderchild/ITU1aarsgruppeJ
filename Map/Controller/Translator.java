@@ -4,10 +4,14 @@ import java.util.ArrayList;
 
 import Map.Box;
 import Map.Vector;
+import Map.Line;
+
 import Map.Model.Loader;
 import Map.Model.QuadTree;
 import Map.Model.Edge;
+
 import Map.View.Canvas;
+
 import Map.Controller.Groups;
 
 public class Translator {

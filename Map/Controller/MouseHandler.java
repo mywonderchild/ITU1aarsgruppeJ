@@ -79,7 +79,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			translator.center = center;
 
 			// Set zoom
-			Vector ratio = selection.ratio();
 			Vector dimensions = selection.dimensions();
 			Vector zoom = dimensions.div(translator.modelBox.dimensions());
 			if (zoom.x > zoom.y)

@@ -16,5 +16,16 @@ Grunden til at vi har valgt at nulstille klassen når midterste museknap trykkes
 
 Hvis der ikke nulstilles og der trykkes på venstre eller høje museknap gøres der klar til "panning" eller "selection zoom".
 
-\subsection{mousePressed()}
+\subsection{mouseDragged()}
 
+Når musen trækkes der ikke noget hvis hverken venstre eller højre museknap er nede.
+
+Hvis venstre museknap er nede undersøges det først om musen har flyttet sig. Hvis den har flyttet sig beregnes det hvor langt den har flyttet sig fra udgangspunktet, og centrum på korudsnittet ændres forholdsmæssigt. Afsluttende tegnes kortet med det nye centrum.
+
+Hvis højre museknap er nede oprettes en boks der går fra udgangspunktet til den nuværende position. Afsluttende tegnes kortet med boksen ovenpå.
+
+\subsection{mouseReleased()}
+
+Hvis højre museknap er nede og der er oprettet en boks skal der zoomes ind på det område som boksen indhegner. Først oversættes boksen koordinater fra view til model. Dernæst beregnes det nye centrum for kortet ud fra centrum af boksen. Endelig zoomes der ind afhængigt af hvor lang den længste side af boksen er.
+
+Uanset hvad nulstilles klassen når denne metode køres.

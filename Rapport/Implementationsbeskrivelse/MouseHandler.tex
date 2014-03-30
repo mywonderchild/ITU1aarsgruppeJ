@@ -1,0 +1,20 @@
+\section{MouseHandler}
+
+\emph{MouseHandler} er ansvarlig for at håndtere de events der bliver sendt fra \emph{Canvas} når brugeren interagerer med applikationen med musen. Klassen holder styr på hvilken museknap der er trykket ned, og hvilket udgangspunkt den igangværende interaktion med kortet har.
+
+\subsection{mousePressed()}
+
+Først undersøges det hvilke museknapper der er trykket ned. Eftersom vi ikke har nogen funktionalitet knyttet til at trykke flere knapper ned samtidigt, har vi valgt at nulstille klassen i følgende tilfælde:
+
+\begin{itemize}
+  \item Hvis venstre museknap allerede er nede.
+  \item Hvis højre museknap allerede er nede.
+  \item Hvis midterste museknap trykkes ned.
+\end{itemize}
+
+Grunden til at vi har valgt at nulstille klassen når midterste museknap trykkes ned er at kortet nulstilles når man trykker på denne knap, og igangværende interaktioner med kortet derfor skal annulleres.
+
+Hvis der ikke nulstilles og der trykkes på venstre eller høje museknap gøres der klar til "panning" eller "selection zoom".
+
+\subsection{mousePressed()}
+

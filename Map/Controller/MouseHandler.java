@@ -47,7 +47,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		boolean right = SwingUtilities.isRightMouseButton(e);
 		boolean middle = SwingUtilities.isMiddleMouseButton(e);
 
-		if (left && right || leftDown && right || rightDown && left || middle) {
+		if (leftDown || rightDown || middle) {
 			reset();
 		} else if (left) {
 			// Prepare for panning

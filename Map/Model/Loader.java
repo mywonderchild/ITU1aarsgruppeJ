@@ -35,7 +35,8 @@ public class Loader {
 			groups[i] = new QuadTree(box);
 
 		try {
-			String dir = new File(".").getCanonicalPath() + "/Map/Data/";
+			String dir = "Map/Data/";
+			
 			nodePath = dir + "purged_nodes.txt";
 			edgePath = dir + "purged_edges.txt";
 			coastPath = dir + "coastline.txt";

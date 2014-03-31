@@ -7,31 +7,29 @@ Klassen gør det muligt at udføre aritmetiske operationer som addition, substra
 \emph{Vector} klassen har desuden også nogle hjælpemetoder der udfører handlinger ved at tage et eller flere \emph{Box} objekter.
 
 \begin{itemize}
-	\item Metoden \emph{translate(Box from, Box to)} tager to bokse og skalerer vektoren fra den ene boks, som den befinder sig i, til den anden boks.
-	\item Mens en anden metode \emph{mirrorY(Box box)} spejler vektoren i forhold til y-aksen i boksen.
-	\item Hvis midterste museknap trykkes ned.
-	\item \emph{isInside(Box box)} metoden tager en boks som parameter og tjekker om vektoren befinder sig i boksen.
-	\item Metoden (\emph{toArray()}) returnere værdien af x og y for en vektor i en tabel (array).
+	\item \textbf(\emph{translate(Box from, Box to)}): Translate tager to bokse og skalerer vektoren fra den ene boks, som den befinder sig i, til den anden boks.
+	\item \textbf(\emph{mirrorY(Box box)}): mirrorY spejler vektoren i forhold til y-aksen i boksen.
+	\item \textbf(\emph{isInside(Box box)}): isInside tager en boks som parameter og tjekker om vektoren befinder sig i boksen.
+	\item \textbf(\emph{toArray()}): toArray returnere værdien af x og y for en vektor i en tabel (array).
 \end{itemize}
 
 \section{Box}
 
 Klassen \emph{Box} er ligeledes en datastruktur. Ved initiliasering tages og gemmes to \emph(Vector) objekter som start og stop. De to vektorer udgør øverste venstre hjørne og nedeste højre hjørne i en boks.
 
-Metoden \emph{dimensions()} returnerer boksens dimensioner. I metoden \emph{translate(Box from, Box to)} skaleres boksen fra den boks den befinder sig i (det første parameter) til en anden boks (det andet parameter). Dette sker ved at dividerer dimensionerne fra "Box to" med dimensionerne fra "Box from" og dernæst gange dét tal med start og stop vektorerne.
+Metoden \emph{dimensions()} returnerer boksens dimensioner. I metoden \emph{translate(Box from, Box to)} skaleres boksen fra den boks den befinder sig i (det første parameter) til en anden boks (det andet parameter). Dette sker ved at dividerer dimensionerne fra "Box from" med dimensionerne fra "Box to" og dernæst gange dét tal med start og stop vektorerne.
 
-% Omvendt. Vektorerne ganges med den skaleringsværdi der netop er blevet determineret.
+\emph{flipX()} flipper x aksen og \emph{flipY()} flipper y aksen. Akserne flippes ved at bytte x eller y koordinater på start og stop vektoren med hinanden. Metoden \emph{properCorners()} bruger de to metoder til at sørge for at start vektor er det øverste venstre hjørne og stop vektor er i det nederste højre hjørne.
 
-\emph{flipX()} flipper x aksen og \emph{flipY()} flipper y aksen. Metoden \emph{properCorners()} bruger de to metoder til at sørge for at start vektor er det øverste venstre hjørne og stop vektor er i det nederste højre hjørne.
-
-% Synes det ville være godt med en lidt mere sigende beskrivelse af hvad flip metoderne egentlig gør (de bytter x eller y koordinaterne på start og stop vektoren med hinanden)
-
-Metoden \emph{relativeToAbsolute(Vector relative)} konverterer vektorens relative koordinater til absolute koordinater. Omvendt konverterer metoden \emph{absoluteToRelative(Vector relative)} absolute koordinater til relative koordinater.
-
-% Vigtigt at nævne at det er i forhold til boksen
+Metoden \emph{relativeToAbsolute(Vector relative)} konverterer vektorens relative koordinater til absolute koordinater i forhold til boksen. Omvendt konverterer metoden \emph{absoluteToRelative(Vector relative)} absolute koordinater til relative koordinater.
 
 \emph{getCenter()} metoden finder centrum af en boks. Metoden anvendes blandt andet i metoden \emph{scale(double scalar)}, som skalerer boksen, samtidig med at centrum fastholdes.
 
-Derudover indeholder klassen en række andre metoder. \emph{overlapping(Box box)} fortæller om boksen overlappes af en anden boks. \emph{ratio()} returnerer boksens ratio. \emph{toArray()} returnerer koodinaterne i et to-dimensionelt array, \emph{grow(double amount)} får boksen til at vokse i alle retninger.
+Derudover indeholder klassen en række andre metoder:
 
-% Igen kunne man overveje om det er bedre med punktopstilling af metoder for afsnittet generelt.
+\begin{itemize}
+	\item \textbf(\emph{overlapping(Box box)}): overlapping fortæller om boksen overlappes af en anden boks.
+	\item \textbf(\emph{ratio()}): boksens ratio returneres.
+	\item \textbf(\emph{toArray()}): koodinaterne returneres i et to-dimensionelt array,
+	\item \textbf(\emph{grow(double amount)}): grow får boksen til at vokse i alle retninger.
+\end{itemize}

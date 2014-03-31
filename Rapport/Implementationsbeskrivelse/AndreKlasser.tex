@@ -4,33 +4,33 @@ Hermed en overfladisk gennemgang af de klasser, som ikke gennemgås i et af de d
 
 \subsection{Generelle datastrukturer og hjælpeklasser}
 
-\begin{itemize}
-	\item [DataPurger:] Filtrerer overflødige kolonner fra den rå Krak-data og opretter nye datafiler.
-	\item [Line:] Datastruktur der definerer en linje der er klar til at blive tegnet af \emph{Painter].
-	\item [Main:] Kører programmet.
-\end{itemize}
+\begin{description}
+	\item[DataPurger:] Filtrerer overflødige kolonner fra den rå Krak-data og opretter nye datafiler.
+	\item[Line:] Datastruktur der definerer en linje der er klar til at blive tegnet af \emph{Painter}.
+	\item[Main:] Kører programmet.
+\end{description}
 
 \subsection{Model}
 
-\begin{itemize}
-	\item [Edge:] Datastruktur der definerer et vejsegment. Har også et par hjælpemetoder, der gør det nemt at initialisere \emph{Vector] objekter ud fra vejsegmentets data.
-	\item [Groups:] Indeholder definitionen af hvilke typer, der hører til hvilke grupper, og kan afgøre hvilken gruppe et vejsegment tilhører (\emph{getGroup()}), samt hvilken farve en given gruppe har (\emph{getGroupColor()}).
-	\item [Loader:] Indlæser data, opretter \emph{Nodes} og \emph{Edges} og arrangerer \emph{Edges} i \emph{QuadTrees}.
-	\item [Node:] Datastruktur der definerer en knude på kortet.
-	\item [QuadTree:] Datastruktur der indlæser \emph{Edges} rekursivt i en træstruktur bestående af kvadranter. Har også et par hjælpemetoder, der gør det nemt at hente \emph{Edges} ud af træet (\emph{queryRange()}) og bestemme hvilken \emph{Edge} i træet, der er tættest på et givent punkt (\emph{findClosest()}).
-\end{itemize}
+\begin{description}
+	\item[Edge:] Datastruktur der definerer et vejsegment. Har også et par hjælpemetoder, der gør det nemt at initialisere \emph{Vector] objekter ud fra vejsegmentets data.
+	\item[Groups:] Indeholder definitionen af hvilke typer, der hører til hvilke grupper, og kan afgøre hvilken gruppe et vejsegment tilhører (\emph{getGroup()}), samt hvilken farve en given gruppe har (\emph{getGroupColor()}).
+	\item[Loader:] Indlæser data, opretter \emph{Nodes} og \emph{Edges} og arrangerer \emph{Edges} i \emph{QuadTrees}.
+	\item[Node:] Datastruktur der definerer en knude på kortet.
+	\item[QuadTree:] Datastruktur der indlæser \emph{Edges} rekursivt i en træstruktur bestående af kvadranter. Har også et par hjælpemetoder, der gør det nemt at hente \emph{Edges} ud af træet (\emph{queryRange()}) og bestemme hvilken \emph{Edge} i træet, der er tættest på et givent punkt (\emph{findClosest()}).
+\end{description}
 
 \subsection{Controller}
 
-\begin{itemize}
-	\item [KeyboardHandler:] Håndterer interaktion via tastetur.
-	\item [ResizeHandler:] Opdaterer kortet når brugeren ændrer størrelsen på programmets vindue.
-\end{itemize}
+\begin{description}
+	\item[KeyboardHandler:] Håndterer interaktion via tastetur.
+	\item[ResizeHandler:] Opdaterer kortet når brugeren ændrer størrelsen på programmets vindue.
+\end{description}
 
 \subsection{View}
 
-\begin{itemize}
-	\item [Canvas:] Panel hvorpå kortet bliver tegnet. Holder styr på hvor lang tid det er siden, at kortet sidst blev tegnet.
-	\item [Painter:] Tegner kortet på panelet. Dette gør den ved at modtage \emph{Graphics2D} objekter og modificere dem.
-	\item [Window:] Programmets vindue der indeholder et \emph{Canvas}, hvor kortet bliver vist og en \emph{Label}, der viser hvilken vej, der er tættest på markøren.
-\end{itemize}
+\begin{description}
+	\item[Canvas:] Panel hvorpå kortet bliver tegnet. Holder styr på hvor lang tid det er siden, at kortet sidst blev tegnet.
+	\item[Painter:] Tegner kortet på panelet. Dette gør den ved at modtage \emph{Graphics2D} objekter og modificere dem.
+	\item[Window:] Programmets vindue der indeholder et \emph{Canvas}, hvor kortet bliver vist og en \emph{Label}, der viser hvilken vej, der er tættest på markøren.
+\end{description}

@@ -4,14 +4,14 @@ Klassen \emph{Vector} er en datastruktur, der repræsenterer en vektor. Klassen 
 
 Klassen gør det muligt at udføre aritmetiske operationer som addition, substraktion, multipikation og division. Derudover beregner metoden \emph{dist(Vector v)} afstanden mellem to vektorer, og metoden \emph{abs()} konverterer en vektors værdier til absolute værdier.
 
-\begin{description}
-	\item [dist(Vector v)]: Beregner afstanden mellem to vektorer.
-	\item [abs()]: Konverterer en vektors værdier til de tilsvarende absolutte værdier.
-	\item [translate(Box from, Box to)]: Tager to bokse og skalerer vektoren fra den ene boks, som den befinder sig i, til den anden boks.
-	\item [mirrorY(Box box)]: Spejler vektoren i forhold til y-aksen i boksen.
-	\item [isInside(Box box)]: Tager en boks som parameter, og tjekker om vektoren befinder sig i boksen.
-	\item [toArray()]: Returnerer værdien af x og y for en vektor i en tabel (array).
-\end{description}
+\begin{itemize}
+	\item \textbf{dist(Vector v)}: Beregner afstanden mellem to vektorer.
+	\item \textbf{abs()}: Konverterer en vektors værdier til de tilsvarende absolutte værdier.
+	\item \textbf{translate(Box from, Box to)}: Tager to bokse og skalerer vektoren fra den ene boks, som den befinder sig i, til den anden boks.
+	\item \textbf{mirrorY(Box box)}: Spejler vektoren i forhold til y-aksen i boksen.
+	\item \textbf{isInside(Box box)}: Tager en boks som parameter, og tjekker om vektoren befinder sig i boksen.
+	\item \textbf{toArray()}: Returnerer værdien af x og y for en vektor i en tabel (array).
+\end{itemize}
 
 Klassen gør det også muligt at udføre aritmetiske operationer som addition, subtraktion, multiplikation og division. 
 
@@ -21,18 +21,18 @@ Klassen \emph{Box} er ligeledes en datastruktur. En box består af to vektorer s
 
 Derudover indeholder klassen en række metoder:
 
-\begin{description}
-	\item [dimensions()]: Returnerer boksens dimensioner.
-	\item [translate(Box from, Box to)]: Skalerer fra from-boksen til to-boxen.
-	\item [flipX()]: Flipper x-aksen ved at bytte om på x-koordinaterne i start og stop.
-	\item [flipY()]: Flipper y-aksen ved at bytte om på y-koordinaterne i start og stop.
-	\item [properCorners()]: Benytter flip-funktionerne til at sikre at start og stop repræsenterer de rigtige vectorer.
-	\item [getCenter()]: Finder centrum af en boks.
-	\item [scale(double scalar)]: skalerer boksen i forhold til den givne scalar.
-	\item [relativeToAbsolute(Vector relative)]: Konverterer vektorens relative koordinater til absolute koordinater, i forhold til boksen.
-	\item [absoluteToRelative(Vector absolute)]:Konverterer vektorens absolute koordinater, i forhold til boksen, til relative koordinater.
-	\item [overlapping(Box box)]: Overlapping fortæller om boksen overlappes af en anden boks.
-	\item [ratio()]: Boksens ratio returneres.
-	\item [toArray()]: Boksens koordinater returneres i et to-dimensionelt array.
-	\item [grow(double amount)]: Får boksen til at vokse i alle retninger.
-\end{description}
+\begin{itemize}
+	\item \textbf{dimensions()}: Returnerer boksens dimensioner.
+	\item \textbf{translate(Box from, Box to)}: Skalerer fra from-boksen til to-boxen.
+	\item \textbf{flipX()}: Flipper x-aksen ved at bytte om på x-koordinaterne i start og stop.
+	\item \textbf{flipY()}: Flipper y-aksen ved at bytte om på y-koordinaterne i start og stop.
+	\item \textbf{properCorners()}: Benytter flip-funktionerne til at sikre at start og stop repræsenterer de rigtige vectorer.
+	\item \textbf{getCenter()}: Finder centrum af en boks.
+	\item \textbf{scale(double scalar)}: skalerer boksen i forhold til den givne scalar.
+	\item \textbf{relativeToAbsolute(Vector relative)}: Konverterer vektorens relative koordinater til absolute koordinater, i forhold til boksen.
+	\item \textbf{absoluteToRelative(Vector absolute)}:Konverterer vektorens absolute koordinater, i forhold til boksen, til relative koordinater.
+	\item \textbf{overlapping(Box box)}: Overlapping fortæller om boksen overlappes af en anden boks.
+	\item \textbf{ratio()}: Boksens ratio returneres.
+	\item \textbf{toArray()}: Boksens koordinater returneres i et to-dimensionelt array.
+	\item \textbf{grow(double amount)}: Får boksen til at vokse i alle retninger.
+\end{itemize}

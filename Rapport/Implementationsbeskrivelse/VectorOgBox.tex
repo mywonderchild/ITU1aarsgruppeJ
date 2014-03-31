@@ -16,14 +16,22 @@ Metoden (\emph{toArray()}) returnere værdien af x og y for en vektor i en tabel
 
 \section{Box}
 
-Klassen \emph{Box} er ligeledes en datastruktur. Ved initiliasering tages og gemmes to \emph(Vector) objekter som start og stop. De to vektorer udgør en boks.
+Klassen \emph{Box} er ligeledes en datastruktur. Ved initiliasering tages og gemmes to \emph(Vector) objekter som start og stop. De to vektorer udgør øverste venstre hjørne og nedeste højre hjørne i en boks.
 
-Metoden \emph{dimensions()} returnerer boksens dimensioner. I metoden \emph{translate(Box from, Box to)} oversættes den nuværende boks til en anden boks. Dette sker ved at dividerer dimensionerne fra "Box to" med dimensionerne fra "Box from" og dernæst gange dét tal med start og stop vektorerne.
+Metoden \emph{dimensions()} returnerer boksens dimensioner. I metoden \emph{translate(Box from, Box to)} skaleres boksen fra den boks den befinder sig i (det første parameter) til en anden boks (det andet parameter). Dette sker ved at dividerer dimensionerne fra "Box to" med dimensionerne fra "Box from" og dernæst gange dét tal med start og stop vektorerne.
+
+% Omvendt. Vektorerne ganges med den skaleringsværdi der netop er blevet determineret.
 
 \emph{flipX()} flipper x aksen og \emph{flipY()} flipper y aksen. Metoden \emph{properCorners()} bruger de to metoder til at sørge for at start vektor er det øverste venstre hjørne og stop vektor er i det nederste højre hjørne.
 
+% Synes det ville være godt med en lidt mere sigende beskrivelse af hvad flip metoderne egentlig gør (de bytter x eller y koordinaterne på start og stop vektoren med hinanden)
+
 Metoden \emph{relativeToAbsolute(Vector relative)} konverterer vektorens relative koordinater til absolute koordinater. Omvendt konverterer metoden \emph{absoluteToRelative(Vector relative)} absolute koordinater til relative koordinater.
 
-\emph{getCenter()} metoden finder centrum af en boks. Metoden indgår bl.a. i metoden \emph{scale(double scalar)}, som skalerer boksen, samtidig med at fastholde centrum. 
+% Vigtigt at nævne at det er i forhold til boksen
 
-Derudover indeholder klassen en række andre metoder. \emph{overlapping(Box box)} fortæller om boksen overlappes af en anden boks.\emph{ratio()} returnerer boksens ratio.  \emph{toArray()} returnerer koodinaterne i et to-dimensionelt array, \emph{grow(double amount)} får boksen til at vokse i alle retninger m.m.
+\emph{getCenter()} metoden finder centrum af en boks. Metoden anvendes blandt andet i metoden \emph{scale(double scalar)}, som skalerer boksen, samtidig med at centrum fastholdes.
+
+Derudover indeholder klassen en række andre metoder. \emph{overlapping(Box box)} fortæller om boksen overlappes af en anden boks. \emph{ratio()} returnerer boksens ratio. \emph{toArray()} returnerer koodinaterne i et to-dimensionelt array, \emph{grow(double amount)} får boksen til at vokse i alle retninger.
+
+% Igen kunne man overveje om det er bedre med punktopstilling af metoder for afsnittet generelt.

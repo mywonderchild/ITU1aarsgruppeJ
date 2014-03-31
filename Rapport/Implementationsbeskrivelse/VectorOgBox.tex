@@ -2,8 +2,6 @@
 
 Klassen \emph{Vector} er en datastruktur, der repræsenterer en vektor. Klassen indeholder en række hjælpemetoder, der bl.a. tillader beregninger med vektorer.
 
-Klassen gør det muligt at udføre aritmetiske operationer som addition, substraktion, multipikation og division. Derudover beregner metoden \emph{dist(Vector v)} afstanden mellem to vektorer, og metoden \emph{abs()} konverterer en vektors værdier til absolute værdier.
-
 \begin{itemize}
 	\item \textbf{dist(Vector v)}: Beregner afstanden mellem to vektorer.
 	\item \textbf{abs()}: Konverterer en vektors værdier til de tilsvarende absolutte værdier.
@@ -17,22 +15,22 @@ Klassen gør det også muligt at udføre aritmetiske operationer som addition, s
 
 \section{Box}
 
-Klassen \emph{Box} er ligeledes en datastruktur. En box består af to vektorer start og stop, der udgør henholdsvis øverste venstre hjørne og nedeste højre hjørne af boxen.
+Klassen \emph{Box} er ligeledes en datastruktur. En box består af to vektorer, start og stop, der udgør henholdsvis øverste venstre hjørne og nedeste højre hjørne af boxen.
 
 Derudover indeholder klassen en række metoder:
 
 \begin{itemize}
 	\item \textbf{dimensions()}: Returnerer boksens dimensioner.
 	\item \textbf{translate(Box from, Box to)}: Skalerer fra from-boksen til to-boxen.
-	\item \textbf{flipX()}: Flipper x-aksen ved at bytte om på x-koordinaterne i start og stop.
-	\item \textbf{flipY()}: Flipper y-aksen ved at bytte om på y-koordinaterne i start og stop.
-	\item \textbf{properCorners()}: Benytter flip-funktionerne til at sikre at start og stop repræsenterer de rigtige vectorer.
+	\item \textbf{flipX()}: Bytter om på x-koordinaterne i start og stop.
+	\item \textbf{flipY()}:  Bytter o på y-koordinaterne i start og stop.
+	\item \textbf{properCorners()}: Benytter flip-funktionerne til at sikre at start og stop repræsenterer de rigtige vektorer.
 	\item \textbf{getCenter()}: Finder centrum af en boks.
-	\item \textbf{scale(double scalar)}: skalerer boksen i forhold til den givne scalar.
-	\item \textbf{relativeToAbsolute(Vector relative)}: Konverterer vektorens relative koordinater til absolute koordinater, i forhold til boksen.
-	\item \textbf{absoluteToRelative(Vector absolute)}:Konverterer vektorens absolute koordinater, i forhold til boksen, til relative koordinater.
-	\item \textbf{overlapping(Box box)}: Overlapping fortæller om boksen overlappes af en anden boks.
-	\item \textbf{ratio()}: Boksens ratio returneres.
-	\item \textbf{toArray()}: Boksens koordinater returneres i et to-dimensionelt array.
-	\item \textbf{grow(double amount)}: Får boksen til at vokse i alle retninger.
+	\item \textbf{scale(double scalar)}: Skalerer boksen i forhold til den givne skalar.
+	\item \textbf{relativeToAbsolute(Vector relative)}: Konverterer vektorens relative koordinater, i forhold til boksen, til absolutte koordinater.
+	\item \textbf{absoluteToRelative(Vector absolute)}:Konverterer vektorens absolutte koordinater til relative koordinater, i forhold til boksen.
+	\item \textbf{overlapping(Box box)}: Afgør om boksen overlappes af en anden boks.
+	\item \textbf{ratio()}: Returnerer den relative forskel mellem højden og bredden af boxen som en vektor.
+	\item \textbf{toArray()}: Returnerer boksens koordinater i et to-dimensionelt array.
+	\item \textbf{grow(double amount)}: Udvider boxen i både længden og bredden.
 \end{itemize}

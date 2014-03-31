@@ -1,6 +1,6 @@
 \section{Andre klasser}
 
-Hermed en overfladisk gennemgang af de klasser, som ikke gennemgås i et af de dedikerede afsnit. Klasserne er delt op i moduler, og dernæst listet i alfabetisk orden.
+Hermed en overfladisk gennemgang af de klasser, som ikke gennemgås i et af de dedikerede afsnit. Klasserne er delt op i moduler, og dernæst listet i alfabetisk rækkefølge.
 
 \subsection{Generelle datastrukturer og hjælpeklasser}
 
@@ -14,16 +14,16 @@ Hermed en overfladisk gennemgang af de klasser, som ikke gennemgås i et af de d
 
 \begin{itemize}
 	\item \textbf{Edge:} Datastruktur der definerer et vejsegment. Har også et par hjælpemetoder, der gør det nemt at initialisere \emph{Vector} objekter ud fra vejsegmentets data.
-	\item \textbf{Groups:} Indeholder definitionen af hvilke typer, der hører til hvilke grupper, og kan afgøre hvilken gruppe et vejsegment tilhører (\emph{getGroup()}), samt hvilken farve en given gruppe har (\emph{getGroupColor()}).
-	\item \textbf{Loader:} Indlæser data, opretter \emph{Nodes} og \emph{Edges} og arrangerer \emph{Edges} i \emph{QuadTrees}.
-	\item \textbf{Node:} Datastruktur der definerer en knude på kortet.
-	\item \textbf{QuadTree:} Datastruktur der indlæser \emph{Edges} rekursivt i en træstruktur bestående af kvadranter. Har også et par hjælpemetoder, der gør det nemt at hente \emph{Edges} ud af træet (\emph{queryRange()}) og bestemme hvilken \emph{Edge} i træet, der er tættest på et givent punkt (\emph{findClosest()}).
+	\item \textbf{Groups:} Indeholder definitionen af hvilke vejtyper, der hører til hvilke vejgrupper, og kan afgøre hvilken vejgruppe et vejsegment tilhører (\emph{getGroup()}), samt hvilken farve en given vejgruppe har (\emph{getGroupColor()}).
+	\item \textbf{Loader:} Indlæser data, opretter \emph{Nodes} og \emph{Edges} og arrangerer \emph{Edges} i \emph{quadtrees}.
+	\item \textbf{Node:} Datastruktur der definerer et knudepunkt på kortet.
+	\item \textbf{quadtree:} Datastruktur der indlæser \emph{Edges} rekursivt i en træstruktur bestående af kvadranter. Har også et par hjælpemetoder, der gør det nemt at hente \emph{Edges} ud af træet (\emph{queryRange()}) og bestemme hvilken \emph{Edge} i træet, der er tættest på et givent punkt (\emph{findClosest()}).
 \end{itemize}
 
 \subsection{Controller}
 
 \begin{itemize}
-	\item \textbf{KeyboardHandler:} Håndterer interaktion via tastetur.
+	\item \textbf{KeyboardHandler:} Håndterer interaktion via tastatur.
 	\item \textbf{ResizeHandler:} Opdaterer kortet når brugeren ændrer størrelsen på programmets vindue.
 \end{itemize}
 
@@ -31,6 +31,6 @@ Hermed en overfladisk gennemgang af de klasser, som ikke gennemgås i et af de d
 
 \begin{itemize}
 	\item \textbf{Canvas:} Panel hvorpå kortet bliver tegnet. Holder styr på hvor lang tid det er siden, at kortet sidst blev tegnet.
-	\item \textbf{Painter:} Tegner kortet på panelet. Dette gør den ved at modtage \emph{Graphics2D} objekter og modificere dem.
-	\item \textbf{Window:} Programmets vindue der indeholder et \emph{Canvas}, hvor kortet bliver vist og en \emph{Label}, der viser hvilken vej, der er tættest på markøren.
+	\item \textbf{Painter:} Tegner kortet på panelet. Dette gør den ved at modtage \emph{Graphics2D} objekter og modificerer(tegner på) dem.
+	\item \textbf{Window:} Programmets vindue der indeholder et \emph{Canvas}, hvor kortet bliver vist og en \emph{Label}, der viser hvilken vej, som er tættest på markøren.
 \end{itemize}

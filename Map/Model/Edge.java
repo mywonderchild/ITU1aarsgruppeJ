@@ -4,7 +4,7 @@ import java.lang.RuntimeException;
 import java.util.StringTokenizer;
 
 import Map.Vector;
-import Map.Controller.Groups;
+import Map.Model.Groups;
 
 public class Edge {
 	private final Node START, STOP;

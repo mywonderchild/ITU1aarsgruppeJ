@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 
 import Map.Vector;
 import Map.Box;
-import Map.Controller.Groups;
+import Map.Model.Groups;
 
 public class Loader {
 

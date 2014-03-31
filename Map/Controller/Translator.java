@@ -12,7 +12,7 @@ import Map.Model.Edge;
 
 import Map.View.Canvas;
 
-import Map.Controller.Groups;
+import Map.Model.Groups;
 
 public class Translator {
 	private Canvas canvas;

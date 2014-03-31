@@ -1,4 +1,4 @@
-package Map.Controller;
+package Map.Model;
 
 import java.awt.Color;
 

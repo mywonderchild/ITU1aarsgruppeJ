@@ -6,12 +6,12 @@ Klassen gør det muligt at udføre aritmetiske operationer som addition, substra
 
 \emph{Vector} klassen har desuden også nogle hjælpemetoder der udfører handlinger ved at tage et eller flere \emph{Box} objekter.
 
-\begin{description}
-	\item[translate(Box from, Box to)]: Translate tager to bokse og skalerer vektoren fra den ene boks, som den befinder sig i, til den anden boks.
-	\item[mirrorY(Box box)]: mirrorY spejler vektoren i forhold til y-aksen i boksen.
-	\item[isInside(Box box)]: isInside tager en boks som parameter og tjekker om vektoren befinder sig i boksen.
-	\item[toArray()]: toArray returnere værdien af x og y for en vektor i en tabel (array).
-\end{description}
+\begin{itemize}
+	\item \itembf{translate(Box from, Box to)}: Translate tager to bokse og skalerer vektoren fra den ene boks, som den befinder sig i, til den anden boks.
+	\item \itembf{mirrorY(Box box)}: mirrorY spejler vektoren i forhold til y-aksen i boksen.
+	\item \itembf{isInside(Box box)}: isInside tager en boks som parameter og tjekker om vektoren befinder sig i boksen.
+	\item \itembf{toArray()}: toArray returnere værdien af x og y for en vektor i en tabel (array).
+\end{itemize}
 
 \section{Box}
 
@@ -27,9 +27,9 @@ Metoden \emph{relativeToAbsolute(Vector relative)} konverterer vektorens relativ
 
 Derudover indeholder klassen en række andre metoder:
 
-\begin{description}
-	\item[overlapping(Box box)]: Overlapping fortæller om boksen overlappes af en anden boks.
-	\item[ratio()]: Boksens ratio returneres.
-	\item[toArray()]: Boksens koordinater returneres i et to-dimensionelt array.
-	\item[grow(double amount)]: Får boksen til at vokse i alle retninger.
-\end{description}
+\begin{itemize}
+	\item \itembf{overlapping(Box box)}: Overlapping fortæller om boksen overlappes af en anden boks.
+	\item \itembf{ratio()}: Boksens ratio returneres.
+	\item \itembf{toArray()}: Boksens koordinater returneres i et to-dimensionelt array.
+	\item \itembf{grow(double amount)}: Får boksen til at vokse i alle retninger.
+\end{itemize}

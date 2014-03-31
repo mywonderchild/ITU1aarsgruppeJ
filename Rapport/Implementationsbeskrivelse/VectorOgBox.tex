@@ -1,18 +1,18 @@
 \section{Vector}
 
-Klassen \emph{Vector} er en datastruktur, der tager og gemmer punkter i et x og y felt som vektorer. Klassen indeholder en række metoder der bl.a. tillader beregninger med vektorer.
-% x og y felterne er ikke vektorer men udgør tilsammen vektorens størrelse og retning.
+Klassen \emph{Vector} er en datastruktur, der tager og gemmer punkter i et x og y felt som udgør vektorens størrelse og retning. Klassen indeholder en række metoder der bl.a. tillader beregninger med vektorer.
 
-Klassen gør det muligt at udføre aritmetiske operationer som addition, substraktion, multipikation og division blandt vektorer, samt multiplikation og division mellem en vektor og skalar. Derudover beregner metoden \emph{dist(Vector v)} afstanden mellem to vektorer, og metoden \emph{abs()} konverterer en vektors værdier til absolute værdier.
-% Behøver ikke nødvendigvis at nævne alle metoder; måske skære lidt ned og beskrive mere overfladisk?
+Klassen gør det muligt at udføre aritmetiske operationer som addition, substraktion, multipikation og division. Derudover beregner metoden \emph{dist(Vector v)} afstanden mellem to vektorer, og metoden \emph{abs()} konverterer en vektors værdier til absolute værdier.
 
 \emph{Vector} klassen har desuden også nogle hjælpemetoder der udfører handlinger ved at tage et eller flere \emph{Box} objekter.
 
-Metoden \emph{translate(Box from, Box to)} tager to bokse og skalerer vektoren fra den ene boks, som den befinder sig i, til den anden boks. Mens en anden metode \emph{mirrorY(Box box)} spejler vektoren i forhold til y-aksen i boksen. \emph{isInside(Box box)} metoden tager en boks som parameter og tjekker om vektoren befinder sig i boksen.
-
-Metoden (\emph{toArray()}) returnere værdien af x og y for en vektor i en tabel (array).
-
-% Er lidt usikker på hvorvidt det er en liste af metoder eller en sammenhængende tekst. Måske burde det stilles op i punktform?
+\begin{itemize}
+	\item Metoden \emph{translate(Box from, Box to)} tager to bokse og skalerer vektoren fra den ene boks, som den befinder sig i, til den anden boks.
+	\item Mens en anden metode \emph{mirrorY(Box box)} spejler vektoren i forhold til y-aksen i boksen.
+	\item Hvis midterste museknap trykkes ned.
+	\item \emph{isInside(Box box)} metoden tager en boks som parameter og tjekker om vektoren befinder sig i boksen.
+	\item Metoden (\emph{toArray()}) returnere værdien af x og y for en vektor i en tabel (array).
+\end{itemize}
 
 \section{Box}
 

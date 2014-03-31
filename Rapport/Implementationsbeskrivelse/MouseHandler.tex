@@ -1,10 +1,8 @@
 \section{MouseHandler}
-
-\emph{MouseHandler} er ansvarlig for at håndtere de events der bliver sendt fra \emph{Canvas} når brugeren interagerer med applikationen med musen. Klassen holder styr på hvilken museknap der er trykket ned, og hvilket udgangspunkt den igangværende interaktion med kortet har.
+\emph{MouseHandler} er ansvarlig for at håndtere de events, der bliver sendt fra \emph{Canvas}, når brugeren interagerer med applikationen ved hjælp af musen. Klassen holder styr på hvilken museknap, der er trykket ned, og hvilket udgangspunkt den igangværende interaktion med kortet har.
 
 \subsection{mousePressed()}
-
-Først undersøges det hvilke museknapper der er trykket ned. Eftersom vi ikke har nogen funktionalitet knyttet til at trykke flere knapper ned samtidigt, har vi valgt at nulstille klassen i følgende tilfælde:
+Først undersøges det hvilke museknapper, der er trykket ned. Eftersom vi ikke har nogen funktionalitet knyttet til at trykke flere knapper ned samtidigt, har vi valgt at nulstille klassen i følgende tilfælde:
 
 \begin{itemize}
 	\item Hvis venstre museknap allerede er nede.
@@ -12,20 +10,18 @@ Først undersøges det hvilke museknapper der er trykket ned. Eftersom vi ikke h
 	\item Hvis midterste museknap trykkes ned.
 \end{itemize}
 
-Grunden til at vi har valgt at nulstille klassen når midterste museknap trykkes ned er at kortet nulstilles når man trykker på denne knap, og igangværende interaktioner med kortet derfor skal annulleres.
+Grunden til at vi har valgt at nulstille klassen når midterste museknap trykkes ned, er at kortet nulstilles, når man trykker på denne knap, og igangværende interaktioner med kortet derfor skal annulleres.
 
-Hvis der ikke nulstilles og der trykkes på venstre eller høje museknap gøres der klar til "panning" eller "selection zoom".
+Hvis der ikke nulstilles, og der trykkes på venstre eller høje museknap, gøres der klar til ''panning'' eller ''selection zoom''.
 
 \subsection{mouseDragged()}
+Når musen trækkes, sker der ikke noget, hvis hverken venstre eller højre museknap er nede.
 
-Når musen trækkes der ikke noget hvis hverken venstre eller højre museknap er nede.
+Hvis venstre museknap er nede, undersøges det først om musen har flyttet sig. Hvis den har flyttet sig, beregnes det, hvor langt den har flyttet sig fra udgangspunktet, og centrum på korudsnittet ændres forholdsmæssigt. Afsluttende tegnes kortet med det nye centrum.
 
-Hvis venstre museknap er nede undersøges det først om musen har flyttet sig. Hvis den har flyttet sig beregnes det hvor langt den har flyttet sig fra udgangspunktet, og centrum på korudsnittet ændres forholdsmæssigt. Afsluttende tegnes kortet med det nye centrum.
-
-Hvis højre museknap er nede oprettes en boks der går fra udgangspunktet til den nuværende position. Afsluttende tegnes kortet med boksen ovenpå.
+Hvis højre museknap er nede, oprettes en boks, der går fra udgangspunktet til den nuværende position. Afsluttende tegnes kortet med boksen ovenpå.
 
 \subsection{mouseReleased()}
+Hvis højre museknap er nede, og der er oprettet en boks, skal der zoomes ind på det område, som boksen indhegner. Først oversættes boksen koordinater fra view til model. Dernæst beregnes det nye centrum for kortet ud fra centrum af boksen. Endelig zoomes der ind afhængigt af, hvor lang den længste side af boksen er.
 
-Hvis højre museknap er nede og der er oprettet en boks skal der zoomes ind på det område som boksen indhegner. Først oversættes boksen koordinater fra view til model. Dernæst beregnes det nye centrum for kortet ud fra centrum af boksen. Endelig zoomes der ind afhængigt af hvor lang den længste side af boksen er.
-
-Uanset hvad nulstilles klassen når denne metode køres.
+Uanset hvad nulstilles klassen, når denne metode køres.

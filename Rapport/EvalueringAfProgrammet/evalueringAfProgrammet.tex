@@ -4,14 +4,14 @@ Programmet understøtter alle de påkrævede features, såvel som flere af de va
 
 Programmet er \~5 eller færre sekunder om at indlæse data ved opstart, hvilket vi synes er acceptabelt taget i betragtning af at data er lagret i rå tekstfiler.
 
-Vi har arbejdet en hel del med at få applikationen til at have en hurtig opdateringsfrekvens uanset udsnit og type af brugerinteraktion, og det er vores indtryk at det langt hen ad vejen er lykkedes. Dog kan der opstå relativt lave opdateringsfrekvenser når der navigeres i særligt krævende udsnit af kortet (f.eks. helt zoomet ud, eller overblik over København).
+Vi har arbejdet en hel del med at få applikationen til at have en hurtig opdateringsfrekvens uanset udsnit og type af brugerinteraktion, og det er vores indtryk, at det langt hen ad vejen er lykkedes. Dog kan der opstå relativt lave opdateringsfrekvenser, når der navigeres i særligt krævende udsnit af kortet (f.eks. helt zoomet ud eller overblik over København).
 
 \section{Fejl og mangler}
 
-En væsentligt fejl i vores program er at algoritmen der afgør hvilken vej der er tættest på musemarkøren er unøjagtig i langt de fleste tilfælde fordi den ikke beregner afstanden mellem markøren og vejen på en matematisk korrekt måde. I stedet måler den afstanden mellem markøren og vejens centrum, hvilket i mange tilfælde er et rimeligt skøn, men der er intet matematisk belæg for at det er den korrekte vej der bliver fundet. Havde vi haft mere tid ville vi have beregnet afstanden mellem markør og vej korrekt.
+En væsentligt fejl i vores program er, at algoritmen, der afgør hvilken vej, der er tættest på musemarkøren, er unøjagtig i langt de fleste tilfælde, fordi den ikke beregner afstanden mellem markøren og vejen på en matematisk korrekt måde. I stedet måler den afstanden mellem markøren og vejens centrum, hvilket i mange tilfælde er et rimeligt skøn, men der er intet matematisk belæg for at det er den korrekte vej, der bliver fundet. Havde vi haft mere tid, ville vi have beregnet afstanden mellem markør og vej korrekt.
 
-Vi er som nævn ovenfor heller ikke helt tilfredse med opdateringsfrekvensen. Vi kan dog ikke umiddelbart komme i tanker om nogen optimering af programmet der vil medføre væsentlige forbedringer uden at ændre programmets funktionalitet. Vores program benytter sig slet ikke af at "pre-rendrere" kortet, og dette kunne f.eks. implementeres ved at definere et begrænset antal zoom-niveauer.
+Vi er som nævn ovenfor heller ikke helt tilfredse med opdateringsfrekvensen. Vi kan dog ikke umiddelbart komme i tanker om nogen optimering af programmet, der vil medføre væsentlige forbedringer uden at ændre programmets funktionalitet. Vores program benytter sig slet ikke af at ''pre-rendrere'' kortet, og dette kunne f.eks. implementeres ved at definere et begrænset antal zoom-niveauer.
 
 \section{Brugervenlighed}
 
-Vores program giver ikke brugeren nogen informationer om hvad mulighederne for interaktion er, og det er derfor op til brugeren selv at udforske programmets features. Særligt galt kunne det gå hvis brugeren ikke er bekendt med digitale kort generelt, og derfor ikke har en forhåndsviden om typiske muligheder for interaktion i denne type program.
+Vores program giver ikke brugeren nogen informationer om hvad mulighederne for interaktion er, og det er derfor op til brugeren selv at udforske programmets features. Særligt galt kunne det gå, hvis brugeren ikke er bekendt med digitale kort generelt, og derfor ikke har en forhåndsviden om typiske muligheder for interaktion i denne type program.

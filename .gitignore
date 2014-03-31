@@ -6,7 +6,7 @@
 *.bat
 # Tex
 *.aux
-*.pdf
+main.pdf
 *.log
 *.out
 *.gz

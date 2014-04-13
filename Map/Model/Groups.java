@@ -2,6 +2,8 @@ package Map.Model;
 
 import java.awt.Color;
 
+import Map.Model.Edge;
+
 public class Groups {
 
 	public final static int[][] GROUPS;
@@ -53,5 +55,9 @@ public class Groups {
 			default:
 				throw new RuntimeException("Road group " + group + " is not recognized");
 		}
+	}
+
+	public static Color getColor(Edge edge) throws RuntimeException {
+		return getGroupColor(getGroup(edge.TYPE));
 	}
 }

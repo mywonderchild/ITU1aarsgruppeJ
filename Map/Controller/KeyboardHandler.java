@@ -12,12 +12,12 @@ import Map.Box;
 public class KeyboardHandler{
 
 	private Canvas canvas;
-	private final Translator translator;
+	private final Tiler tiler;
 
-	public KeyboardHandler(Canvas canvas, Translator translator){
+	public KeyboardHandler(Canvas canvas, Tiler tiler){
 
 		this.canvas = canvas;
-		this.translator = translator;
+		this.tiler = tiler;
 		
 		Action zoomOut = new Zoomer(1.2);
 		Action zoomIn = new Zoomer(0.8);
@@ -52,15 +52,16 @@ public class KeyboardHandler{
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			translator.zoom *= zoom;
-			translator.setLines();
+			tiler.setZoom(tiler.zoom * zoom);
+			canvas.repaint();
 		};
 	};
 
 	private class ZoomResetter extends AbstractAction{
 
 		public void actionPerformed(ActionEvent e) {
-			translator.reset();
+			tiler.reset();
+			canvas.repaint();
 		};
 	};
 
@@ -73,12 +74,12 @@ public class KeyboardHandler{
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			Box box = translator.modelBox;
-			Vector center = translator.translateToModel(translator.canvasBox.getCenter().add(distance))
-				.sub(translator.translateToModel(translator.canvasBox.getCenter()))
+			Box box = tiler.modelBox;
+			Vector center = tiler.translateToModel(tiler.viewBox.getCenter().add(distance))
+				.sub(tiler.translateToModel(tiler.viewBox.getCenter()))
 				.div(box.dimensions());
-			translator.center = translator.center.copy().sub(center);
-			translator.setLines();
+			tiler.center = tiler.center.copy().sub(center);
+			canvas.repaint();
 		};
 	};
 

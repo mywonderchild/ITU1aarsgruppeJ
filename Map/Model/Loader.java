@@ -19,14 +19,17 @@ public class Loader {
 	public final QuadTree all;
 	public final QuadTree[] groups;
 	StringTokenizer tokenizer;
+	Vector min, max;
+	Box box;
 
 	public Loader() {
 		
 		nodes = new Node[700000];
 
-		Vector start = new Vector(442254.35659, 6049914.43018);
-		Vector stop = new Vector(892658.21706, 6402050.98297);
-		Box box = new Box(start, stop);
+		min = new Vector(442254.35659, 6049914.43018);
+		max = new Vector(892658.21706, 6402050.98297);
+		Vector stop = max.sub(min);
+		box = new Box(new Vector(0, 0), stop);
 
 		all = new QuadTree(box);
 
@@ -82,6 +85,7 @@ public class Loader {
 
 		int id = readInt();
 		Vector vector = new Vector(readDouble(), readDouble());
+		vector.sub(min).mirrorY(box);
 		Node node = new Node(vector, id);
 		
 		nodes[node.KDV_ID] = node;
@@ -105,8 +109,8 @@ public class Loader {
 
 		tokenizer = new StringTokenizer(line, ",");
 
-		Node start = new Node(new Vector(readDouble(), readDouble()));
-		Node stop = new Node(new Vector(readDouble(), readDouble()));
+		Node start = new Node((new Vector(readDouble(), readDouble())).sub(min).mirrorY(box));
+		Node stop = new Node((new Vector(readDouble(), readDouble())).sub(min).mirrorY(box));
 		Edge edge = new Edge(start, stop, null, 81);
 
 		all.insert(edge);

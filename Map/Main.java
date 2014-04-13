@@ -20,13 +20,15 @@ public class Main
 		Canvas canvas = new Canvas();
 		Window window = new Window(canvas);
 
-		// Translator...
-		Translator translator = new Translator(canvas, loader);
+		// Tiler
+		Tiler tiler = new Tiler(1, new Vector(0.5, 0.5), canvas.getBox(), loader.all.getBox(), loader);
+		canvas.tiler = tiler;
+		canvas.repaint();
 
 		// Event listeners
-		KeyboardHandler keyboardHandler = new KeyboardHandler(canvas, translator);
-		canvas.addComponentListener(new ResizeHandler(canvas, translator));
-		MouseHandler mouseHandler = new MouseHandler(window, translator);
+		KeyboardHandler keyboardHandler = new KeyboardHandler(canvas, tiler);
+		canvas.addComponentListener(new ResizeHandler(canvas, tiler));
+		MouseHandler mouseHandler = new MouseHandler(window, tiler);
 		canvas.addMouseListener(mouseHandler);
 		canvas.addMouseMotionListener(mouseHandler);
 		canvas.addMouseWheelListener(mouseHandler);

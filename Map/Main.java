@@ -21,7 +21,7 @@ public class Main
 		Window window = new Window(canvas);
 
 		// Tiler
-		Tiler tiler = new Tiler(1, new Vector(0.5, 0.5), canvas.getBox(), loader.all.getBox(), loader);
+		Tiler tiler = new Tiler(1.3, new Vector(0.5, 0.5), canvas.getBox(), loader.all.getBox(), loader);
 		canvas.tiler = tiler;
 		canvas.repaint();
 

@@ -100,10 +100,10 @@ public class Tiler {
 
 		// Determine which tiles are inside section
 		int[][] query = new int[2][2];
-		query[0][0] = (int)(section.start.x / tileSize);
-		query[0][1] = (int)(section.start.y / tileSize);
-		query[1][0] = (int)Math.ceil(section.stop.x / tileSize);
-		query[1][1] = (int)Math.ceil(section.stop.y / tileSize);
+		query[0][0] = Math.max((int)(section.start.x / tileSize), 0);
+		query[0][1] = Math.max((int)(section.start.y / tileSize), 0);
+		query[1][0] = Math.min((int)Math.ceil(section.stop.x / tileSize), tiles.length);
+		query[1][1] = Math.min((int)Math.ceil(section.stop.y / tileSize), tiles[0].length);
 
 		// Return the tiles
 		int width = query[1][0] - query[0][0];

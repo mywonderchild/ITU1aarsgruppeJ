@@ -60,7 +60,6 @@ public class Loader {
 			groups[i] = new QuadTree(quadBox);
 
 		// Reset node vectors
-		System.out.println(dataBox);
 		for (Node node : nodes.values())
 			resetVector(node.VECTOR);
 

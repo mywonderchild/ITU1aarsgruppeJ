@@ -22,7 +22,7 @@ public class Tiler {
 	public Box mapBox, viewBox, modelBox, section;
 	public int tileSize = 250;
 	public BufferedImage[][] tiles;
-	public double zoom, resetZoom;
+	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5;
 	public Vector center, resetCenter;
 	public QuadTree all;
 	private QuadTree[] groups;
@@ -52,7 +52,8 @@ public class Tiler {
 	}
 
 	public void setZoom(double zoom) {
-		if (zoom == this.zoom) return;
+		if (zoom > maxZoom) zoom = maxZoom;
+		if (zoom < minZoom) zoom = minZoom;
 		this.zoom = zoom;
 		Vector viewDimensions = viewBox.dimensions();
 		Vector mapDimensions = viewDimensions

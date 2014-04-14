@@ -2,6 +2,7 @@ package Map.Model;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.HashMap;
 import java.io.IOException;
 import java.io.File;
 import java.io.BufferedReader;
@@ -15,31 +16,19 @@ import Map.Model.Groups;
 public class Loader {
 
 	private String nodePath, edgePath, coastPath;
-	public final Node[] nodes;
-	public final QuadTree all;
-	public final QuadTree[] groups;
+	public final HashMap<Integer, Node> nodes;
+	public QuadTree all;
+	public QuadTree[] groups;
 	StringTokenizer tokenizer;
 	Vector min, max;
-	Box box;
+	Box quadBox, dataBox;
 
 	public Loader() {
 		
-		nodes = new Node[700000];
-
-		min = new Vector(442254.35659, 6049914.43018);
-		max = new Vector(892658.21706, 6402050.98297);
-		Vector stop = max.sub(min);
-		box = new Box(new Vector(0, 0), stop);
-
-		all = new QuadTree(box);
-
-		groups = new QuadTree[Groups.GROUPS.length];
-		for(int i = 0; i < groups.length; i++)
-			groups[i] = new QuadTree(box);
+		nodes = new HashMap<>();
 
 		try {
 			String dir = "Map/Data/";
-			
 			nodePath = dir + "purged_nodes.txt";
 			edgePath = dir + "purged_edges.txt";
 			coastPath = dir + "coastline.txt";
@@ -56,23 +45,35 @@ public class Loader {
 
 		// Nodes
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(nodePath), "UTF8"));
-
 		while((line = br.readLine()) != null)
 			processNode(line);
 		br.close();
 
-		// Edges
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(edgePath), "UTF8"));
+		// Create QuadTrees
+		quadBox = new Box(
+			new Vector(0, 0),
+			(new Vector(1000, 1000)).mult(dataBox.ratio())
+		);
+		all = new QuadTree(quadBox);
+		groups = new QuadTree[Groups.GROUPS.length];
+		for(int i = 0; i < groups.length; i++)
+			groups[i] = new QuadTree(quadBox);
 
-		while((line = br.readLine()) != null)
-			processEdge(line);
-		br.close();
+		// Reset node vectors
+		System.out.println(dataBox);
+		for (Node node : nodes.values())
+			resetVector(node.VECTOR);
 
 		// Coastline
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(coastPath), "UTF8"));
-
 		while((line = br.readLine()) != null)
 			processCoast(line);
+		br.close();
+
+		// Edges
+		br = new BufferedReader(new InputStreamReader(new FileInputStream(edgePath), "UTF8"));
+		while((line = br.readLine()) != null)
+			processEdge(line);
 		br.close();
 
 		// Garbage collect
@@ -84,18 +85,27 @@ public class Loader {
 		tokenizer = new StringTokenizer(line, ",");
 
 		int id = readInt();
-		Vector vector = resetVector(new Vector(readDouble(), readDouble()));
+		Vector vector = new Vector(readDouble(), readDouble());
 		Node node = new Node(vector, id);
 		
-		nodes[node.KDV_ID] = node;
+		nodes.put(node.KDV_ID, node);
+
+		if (dataBox == null) {
+			dataBox = new Box(vector.copy(), vector.copy());
+		} else {
+			dataBox.start.x = Math.min(vector.x, dataBox.start.x);
+			dataBox.start.y = Math.min(vector.y, dataBox.start.y);
+			dataBox.stop.x = Math.max(vector.x, dataBox.stop.x);
+			dataBox.stop.y = Math.max(vector.y, dataBox.stop.y);
+		}
 	}
 
 	public void processEdge(String line) {
 
 		tokenizer = new StringTokenizer(line, ",");
 
-		Node start = nodes[readInt()];
-		Node stop = nodes[readInt()];
+		Node start = nodes.get(readInt());
+		Node stop = nodes.get(readInt());
 		double length = readDouble();
 		int type = readInt();
 		String name = readName();
@@ -109,8 +119,8 @@ public class Loader {
 
 		tokenizer = new StringTokenizer(line, ",");
 
-		Node start = new Node(new Vector(readDouble(), readDouble()));
-		Node stop = new Node(new Vector(readDouble(), readDouble()));
+		Node start = new Node(resetVector(new Vector(readDouble(), readDouble())));
+		Node stop = new Node(resetVector(new Vector(readDouble(), readDouble())));
 		Edge edge = new Edge(start, stop, 0, null, 81);
 
 		all.insert(edge);
@@ -118,7 +128,10 @@ public class Loader {
 	}
 
 	public Vector resetVector(Vector vector) {
-		return vector.sub(min).mirrorY(box);
+		return vector
+			.sub(dataBox.start)
+			.mirrorY(dataBox)
+			.translate(dataBox, quadBox);
 	}
 
 	private int readInt() {

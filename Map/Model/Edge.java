@@ -8,6 +8,7 @@ import Map.Model.Groups;
 
 public class Edge {
 	public final Node START, STOP;
+	public final Vector CENTER;
 	public final String NAME;
 	public final int TYPE;
 	public final double LENGTH;
@@ -18,17 +19,17 @@ public class Edge {
 		NAME = name;
 		TYPE = type;
 		LENGTH = length;
+		CENTER = START.VECTOR
+			.copy()
+			.add(STOP.VECTOR)
+			.div(2);
 	}
 
 	public Vector[] getVectors() {
 		return new Vector[] {START.VECTOR.copy(), STOP.VECTOR.copy()};
 	}
 
-	public Vector getCenter()
-	{
-		return START.VECTOR
-			.copy()
-			.add(STOP.VECTOR)
-			.div(2);
+	public Vector getCenter() {
+		return CENTER;
 	}
 }

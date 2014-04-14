@@ -37,30 +37,31 @@ public class Tiler {
 		resetCenter = center;
 		resetZoom = zoom;
 		setZoom(zoom);
-
 		if (loader != null) {
 			this.all = loader.all;
 			this.groups = loader.groups;
 		}
-
-		renderTile = new BufferedImage(
-			tileSize, tileSize,
-			BufferedImage.TYPE_INT_RGB
-		);
-		render = renderTile.createGraphics();
-		render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	}
 
 	public void setZoom(double zoom) {
+
 		if (zoom > maxZoom) zoom = maxZoom;
 		if (zoom < minZoom) zoom = minZoom;
 		this.zoom = zoom;
+
 		Vector viewDimensions = viewBox.dimensions();
+		tileSize = (int)Math.sqrt(viewDimensions.x * viewDimensions.y);
+
+		renderTile = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_RGB);
+		render = renderTile.createGraphics();
+		render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
 		Vector mapDimensions = viewDimensions
 			.div(viewBox.ratio())
 			.div(zoom)
 			.mult(modelBox.ratio());
 		mapBox = new Box(new Vector(0, 0), mapDimensions);
+
 		int tilesX = (int)Math.ceil(mapDimensions.x / tileSize);
 		int tilesY = (int)Math.ceil(mapDimensions.y / tileSize);
 		tiles = new BufferedImage[tilesX][tilesY];

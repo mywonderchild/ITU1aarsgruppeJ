@@ -109,15 +109,9 @@ public class Loader {
 
 		tokenizer = new StringTokenizer(line, ",");
 
-<<<<<<< HEAD
 		Node start = new Node(new Vector(readDouble(), readDouble()));
 		Node stop = new Node(new Vector(readDouble(), readDouble()));
 		Edge edge = new Edge(start, stop, 0, null, 81);
-=======
-		Node start = new Node(resetVector(new Vector(readDouble(), readDouble())));
-		Node stop = new Node(resetVector(new Vector(readDouble(), readDouble())));
-		Edge edge = new Edge(start, stop, null, 81);
->>>>>>> 402282d584f926b194a17a0759dbabe91662f028
 
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);

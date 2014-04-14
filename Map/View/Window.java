@@ -15,6 +15,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.BorderFactory;
 import javax.swing.border.EtchedBorder;
+import java.awt.Insets;
 
 public class Window extends JFrame {
 
@@ -62,6 +63,7 @@ public class Window extends JFrame {
 		// Toggler
 		toggler = new JToggleButton(">");
 		// FIND A WAY TO SLIM DOWN THE WIDTH
+		toggler.setMargin(new Insets(0, 0, 0, 0));
 		toggler.setBackground(Color.LIGHT_GRAY);
 		sidePanel.add(toggler, BorderLayout.EAST);
 		toggler.addActionListener(new ActionListener() {

@@ -84,8 +84,7 @@ public class Loader {
 		tokenizer = new StringTokenizer(line, ",");
 
 		int id = readInt();
-		Vector vector = new Vector(readDouble(), readDouble());
-		vector.sub(min).mirrorY(box);
+		Vector vector = resetVector(new Vector(readDouble(), readDouble()));
 		Node node = new Node(vector, id);
 		
 		nodes[node.KDV_ID] = node;
@@ -109,12 +108,16 @@ public class Loader {
 
 		tokenizer = new StringTokenizer(line, ",");
 
-		Node start = new Node((new Vector(readDouble(), readDouble())).sub(min).mirrorY(box));
-		Node stop = new Node((new Vector(readDouble(), readDouble())).sub(min).mirrorY(box));
+		Node start = new Node(resetVector(new Vector(readDouble(), readDouble())));
+		Node stop = new Node(resetVector(new Vector(readDouble(), readDouble())));
 		Edge edge = new Edge(start, stop, null, 81);
 
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
+	}
+
+	public Vector resetVector(Vector vector) {
+		return vector.sub(min).mirrorY(box);
 	}
 
 	private int readInt() {

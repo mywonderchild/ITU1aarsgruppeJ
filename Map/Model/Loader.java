@@ -93,9 +93,10 @@ public class Loader {
 
 		Node start = nodes[readInt()];
 		Node stop = nodes[readInt()];
+		double length = readDouble();
 		int type = readInt();
 		String name = readName();
-		Edge edge = new Edge(start, stop, name, type);
+		Edge edge = new Edge(start, stop, length, name, type);
 
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
@@ -107,7 +108,7 @@ public class Loader {
 
 		Node start = new Node(new Vector(readDouble(), readDouble()));
 		Node stop = new Node(new Vector(readDouble(), readDouble()));
-		Edge edge = new Edge(start, stop, null, 81);
+		Edge edge = new Edge(start, stop, 0, null, 81);
 
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);

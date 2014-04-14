@@ -7,15 +7,17 @@ import Map.Vector;
 import Map.Model.Groups;
 
 public class Edge {
-	private final Node START, STOP;
+	public final Node START, STOP;
 	public final String NAME;
 	public final int TYPE;
+	public final double LENGTH;
 
-	public Edge(Node start, Node stop, String name, int type) {
+	public Edge(Node start, Node stop, double length, String name, int type) {
 		START = start;
 		STOP = stop;
 		NAME = name;
 		TYPE = type;
+		LENGTH = length;
 	}
 
 	public Vector[] getVectors() {

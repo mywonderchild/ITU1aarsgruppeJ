@@ -55,7 +55,7 @@ public class DataPurger
 			DataPurger dp1 = new DataPurger("Map/data/kdv_node_unload.txt", "Map/data/purged_nodes.txt");
 			dp1.purge(new int[] {2, 3, 4});
 			DataPurger dp2 = new DataPurger("Map/data/kdv_unload.txt", "Map/data/purged_edges.txt");
-			dp2.purge(new int[] {0, 1, 5, 6});
+			dp2.purge(new int[] {0, 1, 2, 5, 6});
 		}
 		else if(args.length == 3) {
 			DataPurger dataPurger = new DataPurger(args[0], args[1]);

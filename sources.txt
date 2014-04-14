@@ -6,10 +6,13 @@
 ./Map/DataPurger.java
 ./Map/Line.java
 ./Map/Main.java
+./Map/Model/Bag.java
 ./Map/Model/Edge.java
+./Map/Model/Graph.java
 ./Map/Model/Groups.java
 ./Map/Model/Loader.java
 ./Map/Model/Node.java
+./Map/Model/PathFinder.java
 ./Map/Model/QuadTree.java
 ./Map/Vector.java
 ./Map/View/Canvas.java

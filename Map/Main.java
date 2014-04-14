@@ -1,5 +1,8 @@
 package Map;
 
+import java.awt.event.ComponentListener;
+import java.awt.event.ComponentEvent;
+
 import Map.Controller.*;
 import Map.View.*;
 import Map.Model.*;
@@ -27,7 +30,16 @@ public class Main
 
 		// Event listeners
 		KeyboardHandler keyboardHandler = new KeyboardHandler(canvas, tiler);
-		canvas.addComponentListener(new ResizeHandler(canvas, tiler));
+		canvas.addComponentListener(new ComponentListener() {
+			{componentResized(null);}
+			public void componentResized(ComponentEvent e) {
+				tiler.viewBox = canvas.getBox();
+				tiler.setZoom(tiler.zoom);
+		    }
+		    public void componentHidden(ComponentEvent e) {}
+		    public void componentMoved(ComponentEvent e) {}
+		    public void componentShown(ComponentEvent e) {}
+		});
 		MouseHandler mouseHandler = new MouseHandler(window, tiler);
 		canvas.addMouseListener(mouseHandler);
 		canvas.addMouseMotionListener(mouseHandler);

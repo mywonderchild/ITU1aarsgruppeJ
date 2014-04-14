@@ -50,9 +50,11 @@ public class Window extends JFrame {
 		sideWidth = 200;		
 		sidePanel = new JPanel();
 		sidePanel.setBackground(new Color(235,235,235));
-		sidePanel.setBounds(0,0,sideWidth,sideHeight);
+		sidePanel.setBounds(0,0,45,sideHeight);
 		sidePanel.setLayout(new BorderLayout());
 		sidePanel.setBorder(BorderFactory.createEtchedBorder());
+        sidePanel.setOpaque(false);
+        sidePanel.setBorder(null);
 
 		// Set canvas and panel
 		canvasHeight = sideHeight;
@@ -60,7 +62,7 @@ public class Window extends JFrame {
 		canvasPanel = new JPanel();
 		canvasPanel.setLayout(new BorderLayout());
 		this.canvas = canvas;
-		canvasPanel.setBounds(sideWidth,0,canvasWidth,canvasHeight);
+		canvasPanel.setBounds(0,0,canvasWidth,canvasHeight);
 		canvasPanel.add(canvas, BorderLayout.CENTER);
 		
 		// Set layeredPane
@@ -79,11 +81,12 @@ public class Window extends JFrame {
 		innerPanel.add(fromText, "cell 1 1 3 1");
 		innerPanel.add(to, "cell 0 2");
 		innerPanel.add(toText, "cell 1 2 3 1");
-		innerPanel.add(new JButton("Get route"), "cell 3 3");	
+		innerPanel.add(new JButton("Get route"), "cell 3 3");
+        innerPanel.setVisible(false);	
 		sidePanel.add(innerPanel, BorderLayout.CENTER);
 	
         // Hide button
-        hide = new JToggleButton("<");
+        hide = new JToggleButton(">");
         hide.setPreferredSize(new Dimension(45, 25));
         hide.setBackground(Color.LIGHT_GRAY);
         sidePanel.add(hide, BorderLayout.PAGE_END);
@@ -91,19 +94,20 @@ public class Window extends JFrame {
     	public void actionPerformed(ActionEvent e){
     		JToggleButton tBtn = (JToggleButton)e.getSource();
     		if(tBtn.isSelected()) {
-            innerPanel.setVisible(false);
-            hide.setText(">");
-            sidePanel.setBounds(0,0,45,sideHeight);
-            canvasPanel.setBounds(0,0,canvasWidth,canvasHeight);
-            sidePanel.setOpaque(false);
-            sidePanel.setBorder(null);
-    		} else {
-    		innerPanel.setVisible(true);
+	    		innerPanel.setVisible(true);
     			hide.setText("<");
     			sidePanel.setBounds(0,0,sideWidth,sideHeight);          	
     			canvasPanel.setBounds(sideWidth,0,canvasWidth,canvasHeight);    			
     			sidePanel.setBackground(new Color(235,235,235));
 				sidePanel.setBorder(BorderFactory.createEtchedBorder());
+    		} else {
+	        innerPanel.setVisible(false);
+            hide.setText(">");
+            sidePanel.setBounds(0,0,45,sideHeight);
+            canvasPanel.setBounds(0,0,canvasWidth,canvasHeight);
+            sidePanel.setOpaque(false);
+            sidePanel.setBorder(null);
+
     			
     		}
     		} // evt ryk actionlistener i controller

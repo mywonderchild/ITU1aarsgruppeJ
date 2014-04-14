@@ -17,15 +17,15 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 
 	private Window window;
 	private Canvas canvas;
-	private Translator translator;
+	private Tiler tiler;
 	private boolean leftDown, rightDown;
 	private Vector origin = new Vector(0, 0);
 	private Vector panCenter;
 
-	public MouseHandler(Window window, Translator translator) {
+	public MouseHandler(Window window, Tiler tiler) {
 		this.window = window;
 		canvas = window.canvas;
-		this.translator = translator;
+		this.tiler = tiler;
 	}
 
 	private void reset() {
@@ -35,8 +35,10 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		if (SwingUtilities.isMiddleMouseButton(e))
-			translator.reset();
+		if (SwingUtilities.isMiddleMouseButton(e)) {
+			tiler.reset();
+			canvas.repaint();
+		}
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -52,7 +54,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		} else if (left) {
 			// Prepare for panning
 			origin.set(e.getX(), e.getY());
-			panCenter = translator.center;
+			panCenter = tiler.center;
 			leftDown = true;
 		} else if (right) {
 			// Prepare for selection zoom
@@ -70,23 +72,23 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			Box selection = canvas.selectionBox;
 
 			// Translate selection to model
-			selection.start = translator.translateToModel(selection.start);
-			selection.stop = translator.translateToModel(selection.stop);
+			selection.start = tiler.translateToModel(selection.start);
+			selection.stop = tiler.translateToModel(selection.stop);
 
 			// Find and set relative center
 			Vector center = selection.getCenter();
-			center = translator.modelBox.absoluteToRelative(center);
-			translator.center = center;
+			center = tiler.modelBox.absoluteToRelative(center);
+			tiler.center = center;
 
 			// Set zoom
 			Vector dimensions = selection.dimensions();
-			Vector zoom = dimensions.div(translator.modelBox.dimensions());
+			Vector zoom = dimensions.div(tiler.modelBox.dimensions());
 			if (zoom.x > zoom.y)
-				translator.zoom = zoom.x;
+				tiler.setZoom(zoom.x);
 			else
-				translator.zoom = zoom.y;
-			
-			translator.setLines();
+				tiler.setZoom(zoom.y);
+
+			canvas.repaint();
 		}
 
 		reset();
@@ -97,13 +99,13 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			Vector stop = new Vector(e.getX(), e.getY());
 			if(stop.equals(origin)) return; // Mouse was not dragged
 
-			Box box = translator.modelBox;
-			Vector center = translator.translateToModel(stop)
-				.sub(translator.translateToModel(origin.copy()))
+			Box box = tiler.modelBox;
+			Vector center = tiler.translateToModel(stop)
+				.sub(tiler.translateToModel(origin.copy()))
 				.div(box.dimensions());
 
-			translator.center = panCenter.copy().sub(center);
-			translator.setLines();
+			tiler.center = panCenter.copy().sub(center);
+			canvas.repaint();
 		} else if (rightDown) {
 			Vector stop = new Vector(e.getX(), e.getY());
 			canvas.selectionBox = new Box(origin, stop).properCorners();
@@ -113,19 +115,19 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 
 	public void mouseMoved(MouseEvent e) {
 		Vector target = new Vector(e.getX(), e.getY());
-		target = translator.translateToModel(target);
-		String closest = translator.all.findClosest(target).NAME;
+		target = tiler.translateToModel(target);
+		String closest = tiler.all.findClosest(target).NAME;
 		if (closest != window.label.getText())
 			window.label.setText(closest);
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e){
-    	int movement = e.getWheelRotation();
-    	if (movement < 0)
-    		translator.zoom *= 0.9;
+		int movement = e.getWheelRotation();
+		if (movement < 0)
+			tiler.setZoom(tiler.zoom * 0.9);
 		else
-    	    translator.zoom *= 1.1;
-    	translator.setLines();
+			tiler.setZoom(tiler.zoom * 1.1);
+		canvas.repaint();
     }
 
 	public void mouseEntered(MouseEvent e) {

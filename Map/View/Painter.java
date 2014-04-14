@@ -10,14 +10,7 @@ import Map.Line;
 
 public class Painter {
 
-	private Graphics2D g;
-
-	public void setGraphics(Graphics2D g) {
-		this.g = g;
-	}
-
-	public void paintLines(ArrayList<Line> lines) {
-		long timer = System.currentTimeMillis();
+	public static void paintLines(Graphics2D g, ArrayList<Line> lines) {
 		if(lines == null) return;
 		for(Line line : lines) {
 			g.setColor(line.color);
@@ -26,13 +19,9 @@ public class Painter {
 				(int) line.stop.x, (int) line.stop.y
 			);
 		}
-		System.out.printf(
-			"Painting lines took %d ms\n",
-			System.currentTimeMillis() - timer
-		);
 	}
 
-	public void paintBox(Box box) {
+	public static void paintBox(Graphics2D g, Box box) {
 
 		Vector dimensions = box.dimensions();
 

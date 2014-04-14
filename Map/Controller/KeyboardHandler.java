@@ -28,7 +28,6 @@ public class KeyboardHandler{
 		Action panDown = new Panner(new Vector(0, -100));
 
 		Bindkey("ADD", "ZoomIn", zoomIn);
-		Bindkey("SPACE", "ZoomReset", zoomReset);
 		Bindkey("SUBTRACT", "ZoomOut", zoomOut);
 		Bindkey("I", "ZoomIn", zoomIn);
 		Bindkey("O", "ZoomOut", zoomOut);

@@ -20,11 +20,11 @@ public class Main
 		);
 
 		// Set up view
-		Canvas canvas = new Canvas();
+		final Canvas canvas = new Canvas();
 		Window window = new Window(canvas);
 
 		// Tiler
-		Tiler tiler = new Tiler(1.3, new Vector(0.5, 0.5), canvas.getBox(), loader.all.getBox(), loader);
+		final Tiler tiler = new Tiler(1.3, new Vector(0.5, 0.5), canvas.getBox(), loader.all.getBox(), loader);
 		canvas.tiler = tiler;
 		canvas.repaint();
 

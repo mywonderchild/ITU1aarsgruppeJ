@@ -1,0 +1,146 @@
+package Map.Model;
+
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.lang.IllegalArgumentException;
+
+public class PriorityQueue<Key extends Comparable<Key>, Value> {
+	private Entry<Key,Value>[] a;
+	private int n;
+	
+	@SuppressWarnings("unchecked")
+	public PriorityQueue(int initSize) {
+		a = (PriorityEntry<Key,Value>[]) new PriorityEntry[initSize];
+		n = 0;
+	}
+
+	public PriorityQueue() {
+		this(1);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void push(Key key, Value value) {
+		if(n == a.length-1) resize();
+		a[++n] = new PriorityEntry<Key,Value>(key, value);
+		swim(n);
+	}
+
+	public void push(Key[] keys, Value[] values) {
+		if(keys.length != values.length) throw new IllegalArgumentException("Mismatch between length of key and value arrays");
+		for(int i = 0; i < keys.length; i++) {
+			push(keys[i], values[i]);
+		}
+	}
+
+	public Entry pop() {
+		if(isEmpty()) throw new NoSuchElementException("PriorityQueue underflow");
+		
+		Entry ret = a[1];
+		exch(1, n--);
+		sink(1);
+
+		a[n+1] = null; // gc
+		if(n > 0 && n == (a.length-1)/4) resize();
+		return ret;
+	}
+
+	public Entry peek() {
+		if(isEmpty()) throw new NoSuchElementException("PriorityQueue underflow");
+		return a[1];
+	}
+
+	public int size() {
+		return n;
+	}
+
+	public boolean isEmpty() {
+		return n == 0;
+	}
+
+	private void swim(int i) {
+		while(i > 1 && greater(i/2, i)) {
+			exch(i/2, i);
+			i = i/2;
+		}
+	}
+
+	private void sink(int i) {
+		while(i*2 <= n) {
+			int j = 2*i;
+			if(j < n && greater(j, j+1)) j++;
+			if(!greater(i, j)) break;
+			exch(i, j);
+			i = j;
+		}
+	}
+
+	private boolean greater(int i, int j) {
+		return a[i].getKey().compareTo(a[j].getKey()) == 1;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void exch(int i, int j) {
+		PriorityEntry temp = (PriorityEntry) a[i];
+		a[i] = a[j];
+		a[j] = temp;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void resize() {
+		Entry<Key,Value>[] temp = (PriorityEntry<Key,Value>[]) new PriorityEntry[(n+1)*2];
+		for(int i = 0; i <= n; i++) {
+			temp[i] = a[i];
+		}
+		a = temp;
+	}
+
+	@Override
+	public String toString() {
+		// Will NOT return pop()-order, but heap-order.
+		String ret = super.toString() + ": ";
+		if(!isEmpty()) {
+			for(int i = 1; i <= n; i++) {
+				ret += a[i].toString() + ", ";
+			}
+			ret = ret.substring(0,ret.length()-2);
+		}
+		return ret;
+	}
+
+	private static class PriorityEntry<K, V> implements Entry {
+		private K key;
+		private V value;
+
+		public PriorityEntry(K key, V value) {
+			this.key = key;
+			this.value = value;
+		}
+
+		@Override
+		public K getKey() {
+			return key;
+		}
+
+		@Override
+		public V getValue() {
+			return value;
+		}
+
+		@Override
+		public V setValue(Object obj) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public int hashCode() {
+			return
+				(getKey()==null   ? 0 : getKey().hashCode()) ^
+				(getValue()==null ? 0 : getValue().hashCode());
+		}
+
+		@Override
+		public String toString() {
+			return "<" + getKey() + "," + getValue() + ">";
+		}
+	}
+}

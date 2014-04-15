@@ -3,38 +3,41 @@ package Tests;
 import static org.junit.Assert.*;
 import org.junit.*;
 
-import Map.Model.MinPriorityQueue;
+import Map.Model.PriorityQueue;
 import java.util.NoSuchElementException;
 
-public class TestMinPriorityQueue {
-	MinPriorityQueue<Integer> pq;
+public class TestPriorityQueue {
+	PriorityQueue<Integer, Integer> pq;
 	double delta = 1e-3;
 
 	@Before
 	public void setup() {
-		pq = new MinPriorityQueue<>();
+		pq = new PriorityQueue<>();
 	}
 
 	@Test
 	public void pushPop() {
-		Integer[] ints = new Integer[] {
+		Integer[] intKeys = new Integer[] {
 			0, 1, 1, -1, 2
 		};
-		pq.push(ints);
+		Integer[] intVals = new Integer[] {
+			1, 2, 3, 4, 5
+		};
+		pq.push(intKeys, intVals);
 
-		Integer[] pqints = new Integer[]{ // pq sorted
+		Integer[] pqIntKeys = new Integer[]{ // pq sorted
 			-1, 0, 1, 1, 2
 		};
-		for(int i = 0; i < pqints.length; i++) {
-			assertEquals(pq.pop(), pqints[i], delta);
+		for(int i = 0; i < pqIntKeys.length; i++) {
+			assertEquals((Integer) pq.pop().getKey(), pqIntKeys[i], delta);
 		}
 	}
 
 	@Test
 	public void peek() {
-		pq.push(1);
-		pq.push(-1);
-		assertEquals(pq.peek(), -1, delta);
+		pq.push(1, 0);
+		pq.push(-1, 0);
+		assertEquals((Integer) pq.peek().getKey(), -1, delta);
 	}
 
 	@Test(expected=NoSuchElementException.class)
@@ -42,7 +45,7 @@ public class TestMinPriorityQueue {
 		pq.peek(); // empty fail
 		pq.pop(); // empty fail
 
-		pq.push(0);
+		pq.push(1, 0);
 		pq.pop();
 
 		pq.pop(); // empty fail
@@ -53,7 +56,7 @@ public class TestMinPriorityQueue {
 	public void size() {
 		assertEquals(pq.size(), 0, delta);
 
-		pq.push(0);
+		pq.push(1, 0);
 		assertEquals(pq.size(), 1, delta);
 
 		pq.pop();
@@ -64,7 +67,7 @@ public class TestMinPriorityQueue {
 	public void isEmpty() {
 		assertTrue(pq.isEmpty());
 
-		pq.push(0);
+		pq.push(1, 0);
 		assertFalse(pq.isEmpty());
 
 		pq.pop();
@@ -78,7 +81,7 @@ public class TestMinPriorityQueue {
 
 		assertNotNull(pq.toString());
 
-		pq.push(1);
+		pq.push(1, 0);
 		assertNotNull(pq.toString());
 
 		pq.pop();

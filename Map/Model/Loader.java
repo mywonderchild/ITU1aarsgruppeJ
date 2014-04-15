@@ -87,7 +87,7 @@ public class Loader {
 		Vector vector = new Vector(readDouble(), readDouble());
 		Node node = new Node(vector, id);
 		
-		nodes.put(node.KDV_ID, node);
+		nodes.put(node.ID, node);
 
 		if (dataBox == null) {
 			dataBox = new Box(vector.copy(), vector.copy());

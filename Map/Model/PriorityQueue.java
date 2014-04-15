@@ -107,7 +107,7 @@ public class PriorityQueue<Key extends Comparable<Key>, Value> {
 		return ret;
 	}
 
-	private static class PriorityEntry<K, V> implements Entry {
+	private class PriorityEntry<K,V> implements Entry {
 		private K key;
 		private V value;
 

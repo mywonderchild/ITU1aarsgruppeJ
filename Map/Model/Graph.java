@@ -1,64 +1,34 @@
 package Map.Model;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.util.List;
 import java.util.ArrayList;
 
 public class Graph {
-	private final int V;
-	private int E;
- 	private Bag<Edge>[] adj;
- 	public int maxDepth = 0;
+	private List<Edge>[] adj;
 
 	@SuppressWarnings("unchecked")
-	public Graph(int V) {
-		this.V = V;
-		adj = (Bag<Edge>[]) new Bag[V];
+	public Graph(int nodes) {
+		adj = (ArrayList<Edge>[]) new ArrayList[nodes];
 		for(int i = 0; i < adj.length; i++) {
-			adj[i] = new Bag<Edge>();
+			adj[i] = new ArrayList<Edge>(); 
 		}
-		System.out.println("Initialized graph[" + V + "]");
 	}
 
 	public void addEdge(Edge edge) {
-		// Add edge and incr edge counter.
-		adj[edge.START.KDV_ID].add(edge);
-		E++;
+		adj[edge.START.ID].add(edge);
 	}
 
-	public Iterable<Edge> adj(int v) {
-		return adj[v];
-	}
-
-	public int V() {
-		return V;
-	}
-
-	public int E() {
-		return E;
-	}
-
-	public int degree(int v) {
-		return adj[v].size();
-	}
-
-	public Iterable<Edge> edges() {
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		for(Bag<Edge> bag : adj) {
-			for(Edge e : bag) {
-				edges.add(e);
-			}
+	public void addEdges(Edge[] edges) {
+		for(Edge e : edges) {
+			addEdge(e);
 		}
-		return edges;
 	}
 
-	public String toString() {
-		String ret = "";
-		for(int i = 0; i < adj.length; i++) {
-			for(Edge e : adj[i]) {
-				ret += i + " --> " + e.STOP.KDV_ID + "\n";
-			}
-		}
-		return ret;
+	public List getAdj(int node) {
+		return adj[node];
+	}
+
+	public int size() {
+		return adj.length;
 	}
 }

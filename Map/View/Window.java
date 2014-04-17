@@ -17,6 +17,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.BorderFactory;
 import javax.swing.border.EtchedBorder;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import java.awt.Insets;
 
@@ -27,6 +29,7 @@ public class Window extends JFrame {
 	public JPanel bottomPanel, sidePanel, innerPanel;
 	public JLabel label;
 	public JToggleButton toggler;
+	public JScrollPane scrollPane;
 	
 	public Window(Canvas canvas) {
 		super();
@@ -60,23 +63,38 @@ public class Window extends JFrame {
 				JToggleButton tBtn = (JToggleButton)e.getSource();
 				if (tBtn.isSelected()) {
 					innerPanel.setVisible(true);
+					scrollPane.setVisible(true);
 					toggler.setText("<");
 					sidePanel.setBorder(BorderFactory.createEtchedBorder());
+            		sidePanel.setOpaque(true);
 				} else {
 					innerPanel.setVisible(false);
+					scrollPane.setVisible(false);
 					toggler.setText(">");
 					sidePanel.setBorder(null);
+					sidePanel.setOpaque(false);
 				}
 				resize();
 			}
 		});
 
+		// Scrollpane
+		//JTextArea textArea = new JTextArea();
+		scrollPane = new JScrollPane();
+		scrollPane.setColumnHeaderView(new JLabel("Directions"));
+		scrollPane.setBorder(BorderFactory.createEtchedBorder());
+		//scrollPane.setBackground(new Color(235,235,235));
+		scrollPane.setVisible(false);
+
 		// SidePanel		
 		sidePanel = new JPanel();
 		sidePanel.setBackground(new Color(235,235,235));
 		sidePanel.setLayout(new BorderLayout());
-		sidePanel.add(innerPanel, BorderLayout.CENTER);
-		sidePanel.add(toggler, BorderLayout.EAST);
+		sidePanel.setOpaque(false);
+		sidePanel.add(innerPanel, BorderLayout.NORTH);
+		sidePanel.add(toggler, BorderLayout.SOUTH);
+		sidePanel.add(scrollPane, BorderLayout.CENTER);
+
 
 		// TopPanel
 		topPanel = new JLayeredPane();
@@ -89,7 +107,9 @@ public class Window extends JFrame {
 		// BottomPanel
 		bottomPanel = new JPanel();
 		bottomPanel.setBackground(new Color(235,235,235));
+		bottomPanel.setBorder(BorderFactory.createEtchedBorder());
 		bottomPanel.add(label);
+
 
 		// Add topPanel and bottomPanel
 		getContentPane().add(topPanel, BorderLayout.CENTER);

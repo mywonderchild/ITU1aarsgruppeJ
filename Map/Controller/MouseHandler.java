@@ -58,8 +58,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			if (sp == null) return;
 			Path path = sp.pathTo(loader.all.findClosestEdge(mousepos, false).START.ID);
 			tiler.path = path;
-			for (String direction : path.getDirections())
-				System.out.println(direction);
+			window.setDirections(path.getDirections());
 			canvas.repaint();
 		} else if(SwingUtilities.isRightMouseButton(e)) {
 			sp = new ShortestPath(graph, loader.all.findClosestEdge(mousepos, false).START.ID);
@@ -144,8 +143,8 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		Vector target = new Vector(e.getX(), e.getY());
 		target = tiler.translateToModel(target);
 		String closest = tiler.all.findClosestEdge(target, true).NAME;
-		if (closest != window.label.getText())
-			window.label.setText(closest);
+		if (closest != window.closest.getText())
+			window.closest.setText(closest);
 
 		/*DEBUGGIN CODE: DRAWS CLOSEST EDGE AS PATH*/
 		// ArrayList<Edge> list = new ArrayList<>();

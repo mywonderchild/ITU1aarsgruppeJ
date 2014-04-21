@@ -1,5 +1,6 @@
 package Map.View;
 
+import java.util.ArrayList;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -27,7 +28,7 @@ public class Window extends JFrame {
 	public Canvas canvas;
 	public JLayeredPane topPanel;
 	public JPanel bottomPanel, sidePanel, innerPanel;
-	public JLabel label;
+	public JLabel closest, directions;
 	public JToggleButton toggler;
 	public JScrollPane scrollPane;
 	
@@ -81,7 +82,8 @@ public class Window extends JFrame {
 		// Scrollpane
 		//JTextArea textArea = new JTextArea();
 		scrollPane = new JScrollPane();
-		scrollPane.setColumnHeaderView(new JLabel("Directions"));
+		directions = new JLabel("Directions");
+		scrollPane.setColumnHeaderView(directions);
 		scrollPane.setBorder(BorderFactory.createEtchedBorder());
 		//scrollPane.setBackground(new Color(235,235,235));
 		scrollPane.setVisible(false);
@@ -95,20 +97,19 @@ public class Window extends JFrame {
 		sidePanel.add(toggler, BorderLayout.SOUTH);
 		sidePanel.add(scrollPane, BorderLayout.CENTER);
 
-
 		// TopPanel
 		topPanel = new JLayeredPane();
 		topPanel.add(canvas, new Integer(0));
 		topPanel.add(sidePanel, new Integer(1));
 
 		// Label
-		label = new JLabel("ITU1aarsgruppeJ");
+		closest = new JLabel("ITU1aarsgruppeJ");
 
 		// BottomPanel
 		bottomPanel = new JPanel();
 		bottomPanel.setBackground(new Color(235,235,235));
 		bottomPanel.setBorder(BorderFactory.createEtchedBorder());
-		bottomPanel.add(label);
+		bottomPanel.add(closest);
 
 
 		// Add topPanel and bottomPanel
@@ -132,5 +133,13 @@ public class Window extends JFrame {
 		canvas.setBounds(0, 0, topPanel.getWidth(), topPanel.getHeight());
 		int width = toggler.isSelected() ? 200 : 50;
 		sidePanel.setBounds(0, 0, width, topPanel.getHeight());
+	}
+
+	public void setDirections(ArrayList<String> directions) {
+		String html = "<html><body>";
+		for (String direction : directions) html += direction + "<br>";
+		html += "</body></html>";
+		this.directions.setText(html);
+		if (!toggler.isSelected()) toggler.doClick();
 	}
 }

@@ -103,14 +103,10 @@ public class Tiler {
 				translateToView(edge.START.VECTOR.copy()),
 				translateToView(edge.END.VECTOR.copy()),
 				Color.MAGENTA,
-				5
+				2
 			));
 		}
 		Painter.paintLines(graphics, lines);
-
-		for(Line l : lines) {
-			System.out.println(l.start + " -> " + l.stop);
-		}
 	}
 
 	public void setPath(List<Edge> path) {

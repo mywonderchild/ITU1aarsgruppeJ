@@ -8,7 +8,8 @@ import Map.Model.Edge;
 
 public class Path {
 	
-	public List<Edge> edges;	
+	static String directionFormat = "%s for %s";
+	public List<Edge> edges;
 
 	public Path(List<Edge> edges) {
 		this.edges = edges;
@@ -16,31 +17,30 @@ public class Path {
 
 	ArrayList<String> getDirections() {
 		ArrayList<String> directions = new ArrayList<>();
-		String directionFormat = "%s for %s";
 		String currentName = null;
 		double currentDistance = 0;
 		Iterator<Edge> iterator = edges.iterator();
 		while (iterator.hasNext()) {
 			Edge edge = iterator.next();
 			String name = (edge.NAME != null) ? edge.NAME : "Unknown road";
-			if (currentName != null) {
-				if (name.equals(currentName) && iterator.hasNext()) {
-					currentDistance += edge.LENGTH;
-				} else {
-					String distance;
-					if (currentDistance < 1000)
-						distance = String.format("%d %s", Math.round(currentDistance), "meters");
-					else
-						distance = String.format("%.2f %s", currentDistance / 1000, "kilometers");
-					directions.add(String.format(directionFormat, currentName, distance));
-					currentName = null;
-				}
-			}
-			if (currentName == null) {
+			if (currentName != null && name.equals(currentName)) {
+				currentDistance += edge.LENGTH;
+			} else {
+				if (currentName != null) directions.add(getDirection(currentName, currentDistance));
 				currentName = name;
 				currentDistance = edge.LENGTH;
 			}
+			if (!iterator.hasNext()) directions.add(getDirection(currentName, currentDistance));
 		}
 		return directions;
+	}
+
+	String getDirection(String name, double distance) {
+		String distanceString;
+		if (distance < 1000)
+			distanceString = String.format("%d %s", Math.round(distance), "meters");
+		else
+			distanceString = String.format("%.2f %s", distance / 1000, "kilometers");
+		return String.format(directionFormat, name, distanceString);
 	}
 }

@@ -4,6 +4,7 @@ import java.lang.Iterable;
 import java.util.List;
 import java.util.Stack;
 import java.util.Map.Entry;
+import java.util.Collections;
 import java.lang.IllegalArgumentException;
 
 import Map.Controller.Path;
@@ -60,6 +61,7 @@ public class ShortestPath {
 			edges.push(edge);
 			node = edge.START.ID;
 		}
+		Collections.reverse(edges);
 
 		return new Path(edges);
 	}

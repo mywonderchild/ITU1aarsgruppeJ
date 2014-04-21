@@ -7,6 +7,7 @@
 ./Map/DataPurger.java
 ./Map/Line.java
 ./Map/Main.java
+./Map/Model/Bag.java
 ./Map/Model/Edge.java
 ./Map/Model/Graph.java
 ./Map/Model/Groups.java

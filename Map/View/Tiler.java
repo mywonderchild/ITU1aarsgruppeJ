@@ -1,6 +1,5 @@
 package Map.View;
 
-import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.ColorModel;
@@ -10,7 +9,8 @@ import java.awt.Color;
 
 import java.awt.geom.Rectangle2D;
 
-import java.util.List;
+import java.lang.Iterable;
+import java.util.ArrayList;
 
 import Map.Box;
 import Map.Vector;
@@ -29,11 +29,11 @@ public class Tiler {
 	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5;
 	public Vector center, resetCenter;
 	public QuadTree all;
+	public Iterable<Edge> path;
 	private QuadTree[] groups;
 	private ArrayList<Line> linePool = new ArrayList<Line>();
 	private BufferedImage renderTile;
 	private Graphics2D render;
-	private List<Edge> path;
 
 	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader) {
 		this.center = center;
@@ -108,10 +108,6 @@ public class Tiler {
 		}
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Painter.paintLines(graphics, lines);
-	}
-
-	public void setPath(List<Edge> path) {
-		this.path = path;
 	}
 
 	public Box getSection() {

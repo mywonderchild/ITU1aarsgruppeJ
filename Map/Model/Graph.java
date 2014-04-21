@@ -1,10 +1,10 @@
 package Map.Model;
 
-import java.util.List;
+import java.lang.Iterable;
 import java.util.ArrayList;
 
 public class Graph {
-	private final List<Edge>[] adj;
+	private final ArrayList<Edge>[] adj;
 	private int edgeCount;
 
 	@SuppressWarnings("unchecked")
@@ -26,7 +26,7 @@ public class Graph {
 		}
 	}
 
-	public List<Edge> getAdj(int node) {
+	public Iterable<Edge> getAdj(int node) {
 		return adj[node];
 	}
 

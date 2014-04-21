@@ -1,8 +1,9 @@
 package Map.Model;
 
+import java.lang.Iterable;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Stack;
+import java.util.Map.Entry;
 import java.lang.IllegalArgumentException;
 
 public class ShortestPath {
@@ -25,7 +26,7 @@ public class ShortestPath {
 		while(!pq.isEmpty()) {
 			Entry entry = pq.pop();
 			int curr = (int) entry.getValue();
-			List<Edge> adj = g.getAdj(curr);
+			Iterable<Edge> adj = g.getAdj(curr);
 
 			for(Edge edge : adj) {
 				int node = edge.END.ID;

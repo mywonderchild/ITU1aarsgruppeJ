@@ -10,6 +10,7 @@ import Map.Vector;
 import Map.Model.Graph;
 import Map.Model.Node;
 import Map.Model.Edge;
+import Map.Controller.Path;
 
 public class TestShortestPath {
 	Graph g;
@@ -119,11 +120,11 @@ public class TestShortestPath {
 
 	private void comparePath(ShortestPath sp, Integer[][] truePaths) {
 		for(int i = 0; i < truePaths.length; i++) {
-			List<Edge> path = sp.pathTo(i);
+			Path path = sp.pathTo(i);
 			if(truePaths[i] == null) assertNull(path);
 			else {
 				for(int j = 0; j < truePaths[i].length; j++) {
-					assertEquals(path.get(j).END.ID, truePaths[i][j], delta);
+					assertEquals(path.edges.get(j).END.ID, truePaths[i][j], delta);
 				}
 			}
 		}

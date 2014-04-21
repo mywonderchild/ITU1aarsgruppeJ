@@ -20,6 +20,7 @@ import Map.Model.QuadTree;
 import Map.Model.Groups;
 import Map.Model.Edge;
 import Map.View.Painter;
+import Map.Controller.Path;
 
 public class Tiler {
 
@@ -29,7 +30,7 @@ public class Tiler {
 	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5;
 	public Vector center, resetCenter;
 	public QuadTree all;
-	public Iterable<Edge> path;
+	public Path path;
 	private QuadTree[] groups;
 	private ArrayList<Line> linePool = new ArrayList<Line>();
 	private BufferedImage renderTile;
@@ -98,7 +99,7 @@ public class Tiler {
 		if(path == null) return;
 
 		ArrayList<Line> lines = new ArrayList<Line>();
-		for(Edge edge : path) {
+		for(Edge edge : path.edges) {
 			lines.add(new Line().set(
 				translateToView(edge.START.VECTOR.copy()),
 				translateToView(edge.END.VECTOR.copy()),

@@ -6,6 +6,8 @@ import java.util.Stack;
 import java.util.Map.Entry;
 import java.lang.IllegalArgumentException;
 
+import Map.Controller.Path;
+
 public class ShortestPath {
 	private double[] dist;
 	private Edge[] prev;
@@ -48,17 +50,17 @@ public class ShortestPath {
 		return dist[node] < Double.POSITIVE_INFINITY;
 	}
 
-	public List<Edge> pathTo(int node) {
+	public Path pathTo(int node) {
 		if(node > dist.length-1) throw new IllegalArgumentException("Node " + node + " does not exist in graph");
 		if(!hasPathTo(node)) return null;
 
-		Stack<Edge> path = new Stack<Edge>();
+		Stack<Edge> edges = new Stack<Edge>();
 		Edge edge;
 		while((edge = prev[node]) != null) {
-			path.push(edge);
+			edges.push(edge);
 			node = edge.START.ID;
 		}
 
-		return path;
+		return new Path(edges);
 	}
 }

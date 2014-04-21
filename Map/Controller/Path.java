@@ -8,7 +8,7 @@ import Map.Model.Edge;
 
 public class Path {
 	
-	private List<Edge> edges;	
+	public List<Edge> edges;	
 
 	public Path(List<Edge> edges) {
 		this.edges = edges;
@@ -32,9 +32,7 @@ public class Path {
 						distance = String.format("%d %s", Math.round(currentDistance), "meters");
 					else
 						distance = String.format("%.2f %s", currentDistance / 1000, "kilometers");
-					String direction = String.format(directionFormat, currentName, distance);
-					System.out.println(direction);
-					directions.add(direction);
+					directions.add(String.format(directionFormat, currentName, distance));
 					currentName = null;
 				}
 			}

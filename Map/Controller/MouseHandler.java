@@ -10,22 +10,33 @@ import java.awt.event.MouseWheelEvent;
 
 import javax.swing.SwingUtilities;
 
+import java.util.List;
+
 import Map.Vector;
 import Map.Box;
+import Map.Model.Loader;
+import Map.Model.Graph;
+import Map.Model.ShortestPath;
+import Map.Model.Edge;
 
 public class MouseHandler implements MouseListener, MouseMotionListener, MouseWheelListener {
 
-	private Window window;
-	private Canvas canvas;
-	private Tiler tiler;
+	private final Window window;
+	private final Canvas canvas;
+	private final Tiler tiler;
+	private final Loader loader;
+	private final Graph graph;
 	private boolean leftDown, rightDown;
 	private Vector origin = new Vector(0, 0);
 	private Vector panCenter;
+	private ShortestPath sp;
 
-	public MouseHandler(Window window, Tiler tiler) {
+	public MouseHandler(Window window, Tiler tiler, Loader loader) {
 		this.window = window;
 		canvas = window.canvas;
 		this.tiler = tiler;
+		this.loader = loader;
+		this.graph = loader.graph;
 	}
 
 	private void reset() {
@@ -35,9 +46,22 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 	}
 
 	public void mouseClicked(MouseEvent e) {
+		Vector mousepos = new Vector(e.getX(), e.getY());
+		tiler.translateToModel(mousepos);
+
 		if (SwingUtilities.isMiddleMouseButton(e)) {
 			tiler.reset();
 			canvas.repaint();
+		}
+		else if(SwingUtilities.isLeftMouseButton(e)) {
+			if(sp == null) return;
+			List<Edge> path = sp.pathTo(loader.all.findClosest(mousepos).START.ID);
+			tiler.setPath(path);
+			System.out.println(path);
+		}
+		else if(SwingUtilities.isRightMouseButton(e)) {
+			sp = new ShortestPath(graph, loader.all.findClosest(mousepos).START.ID);
+			tiler.setPath(null);
 		}
 	}
 

@@ -8,9 +8,9 @@ public class Line {
 
 	public Vector start, stop;
 	public Color color;
-	public double width;
+	public float width;
 
-	public Line set(Vector start, Vector stop, Color color, double width) {
+	public Line set(Vector start, Vector stop, Color color, float width) {
 		this.start = start;
 		this.stop = stop;
 		this.color = color;

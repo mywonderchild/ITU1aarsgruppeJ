@@ -40,7 +40,7 @@ public class Main
 		    public void componentMoved(ComponentEvent e) {}
 		    public void componentShown(ComponentEvent e) {}
 		});
-		MouseHandler mouseHandler = new MouseHandler(window, tiler);
+		MouseHandler mouseHandler = new MouseHandler(window, tiler, loader);
 		canvas.addMouseListener(mouseHandler);
 		canvas.addMouseMotionListener(mouseHandler);
 		canvas.addMouseWheelListener(mouseHandler);

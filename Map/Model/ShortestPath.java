@@ -12,18 +12,15 @@ public class ShortestPath {
 	@SuppressWarnings("unchecked")
 	public ShortestPath(Graph g, int src) {
 		PriorityQueue<Double, Integer> pq = new PriorityQueue<>();
-		boolean[] done = new boolean[g.size()];
-		dist = new double[g.size()];
-		prev = new Edge[g.size()];
+		boolean[] done = new boolean[g.countNodes()];
+		dist = new double[g.countNodes()];
+		prev = new Edge[g.countNodes()];
 
-		dist[src] = 0;
-		for(int i = 0; i < g.size(); i++) {
-			if(i != src) {
-				dist[i] = Double.POSITIVE_INFINITY;
-				prev[i] = null;
-			}
-			pq.push(dist[i], i);
+		for(int i = 0; i < g.countNodes(); i++) {
+			dist[i] = Double.POSITIVE_INFINITY;
 		}
+		dist[src] = 0;
+		pq.push(dist[src], src);
 
 		while(!pq.isEmpty()) {
 			Entry entry = pq.pop();

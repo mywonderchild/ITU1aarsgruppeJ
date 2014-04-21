@@ -3,6 +3,7 @@ package Map.View;
 import java.util.ArrayList;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.BasicStroke;
 
 import Map.Vector;
 import Map.Box;
@@ -14,6 +15,7 @@ public class Painter {
 		if(lines == null) return;
 		for(Line line : lines) {
 			g.setColor(line.color);
+			g.setStroke(new BasicStroke(line.width));
 			g.drawLine(
 				(int) line.start.x, (int) line.start.y,
 				(int) line.stop.x, (int) line.stop.y

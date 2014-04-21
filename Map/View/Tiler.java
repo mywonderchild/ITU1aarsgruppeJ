@@ -8,6 +8,10 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Color;
 
+import java.awt.geom.Rectangle2D;
+
+import java.util.List;
+
 import Map.Box;
 import Map.Vector;
 import Map.Line;
@@ -27,8 +31,9 @@ public class Tiler {
 	public QuadTree all;
 	private QuadTree[] groups;
 	private ArrayList<Line> linePool = new ArrayList<Line>();
-	BufferedImage renderTile;
-	Graphics2D render;
+	private BufferedImage renderTile;
+	private Graphics2D render;
+	private List<Edge> path;
 
 	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader) {
 		this.center = center;
@@ -86,6 +91,30 @@ public class Tiler {
 				y * tileSize - (int)section.start.y
 			);
 		}
+		renderPath(graphics);
+	}
+
+	public void renderPath(Graphics2D graphics) {
+		if(path == null) return;
+
+		ArrayList<Line> lines = new ArrayList<Line>();
+		for(Edge edge : path) {
+			lines.add(new Line().set(
+				translateToView(edge.START.VECTOR.copy()),
+				translateToView(edge.END.VECTOR.copy()),
+				Color.GREEN,
+				3
+			));
+		}
+		Painter.paintLines(graphics, lines);
+
+		// for(Line l : lines) {
+		// 	System.out.println(l.start + " -> " + l.stop);
+		// }
+	}
+
+	public void setPath(List<Edge> path) {
+		this.path = path;
 	}
 
 	public Box getSection() {
@@ -143,7 +172,7 @@ public class Tiler {
 			lines.add(linePool.get(i).set(
 				vectors[0], vectors[1],
 				Groups.getColor(edge),
-				1.0
+				1
 			));
 		}
 		
@@ -180,6 +209,12 @@ public class Tiler {
 		return vector
 			.add(section.start)
 			.translate(mapBox, modelBox);
+	}
+
+	public Vector translateToView(Vector vector) {
+		return vector
+		.sub(section.start)
+		.translate(mapBox, modelBox);
 	}
 
 	private QuadTree[] visibleGroups() {

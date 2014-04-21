@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Graph {
-	private List<Edge>[] adj;
+	private final List<Edge>[] adj;
+	private int edgeCount;
 
 	@SuppressWarnings("unchecked")
 	public Graph(int nodes) {
@@ -16,6 +17,7 @@ public class Graph {
 
 	public void addEdge(Edge edge) {
 		adj[edge.START.ID].add(edge);
+		edgeCount++;
 	}
 
 	public void addEdges(Edge[] edges) {
@@ -28,7 +30,11 @@ public class Graph {
 		return adj[node];
 	}
 
-	public int size() {
+	public int countNodes() {
 		return adj.length;
+	}
+
+	public int countEdges() {
+		return edgeCount;
 	}
 }

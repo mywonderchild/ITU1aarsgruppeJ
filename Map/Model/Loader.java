@@ -19,6 +19,7 @@ public class Loader {
 	public final HashMap<Integer, Node> nodes;
 	public QuadTree all;
 	public QuadTree[] groups;
+	public Graph graph;
 	StringTokenizer tokenizer;
 	Vector min, max;
 	Box quadBox, dataBox;
@@ -49,7 +50,7 @@ public class Loader {
 			processNode(line);
 		br.close();
 
-		// Create QuadTrees
+		// Create QuadTrees and Graph
 		quadBox = new Box(
 			new Vector(0, 0),
 			(new Vector(1000, 1000)).mult(dataBox.ratio())
@@ -58,6 +59,7 @@ public class Loader {
 		groups = new QuadTree[Groups.GROUPS.length];
 		for(int i = 0; i < groups.length; i++)
 			groups[i] = new QuadTree(quadBox);
+		graph = new Graph(nodes.size());
 
 		// Reset node vectors
 		for (Node node : nodes.values())
@@ -74,6 +76,7 @@ public class Loader {
 		while((line = br.readLine()) != null)
 			processEdge(line);
 		br.close();
+		System.out.println("Edges in graph: " + graph.countEdges());
 
 		// Garbage collect
 		System.gc();
@@ -85,7 +88,7 @@ public class Loader {
 
 		int id = readInt();
 		Vector vector = new Vector(readDouble(), readDouble());
-		Node node = new Node(vector, id);
+		Node node = new Node(vector, id-1);
 		
 		nodes.put(node.ID, node);
 
@@ -103,15 +106,17 @@ public class Loader {
 
 		tokenizer = new StringTokenizer(line, ",");
 
-		Node start = nodes.get(readInt());
-		Node stop = nodes.get(readInt());
+		Node start = nodes.get(readInt()-1);
+		Node end = nodes.get(readInt()-1);
 		double length = readDouble();
 		int type = readInt();
 		String name = readName();
-		Edge edge = new Edge(start, stop, length, name, type);
+		Edge edge = new Edge(start, end, length, name, type);
 
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
+
+		graph.addEdge(edge);
 	}
 
 	public void processCoast(String line) {

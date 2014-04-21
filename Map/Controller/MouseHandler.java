@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import Map.Vector;
 import Map.Box;
+import Map.Controller.Path;
 import Map.Model.Loader;
 import Map.Model.Graph;
 import Map.Model.ShortestPath;
@@ -53,14 +54,14 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		if (SwingUtilities.isMiddleMouseButton(e)) {
 			tiler.reset();
 			canvas.repaint();
-		}
-		else if(SwingUtilities.isLeftMouseButton(e)) {
-			if(sp == null) return;
-			List<Edge> path = sp.pathTo(loader.all.findClosestEdge(mousepos, false).START.ID);
-			tiler.path = path;
+		} else if(SwingUtilities.isLeftMouseButton(e)) {
+			if (sp == null) return;
+			List<Edge> pathEdges = sp.pathTo(loader.all.findClosestEdge(mousepos, false).START.ID);
+			tiler.path = pathEdges;
+			Path path = new Path(pathEdges);
+			path.getDirections();
 			canvas.repaint();
-		}
-		else if(SwingUtilities.isRightMouseButton(e)) {
+		} else if(SwingUtilities.isRightMouseButton(e)) {
 			sp = new ShortestPath(graph, loader.all.findClosestEdge(mousepos, false).START.ID);
 			tiler.path = null;
 			canvas.repaint();

@@ -1,6 +1,7 @@
 ./Map/Box.java
 ./Map/Controller/KeyboardHandler.java
 ./Map/Controller/MouseHandler.java
+./Map/Controller/Path.java
 ./Map/Data/saxEventHandler.java
 ./Map/Data/saxFilter.java
 ./Map/Data/saxPurger.java

@@ -49,8 +49,8 @@ public class TestShortestPath {
 
 		Integer[][] truePaths = {
 			new Integer[] { }, // already there - no edges
-			new Integer[] { 1, 3 },
-			new Integer[] { 2 },
+			new Integer[] { 3, 1 },
+			new Integer[] { 3, 2 },
 			new Integer[] { 3 },
 			null // not accessible
 		};
@@ -65,8 +65,8 @@ public class TestShortestPath {
 		Integer[][] truePaths = {
 			new Integer[] { 0 }, 
 			new Integer[] { }, // already there - no edges
-			new Integer[] { 2, 3, 0 },
-			new Integer[] { 3 },
+			new Integer[] { 0, 3, 2 },
+			new Integer[] { 0, 3 },
 			null // not accessible
 		};
 
@@ -78,8 +78,8 @@ public class TestShortestPath {
 		ShortestPath sp = new ShortestPath(g, 2);
 
 		Integer[][] truePaths = {
-			new Integer[] { 0, 1, 3 }, 
-			new Integer[] { 1, 3 },
+			new Integer[] { 3, 1, 0 }, 
+			new Integer[] { 3, 1 },
 			new Integer[] { }, // already there - no edges
 			new Integer[] { 3 },
 			null // not accessible
@@ -93,7 +93,7 @@ public class TestShortestPath {
 		ShortestPath sp = new ShortestPath(g, 3);
 
 		Integer[][] truePaths = {
-			new Integer[] { 0, 1 }, 
+			new Integer[] { 1, 0 }, 
 			new Integer[] { 1 },
 			new Integer[] { 2 },
 			new Integer[] { }, // already there - no edges
@@ -108,9 +108,9 @@ public class TestShortestPath {
 		ShortestPath sp = new ShortestPath(g, 4);
 
 		Integer[][] truePaths = {
-			new Integer[] { 0, 1, 3 }, 
-			new Integer[] { 1, 3 },
-			new Integer[] { 2, 3 },
+			new Integer[] { 3, 1, 0 }, 
+			new Integer[] { 3, 1 },
+			new Integer[] { 3, 2 },
 			new Integer[] { 3 },
 			new Integer[] { } // already there - no edges
 		};
@@ -121,10 +121,12 @@ public class TestShortestPath {
 	private void comparePath(ShortestPath sp, Integer[][] truePaths) {
 		for(int i = 0; i < truePaths.length; i++) {
 			Path path = sp.pathTo(i);
-			if(truePaths[i] == null) assertNull(path);
-			else {
+			if (truePaths[i] == null) {
+				assertNull(path);
+			} else {
+				assertEquals(truePaths[i].length, path.edges.size());
 				for(int j = 0; j < truePaths[i].length; j++) {
-					assertEquals(path.edges.get(j).END.ID, truePaths[i][j], delta);
+					assertEquals(truePaths[i][j], path.edges.get(j).END.ID, delta);
 				}
 			}
 		}

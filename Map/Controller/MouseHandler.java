@@ -11,6 +11,7 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.SwingUtilities;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import Map.Vector;
 import Map.Box;
@@ -55,12 +56,12 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		}
 		else if(SwingUtilities.isLeftMouseButton(e)) {
 			if(sp == null) return;
-			List<Edge> path = sp.pathTo(loader.all.findClosest(mousepos).START.ID);
+			List<Edge> path = sp.pathTo(loader.all.findClosestEdge(mousepos, false).START.ID);
 			tiler.setPath(path);
 			canvas.repaint();
 		}
 		else if(SwingUtilities.isRightMouseButton(e)) {
-			sp = new ShortestPath(graph, loader.all.findClosest(mousepos).START.ID);
+			sp = new ShortestPath(graph, loader.all.findClosestEdge(mousepos, false).START.ID);
 			tiler.setPath(null);
 			canvas.repaint();
 		}
@@ -141,9 +142,15 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 	public void mouseMoved(MouseEvent e) {
 		Vector target = new Vector(e.getX(), e.getY());
 		target = tiler.translateToModel(target);
-		String closest = tiler.all.findClosest(target).NAME;
+		String closest = tiler.all.findClosestEdge(target, true).NAME;
 		if (closest != window.label.getText())
 			window.label.setText(closest);
+
+		/*DEBUGGIN CODE: DRAWS CLOSEST EDGE AS PATH*/
+		// ArrayList<Edge> list = new ArrayList<>();
+		// list.add(tiler.all.findClosestEdge(target, true));
+		// tiler.setPath(list.get(0) == null ? null : list);
+		// canvas.repaint();
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e){

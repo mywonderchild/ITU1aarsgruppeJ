@@ -9,22 +9,17 @@ import Map.Vector;
 public class QuadTree
 {
 	private static final int NODE_CAPACITY = 500;
-	public static int count = 0;
 
-	private Edge[] edges;
 	private Box box;
-
 	private QuadTree[] children;
-
+	private Edge[] edges;
 	private int n = 0;
-	private double maxLen = 0;
 
-	private Box query;
+	private double maxLen = 0;
 
 	public QuadTree(Box box) {
 		this.box = box;
 		edges = new Edge[NODE_CAPACITY];
-		count++;
 	}
 
 	public boolean insert(Edge edge) {
@@ -35,7 +30,7 @@ public class QuadTree
 		if(n < NODE_CAPACITY) {
 			edges[n++] = edge;
 
-			// Update max edge length, but skip sea edges
+			// Update max edge length
 			double edgeLen = edge.getVectors()[0].dist(edge.getVectors()[1]);
 			if(edgeLen > maxLen) maxLen = edgeLen;
 
@@ -88,27 +83,72 @@ public class QuadTree
 		}
 	}
 
-    public Edge findClosest(Vector target) {
-
-        Edge closest = null;
+    public Edge findClosestEdge(Vector point, boolean withName) {
         double size = 10;
 
         Box query = new Box(
-        	new Vector(target.x - size, target.y - size),
-        	new Vector(target.x + size, target.y + size)
+        	new Vector(point.x - size, point.y - size),
+        	new Vector(point.x + size, point.y + size)
         );
 
-        while(closest == null) {
+        ArrayList<Edge> edges = null;
+        // Find some edge(s):
+        while(edges == null) {
+        	edges = queryRange(query);
+        	
+        	if(withName) { // check if any name is present
+        		boolean nameFound = false;
+        		for(Edge edge : edges) {
+	       			if(edge.NAME != null) {
+	       				nameFound = true;
+	       				break;
+	       			}
+	       		}
+	       		if(!nameFound) edges = null; // no name, no game
+        	}
 
-            ArrayList<Edge> edges = queryRange(query);
-
-	        for (Edge edge : edges)
-	        	if (edge.NAME != null)
-	        		if (closest == null || edge.getCenter().dist(target) < closest.getCenter().dist(target))
-	        			closest = edge;
-
-	        if (closest == null) query.scale(2); // Expand search
+        	query.scale(2); // double query size
         }
+
+        // When any edges are found, we must ensure all
+        // nearby edges get a chance. Because edges are
+        // placed in the quadtree based on center location,
+        // we must expand the search area by half the length
+        // of the longest edge in the quadtree.
+
+        Edge closest = null;
+        double closestDist = Double.POSITIVE_INFINITY;
+    	
+    	query.grow(maxLen/2); // grow query with ½ longest edge
+        edges = queryRange(query);
+
+        for (Edge edge : edges) {
+        	if(withName && edge.NAME == null) continue; // no name, no game
+
+        	// calculate distance from point to line
+        	Vector a = edge.START.VECTOR;
+        	Vector b = edge.END.VECTOR;
+        	Vector c = point.copy().sub(a); // a -> point
+        	Vector unit = b.copy().sub(a).norm(); // unit vector from a -> b
+        	double len = a.dist(b); // edge length
+        	double dot = unit.dot(c); // intersecting point dist from a
+        	double dist;
+
+        	// As we don't want to know the point's distnace to to
+        	// infinite line, but rather the finite line segment,
+        	// check if the intersection point is on the segment.
+        	if(dot < 0) { dist = a.dist(point); }
+        	else if(dot > len) { dist = b.dist(point); }
+
+        	// Point intersects with line somewhere in segment range.
+        	// Intersectin point must then be unit*dot + a
+        	else { dist = unit.mult(dot).add(a).dist(point); }
+
+    		if (closest == null || dist < closestDist) {
+    			closest = edge;
+    			closestDist = dist;
+    		}
+    	}
 
         return closest;
     }

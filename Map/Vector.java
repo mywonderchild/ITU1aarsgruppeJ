@@ -97,6 +97,21 @@ public class Vector {
 		return this;
 	}
 
+	// Dot/scalar product
+	public double dot(Vector vec) {
+		return x*vec.x + y*vec.y;
+	}
+
+	// Length
+	public double mag() {
+		return Math.sqrt(x*x + y*y);
+	}
+
+	// Unit vector
+	public Vector norm() {
+		return this.div(this.mag());
+	}
+
 	// To array
 	public double[] toArray() {
 		return new double[]{x, y};

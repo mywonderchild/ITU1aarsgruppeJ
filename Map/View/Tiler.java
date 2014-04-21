@@ -24,7 +24,7 @@ import Map.View.Painter;
 public class Tiler {
 
 	public Box mapBox, viewBox, modelBox, section;
-	public int tileSize = 250;
+	public int tileSize;
 	public BufferedImage[][] tiles;
 	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5;
 	public Vector center, resetCenter;
@@ -55,7 +55,7 @@ public class Tiler {
 		this.zoom = zoom;
 
 		Vector viewDimensions = viewBox.dimensions();
-		tileSize = (int)Math.sqrt(viewDimensions.x * viewDimensions.y);
+		tileSize = (int)(Math.sqrt(viewDimensions.x * viewDimensions.y) / 4);
 
 		renderTile = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_RGB);
 		render = renderTile.createGraphics();

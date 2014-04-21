@@ -92,7 +92,6 @@ public class PriorityQueue<Key extends Comparable<Key>, Value> {
 			temp[i] = a[i];
 		}
 		a = temp;
-		System.out.println("PQ size: " + n);
 	}
 
 	@Override

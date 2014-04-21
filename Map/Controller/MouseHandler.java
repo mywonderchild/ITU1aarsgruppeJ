@@ -57,11 +57,12 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			if(sp == null) return;
 			List<Edge> path = sp.pathTo(loader.all.findClosest(mousepos).START.ID);
 			tiler.setPath(path);
-			System.out.println(path);
+			canvas.repaint();
 		}
 		else if(SwingUtilities.isRightMouseButton(e)) {
 			sp = new ShortestPath(graph, loader.all.findClosest(mousepos).START.ID);
 			tiler.setPath(null);
+			canvas.repaint();
 		}
 	}
 

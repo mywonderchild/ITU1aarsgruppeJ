@@ -116,7 +116,9 @@ public class Loader {
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 
+		Edge invertedEdge = new Edge(end, start, length, name, type);
 		graph.addEdge(edge);
+		graph.addEdge(invertedEdge);
 	}
 
 	public void processCoast(String line) {

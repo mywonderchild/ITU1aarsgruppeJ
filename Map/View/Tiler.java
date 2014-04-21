@@ -106,6 +106,7 @@ public class Tiler {
 				2
 			));
 		}
+		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Painter.paintLines(graphics, lines);
 	}
 

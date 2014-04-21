@@ -152,7 +152,6 @@ public class Loader {
 		Node stop = new Node(resetVector(new Vector(readDouble(), readDouble())));
 		Edge edge = new Edge(start, stop, 0, null, 81);
 
-		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 	}
 

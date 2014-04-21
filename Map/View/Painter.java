@@ -11,11 +11,15 @@ import Map.Line;
 
 public class Painter {
 
+	static BasicStroke[] strokeCache = new BasicStroke[100];
+
 	public static void paintLines(Graphics2D g, ArrayList<Line> lines) {
 		if(lines == null) return;
 		for(Line line : lines) {
 			g.setColor(line.color);
-			g.setStroke(new BasicStroke(line.width));
+			if (strokeCache[line.width] == null)
+				strokeCache[line.width] = new BasicStroke(line.width);
+			g.setStroke(strokeCache[line.width]);
 			g.drawLine(
 				(int) line.start.x, (int) line.start.y,
 				(int) line.stop.x, (int) line.stop.y

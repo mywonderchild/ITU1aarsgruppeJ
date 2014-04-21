@@ -12,12 +12,7 @@ public class Main
 	public static void main(String[] args) {
 
 		// Set up model
-		long timer = System.currentTimeMillis();
 		Loader loader = new Loader();
-		System.out.printf(
-			"Loading data took %.2f seconds\n",
-			(System.currentTimeMillis() - timer) / 1000.0
-		);
 
 		// Set up view
 		final Canvas canvas = new Canvas();

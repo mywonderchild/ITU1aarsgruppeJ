@@ -28,6 +28,10 @@ public class Loader {
 		
 		nodes = new HashMap<>();
 
+		System.out.println("JVM OS architecture: " + System.getProperty("os.arch"));
+		System.out.println("----------------------------------------");
+		long timer = System.currentTimeMillis();
+
 		try {
 			String dir = "Map/Data/";
 			nodePath = dir + "purged_nodes.txt";
@@ -37,18 +41,26 @@ public class Loader {
 		} catch(IOException e) {
 			System.out.println(e.getMessage());
 		}
+
+		System.out.println("----------------------------------------");
+		System.out.println("Program startup took " + (System.currentTimeMillis()-timer) + "ms.");
 	}
 
 	public void load() throws IOException {
-
 		BufferedReader br;
 		String line;
+		long timer;
 
 		// Nodes
+		timer = System.currentTimeMillis();
+		System.out.print("Loading nodes... ");
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(nodePath), "UTF8"));
 		while((line = br.readLine()) != null)
 			processNode(line);
 		br.close();
+		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
+
+
 
 		// Create QuadTrees and Graph
 		quadBox = new Box(
@@ -62,24 +74,35 @@ public class Loader {
 		graph = new Graph(nodes.size());
 
 		// Reset node vectors
+		timer = System.currentTimeMillis();
+		System.out.print("Resetting node vectors... ");
 		for (Node node : nodes.values())
 			resetVector(node.VECTOR);
+		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
 		// Coastline
+		timer = System.currentTimeMillis();
+		System.out.print("Loading coastline... ");
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(coastPath), "UTF8"));
 		while((line = br.readLine()) != null)
 			processCoast(line);
 		br.close();
+		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
 		// Edges
+		timer = System.currentTimeMillis();
+		System.out.print("Loading edges... ");
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(edgePath), "UTF8"));
 		while((line = br.readLine()) != null)
 			processEdge(line);
 		br.close();
-		System.out.println("Edges in graph: " + graph.countEdges());
+		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
 		// Garbage collect
+		timer = System.currentTimeMillis();
+		System.out.print("Final garbage collection... ");
 		System.gc();
+		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 	}
 
 	public void processNode(String line) {

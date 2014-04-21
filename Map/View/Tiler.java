@@ -102,15 +102,15 @@ public class Tiler {
 			lines.add(new Line().set(
 				translateToView(edge.START.VECTOR.copy()),
 				translateToView(edge.END.VECTOR.copy()),
-				Color.GREEN,
-				3
+				Color.MAGENTA,
+				5
 			));
 		}
 		Painter.paintLines(graphics, lines);
 
-		// for(Line l : lines) {
-		// 	System.out.println(l.start + " -> " + l.stop);
-		// }
+		for(Line l : lines) {
+			System.out.println(l.start + " -> " + l.stop);
+		}
 	}
 
 	public void setPath(List<Edge> path) {
@@ -213,8 +213,8 @@ public class Tiler {
 
 	public Vector translateToView(Vector vector) {
 		return vector
-		.sub(section.start)
-		.translate(mapBox, modelBox);
+			.translate(modelBox, mapBox)
+			.sub(section.start);
 	}
 
 	private QuadTree[] visibleGroups() {

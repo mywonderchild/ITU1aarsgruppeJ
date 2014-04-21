@@ -29,6 +29,7 @@ public class Painter {
 
 		// Draw opaque edges
 		g.setColor(Color.BLACK);
+		g.setStroke(new BasicStroke(1));
 		g.drawRect(
 			(int)box.start.x, (int)box.start.y,
 			(int)dimensions.x, (int)dimensions.y

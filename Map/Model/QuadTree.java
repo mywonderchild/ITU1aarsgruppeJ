@@ -153,6 +153,50 @@ public class QuadTree
         return closest;
     }
 
+    public Node findClosestNode(Vector point) {
+        double size = 10;
+
+        Box query = new Box(
+        	new Vector(point.x - size, point.y - size),
+        	new Vector(point.x + size, point.y + size)
+        );
+
+        ArrayList<Edge> edges = null;
+        // Find some edge(s):
+        while(edges == null) {
+        	edges = queryRange(query);
+        	query.scale(2); // double query size
+        }
+
+        // When any edges are found, we must ensure all
+        // nearby edges get a chance. Because edges are
+        // placed in the quadtree based on center location,
+        // we must expand the search area by half the length
+        // of the longest edge in the quadtree.
+
+        Node closest = null;
+        double closestDist = Double.POSITIVE_INFINITY;
+    	
+    	query.grow(maxLen/2); // grow query with ½ longest edge
+        edges = queryRange(query);
+
+        for (Edge edge : edges) {
+        	double startDist = point.dist(edge.START.VECTOR);
+        	double endDist = point.dist(edge.END.VECTOR);
+
+    		if (closest == null || startDist < closestDist) {
+    			closest = edge.START;
+    			closestDist = startDist;
+    		}
+    		if (endDist < closestDist) {
+    			closest = edge.END;
+    			closestDist = endDist;
+    		}
+    	}
+
+        return closest;
+    }
+
 	public Box getBox() {
 		return box;
 	}

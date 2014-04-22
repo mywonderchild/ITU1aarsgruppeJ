@@ -37,25 +37,4 @@ public class Graph {
 	public int countEdges() {
 		return edgeCount;
 	}
-
-	public ArrayList<Edge> BFS(int start) {
-		PriorityQueue<Integer, Integer> pq = new PriorityQueue<Integer, Integer>();
-		boolean[] done = new boolean[countNodes()];
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		pq.push(start, null);
-		done[start] = true;
-
-		while(!pq.isEmpty()) {
-			int node = (int) pq.pop().getKey();
-			for(Edge e : getAdj(node)) {
-				if(!done[e.END.ID]) {
-					edges.add(e);
-					done[e.END.ID] = true;
-					pq.push(e.END.ID, null);
-				}
-			}
-		}
-
-		return edges;
-	}
 }

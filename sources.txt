@@ -20,6 +20,7 @@
 ./Map/Model/ShortestPath.java
 ./Map/Vector.java
 ./Map/View/Canvas.java
+./Map/View/FirstWindow.java
 ./Map/View/Painter.java
 ./Map/View/Tiler.java
 ./Map/View/Window.java

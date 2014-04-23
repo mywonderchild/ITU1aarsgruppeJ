@@ -40,7 +40,7 @@ public class Tiler {
 		this.center = center;
 		this.viewBox = viewBox;
 		this.modelBox = modelBox;
-		resetCenter = center;
+		resetCenter = center.copy();
 		resetZoom = zoom;
 		setZoom(zoom);
 		if (loader != null) {
@@ -49,10 +49,9 @@ public class Tiler {
 		}
 	}
 
-	public void setZoom(double zoom) {
+	public boolean setZoom(double zoom) {
 
-		if (zoom > maxZoom) zoom = maxZoom;
-		if (zoom < minZoom) zoom = minZoom;
+		if (zoom > maxZoom || zoom < minZoom) return false;
 		this.zoom = zoom;
 
 		Vector viewDimensions = viewBox.dimensions();
@@ -71,6 +70,7 @@ public class Tiler {
 		int tilesX = (int)Math.ceil(mapDimensions.x / tileSize);
 		int tilesY = (int)Math.ceil(mapDimensions.y / tileSize);
 		tiles = new BufferedImage[tilesX][tilesY];
+		return true;
 	}
 
 	public void reset() {

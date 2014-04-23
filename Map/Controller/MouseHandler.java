@@ -145,20 +145,12 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		String closest = tiler.all.findClosestEdge(target, true).NAME;
 		if (closest != window.closest.getText())
 			window.closest.setText(closest);
-
-		/*DEBUGGIN CODE: DRAWS CLOSEST EDGE AS PATH*/
-		// ArrayList<Edge> list = new ArrayList<>();
-		// list.add(tiler.all.findClosestEdge(target, true));
-		// tiler.setPath(list.get(0) == null ? null : list);
-		// canvas.repaint();
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e){
-		int movement = e.getWheelRotation();
-		if (movement < 0)
-			tiler.setZoom(tiler.zoom * 0.9);
-		else
-			tiler.setZoom(tiler.zoom * 1.1);
+		boolean zoomIn = e.getWheelRotation() > 0;
+		double scalar = zoomIn ? 1.1 : 0.9;
+		tiler.setZoom(tiler.zoom * scalar);
 		canvas.repaint();
     }
 

@@ -52,10 +52,10 @@ public class DataPurger
 
 	public static void main(String[] args) throws IOException {
 		if(args.length == 0) {
-			DataPurger dp1 = new DataPurger("Map/data/kdv_node_unload.txt", "Map/data/purged_nodes.txt");
+			DataPurger dp1 = new DataPurger("Map/Data/kdv_node_unload.txt", "Map/Data/purged_nodes.txt");
 			dp1.purge(new int[] {2, 3, 4});
-			DataPurger dp2 = new DataPurger("Map/data/kdv_unload.txt", "Map/data/purged_edges.txt");
-			dp2.purge(new int[] {0, 1, 2, 5, 6});
+			DataPurger dp2 = new DataPurger("Map/Data/kdv_unload.txt", "Map/Data/purged_edges.txt");
+			dp2.purge(new int[] {0, 1, 2, 5, 6, 25});
 		}
 		else if(args.length == 3) {
 			DataPurger dataPurger = new DataPurger(args[0], args[1]);

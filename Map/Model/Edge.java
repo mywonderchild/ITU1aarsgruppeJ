@@ -8,17 +8,24 @@ import Map.Model.Groups;
 
 public class Edge {
 	public final Node START, END;
-	public final Vector CENTER;
-	public final String NAME;
-	public final int TYPE;
 	public final double LENGTH;
+	public final int TYPE;
+	public final String NAME;
+	public final int SPEED;
 
-	public Edge(Node start, Node end, double length, String name, int type) {
+	public final double TIME;
+	public final Vector CENTER;
+
+
+	public Edge(Node start, Node end, double length, int type, String name, int speed) {
 		START = start;
 		END = end;
-		NAME = name;
-		TYPE = type;
 		LENGTH = length;
+		TYPE = type;
+		NAME = name;
+		SPEED = speed;
+
+		TIME = LENGTH/1000 / SPEED;
 		CENTER = START.VECTOR
 			.copy()
 			.add(END.VECTOR)

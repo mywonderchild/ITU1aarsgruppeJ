@@ -8,15 +8,19 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import Map.Vector;
 import Map.Box;
 import Map.Model.Groups;
 
 public class Loader {
+	public static final Pattern PATTERN = Pattern.compile("((?<=').*(?=')|[^',]+)");
+	public Matcher matcher;
 
 	private String nodePath, edgePath, coastPath;
-	public final HashMap<Integer, Node> nodes;
+	public HashMap<Integer, Node> nodes;
 	public QuadTree all;
 	public QuadTree[] groups;
 	public Graph graph;
@@ -25,9 +29,6 @@ public class Loader {
 	Box quadBox, dataBox;
 
 	public Loader() {
-		
-		nodes = new HashMap<>();
-
 		System.out.println("JVM OS architecture: " + System.getProperty("os.arch"));
 		System.out.println("----------------------------------------");
 		long timer = System.currentTimeMillis();
@@ -46,7 +47,7 @@ public class Loader {
 		System.out.println("Program startup took " + (System.currentTimeMillis()-timer) + "ms.");
 	}
 
-	public void load() throws IOException {
+	private void load() throws IOException {
 		BufferedReader br;
 		String line;
 		long timer;
@@ -54,13 +55,12 @@ public class Loader {
 		// Nodes
 		timer = System.currentTimeMillis();
 		System.out.print("Loading nodes... ");
+		nodes = new HashMap<>();
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(nodePath), "UTF8"));
 		while((line = br.readLine()) != null)
 			processNode(line);
 		br.close();
 		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
-
-
 
 		// Create QuadTrees and Graph
 		quadBox = new Box(
@@ -105,9 +105,8 @@ public class Loader {
 		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 	}
 
-	public void processNode(String line) {
-
-		tokenizer = new StringTokenizer(line, ",");
+	private void processNode(String line) {
+		matcher = PATTERN.matcher(line);
 
 		int id = readInt();
 		Vector vector = new Vector(readDouble(), readDouble());
@@ -125,37 +124,36 @@ public class Loader {
 		}
 	}
 
-	public void processEdge(String line) {
-
-		tokenizer = new StringTokenizer(line, ",");
+	private void processEdge(String line) {
+		matcher = PATTERN.matcher(line);
 
 		Node start = nodes.get(readInt()-1);
 		Node end = nodes.get(readInt()-1);
 		double length = readDouble();
 		int type = readInt();
-		String name = readName();
-		Edge edge = new Edge(start, end, length, name, type);
+		String name = readString();
+		int speed = readInt();
+		Edge edge = new Edge(start, end, length, type, name, speed);
 
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 
-		Edge invertedEdge = new Edge(end, start, length, name, type);
+		Edge invertedEdge = new Edge(start, end, length, type, name, speed);
 		graph.addEdge(edge);
 		graph.addEdge(invertedEdge);
 	}
 
-	public void processCoast(String line) {
-
-		tokenizer = new StringTokenizer(line, ",");
+	private void processCoast(String line) {
+		matcher = PATTERN.matcher(line);
 
 		Node start = new Node(resetVector(new Vector(readDouble(), readDouble())));
 		Node stop = new Node(resetVector(new Vector(readDouble(), readDouble())));
-		Edge edge = new Edge(start, stop, 0, null, 81);
+		Edge edge = new Edge(start, stop, -1, 81, null, -1);
 
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 	}
 
-	public Vector resetVector(Vector vector) {
+	private Vector resetVector(Vector vector) {
 		return vector
 			.sub(dataBox.start)
 			.mirrorY(dataBox)
@@ -163,21 +161,19 @@ public class Loader {
 	}
 
 	private int readInt() {
-		return Integer.parseInt(tokenizer.nextToken());
+		matcher.find();
+		return Integer.parseInt(matcher.group());
 	}
 
 	private double readDouble() {
-		return Double.parseDouble(tokenizer.nextToken());
+		matcher.find();
+		return Double.parseDouble(matcher.group());
 	}
 
-	private String readName() {
-		tokenizer.nextToken("'"); // Switch delimiter, first token is ","
-		String name = "";
-		if (tokenizer.hasMoreTokens()) name = tokenizer.nextToken();
-		tokenizer.nextToken(","); // Switch delimiter, first token is "'"
-		if (name.trim().length() > 0)
-			return name;
-		else
-			return null;
+	private String readString() {
+		matcher.find();
+		String name = matcher.group();
+		return name.length() == 0 ? null : name;
+		// If empty string, return null.
 	}
 }

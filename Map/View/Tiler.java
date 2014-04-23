@@ -81,6 +81,8 @@ public class Tiler {
 	public void render(Graphics2D graphics) {
 		section = getSection();
 		int[][] sectionTiles = getTiles(section);
+		// int[][][] rectangles = getRectangles(sectionTiles);
+		// renderRectangles(rectangles);
 		for (int[] tile : sectionTiles) {
 			int x = tile[0];
 			int y = tile[1];
@@ -133,6 +135,7 @@ public class Tiler {
 		// Return the tiles
 		int width = query[1][0] - query[0][0];
 		int height = query[1][1] - query[0][1];
+		if (width <= 0 || height <= 0) return new int[0][0];
 		int[][] selected = new int[width * height][2];
 		int cursor = 0;
 		for (int x = query[0][0]; x < query[1][0]; x++) {
@@ -143,6 +146,27 @@ public class Tiler {
 			}
 		}
 		return selected;
+	}
+
+	public int[][][] getRectangles(int[][] selected) {
+		int[] start = selected[0];
+		int[] stop = selected[selected.length - 1];
+		int[] dimensions = new int[] {
+			stop[0] - start[0],
+			stop[1] - start[1],
+		};
+		boolean[][] rendered = new boolean[dimensions[0]][dimensions[1]];
+		int[][] horizontal = new int[dimensions[0]][dimensions[1]];
+		int[][] vertical = new int[dimensions[0]][dimensions[1]];
+		for (int i = 0; i < dimensions[0]; i++) {
+			for (int j = 0; j < dimensions[1]; j++) {
+				rendered[i][j] = tiles[i + start[0]][j + start[1]] != null ? true : false;
+				System.out.print(rendered[i][j] ? "r" : "x");
+			}
+			System.out.println();
+		}
+		System.out.println();
+		return null;
 	}
 
 	public void renderTile(int x, int y) {

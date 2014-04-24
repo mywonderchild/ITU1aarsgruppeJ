@@ -35,7 +35,7 @@ public class ShortestPath {
 				int node = edge.END.ID;
 				if(done[node]) continue;
 
-				double alt = dist[curr] + edge.LENGTH;
+				double alt = dist[curr] + edge.TIME;
 				if(alt < dist[node]) {
 					prev[node] = edge;
 					dist[node] = alt;

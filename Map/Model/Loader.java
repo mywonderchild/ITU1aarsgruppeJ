@@ -138,7 +138,7 @@ public class Loader {
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 
-		Edge invertedEdge = new Edge(start, end, length, type, name, speed);
+		Edge invertedEdge = new Edge(end, start, length, type, name, speed);
 		graph.addEdge(edge);
 		graph.addEdge(invertedEdge);
 	}

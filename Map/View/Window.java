@@ -136,6 +136,11 @@ public class Window extends JFrame {
 	}
 
 	public void setDirections(ArrayList<String> directions) {
+		if(directions == null) {
+			this.directions.setText(null);
+			return;
+		}
+
 		String html = "<html><body>";
 		for (String direction : directions) html += direction + "<br>";
 		html += "</body></html>";

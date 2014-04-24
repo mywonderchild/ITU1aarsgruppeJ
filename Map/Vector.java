@@ -117,7 +117,7 @@ public class Vector {
 		return this.div(this.mag());
 	}
 
-	// Angle, distinguishes between acute and obtuse angles
+	// Angle between vectors, CW is positive, CCW is negative
 	public double angle(Vector v) {
 		double angle = Math.acos(this.dot(v) / (this.mag() * v.mag()));
 		if (this.cross(v) > 0) angle = -angle;

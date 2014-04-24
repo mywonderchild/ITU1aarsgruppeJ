@@ -29,42 +29,41 @@ public class AddressFinder {
 	}
 
 	private static int dist(String s1, String s2) {
-		// Initialize distance matrix between s1 and s2.
+		// We do not care about
+		// lower/upper case discrepancies.
+		char[] c1 = (" "+s1).toLowerCase().toCharArray();
+		char[] c2 = (" "+s2).toLowerCase().toCharArray();
+
+		// Initialize distance matrix between c1 and c2.
 		// As [0][1] and [1][0] are empty strings, the
 		// distance to these must be the length of the
 		// opposing string.
 		// Thus distance [i][0] and [0][i] must be i.
 
-		int[][] d = new int[s1.length()][s2.length()];
-		for(int i = 0; i < s1.length(); i++)
+		int[][] d = new int[c1.length][c2.length];
+		for(int i = 0; i < c1.length; i++)
 			d[i][0] = i;
-		for(int i = 0; i < s2.length(); i++)
+		for(int i = 0; i < c2.length; i++)
 			d[0][i] = i;
-
-		// We do not care about
-		// lower/upper case discrepancies.
-		s1 = s1.toLowerCase();
-		s2 = s2.toLowerCase();
 
 		// Compare each char to every char
 		// in the opposing string.
-		for(int i = 1; i < s1.length(); i++) {
-			for(int j = 1; j < s2.length(); j++) {
+		for(int i = 1; i < c1.length; i++) {
+			for(int j = 1; j < c2.length; j++) {
 				// If two chars are equal, then dist = 0.
-				if(s1.charAt(i) == s2.charAt(j)) {
+				if(c1[i] == c2[j]) {
 					d[i][j] = d[i-1][j-1]; // NW: no action
 				}
 				else {
 					d[i][j] = min(
 						d[i-1][j] + 1,	// del
-						d[i][j-1] + 1, 	// ins
-						d[i-1][j-1] + 1 // sub
+						d[i][j-1] + (j<c1.length ? 1 : 0), 	// ins, free if prefix
+						d[i-1][j-1] + 2 // sub
 					);
 				}
 			}
 		}
-
-		return d[s1.length()-1][s2.length()-1];
+		return d[c1.length-1][c2.length-1];
 	}
 
 	private static int min(int... args) {
@@ -72,19 +71,5 @@ public class AddressFinder {
 		for(int i : args)
 			if(i < min) min = i;
 		return min;
-	}
-
-	public static void main(String[] args) {
-		TreeMap<String, String> addresses = new TreeMap<String, String>();
-		addresses.put("Rued Langgards Vej","Rued Langgards Vej");
-		addresses.put("Brydes Allé","Brydes Allé");
-		addresses.put("Kongens Nytorv","Kongens Nytorv");
-		addresses.put("Strøget","Strøget");
-		addresses.put("Kaj Munks Vej","Kaj Munks Vej");
-		AddressFinder af = new AddressFinder(addresses);
-
-		System.out.println(af.find("rudslangardsvej"));
-		System.out.println(af.find("rued"));
-		System.out.println(af.find("bds ll"));
 	}
 }

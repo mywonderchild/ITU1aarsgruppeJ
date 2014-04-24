@@ -31,6 +31,7 @@ public class Window extends JFrame {
 	public JLabel closest, directions;
 	public JToggleButton toggler;
 	public JScrollPane scrollPane;
+	public JTextField fromText, toText;
 	
 	public Window(Canvas canvas) {
 		super();
@@ -45,8 +46,8 @@ public class Window extends JFrame {
 		JLabel text = new JLabel("Enter directions: ");
 		JLabel from =  new JLabel("(A) ");
 		JLabel to =  new JLabel("(B) ");
-		JTextField fromText = new JTextField("", 50);
-		JTextField toText = new JTextField("", 50);
+		fromText = new JTextField("", 50);
+		toText = new JTextField("", 50);
 		innerPanel.add(text, "span, wrap");
 		innerPanel.add(from);
 		innerPanel.add(fromText, "wmax 150, wrap");

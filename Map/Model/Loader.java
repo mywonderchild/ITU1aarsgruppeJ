@@ -1,7 +1,6 @@
 package Map.Model;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.util.HashMap;
 import java.io.IOException;
 import java.io.File;
@@ -19,14 +18,12 @@ public class Loader {
 	public static final Pattern PATTERN = Pattern.compile("((?<=').*(?=')|[^',]+)");
 	public Matcher matcher;
 
-	private String nodePath, edgePath, coastPath;
+	private String nodePath, edgePath;
 	public HashMap<Integer, Node> nodes;
 	public QuadTree all;
 	public QuadTree[] groups;
 	public Graph graph;
-	StringTokenizer tokenizer;
-	Vector min, max;
-	Box quadBox, dataBox;
+	Vector max;
 
 	public Loader() {
 		System.out.println("JVM OS architecture: " + System.getProperty("os.arch"));
@@ -37,7 +34,6 @@ public class Loader {
 			String dir = "Map/Data/";
 			nodePath = dir + "purged_nodes.txt";
 			edgePath = dir + "purged_edges.txt";
-			coastPath = dir + "coastline.txt";
 			load();
 		} catch(IOException e) {
 			System.out.println(e.getMessage());
@@ -57,44 +53,24 @@ public class Loader {
 		System.out.print("Loading nodes... ");
 		nodes = new HashMap<>();
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(nodePath), "UTF8"));
-		while((line = br.readLine()) != null)
-			processNode(line);
+		String[] tokens = br.readLine().split(",");
+		max = new Vector(Double.parseDouble(tokens[0]), Double.parseDouble(tokens[1]));
+		while((line = br.readLine()) != null) processNode(line);
 		br.close();
 		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
 		// Create QuadTrees and Graph
-		quadBox = new Box(
-			new Vector(0, 0),
-			(new Vector(1000, 1000)).mult(dataBox.ratio())
-		);
+		Box quadBox = new Box(new Vector(0, 0), max);
 		all = new QuadTree(quadBox);
 		groups = new QuadTree[Groups.GROUPS.length];
-		for(int i = 0; i < groups.length; i++)
-			groups[i] = new QuadTree(quadBox);
+		for(int i = 0; i < groups.length; i++) groups[i] = new QuadTree(quadBox);
 		graph = new Graph(nodes.size());
-
-		// Reset node vectors
-		timer = System.currentTimeMillis();
-		System.out.print("Resetting node vectors... ");
-		for (Node node : nodes.values())
-			resetVector(node.VECTOR);
-		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
-
-		// Coastline
-		timer = System.currentTimeMillis();
-		System.out.print("Loading coastline... ");
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(coastPath), "UTF8"));
-		while((line = br.readLine()) != null)
-			processCoast(line);
-		br.close();
-		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
 		// Edges
 		timer = System.currentTimeMillis();
 		System.out.print("Loading edges... ");
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(edgePath), "UTF8"));
-		while((line = br.readLine()) != null)
-			processEdge(line);
+		while((line = br.readLine()) != null) processEdge(line);
 		br.close();
 		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
@@ -113,15 +89,6 @@ public class Loader {
 		Node node = new Node(vector, id-1);
 		
 		nodes.put(node.ID, node);
-
-		if (dataBox == null) {
-			dataBox = new Box(vector.copy(), vector.copy());
-		} else {
-			dataBox.start.x = Math.min(vector.x, dataBox.start.x);
-			dataBox.start.y = Math.min(vector.y, dataBox.start.y);
-			dataBox.stop.x = Math.max(vector.x, dataBox.stop.x);
-			dataBox.stop.y = Math.max(vector.y, dataBox.stop.y);
-		}
 	}
 
 	private void processEdge(String line) {
@@ -138,26 +105,11 @@ public class Loader {
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 
-		Edge invertedEdge = new Edge(end, start, length, type, name, speed);
-		graph.addEdge(edge);
-		graph.addEdge(invertedEdge);
-	}
-
-	private void processCoast(String line) {
-		matcher = PATTERN.matcher(line);
-
-		Node start = new Node(resetVector(new Vector(readDouble(), readDouble())));
-		Node stop = new Node(resetVector(new Vector(readDouble(), readDouble())));
-		Edge edge = new Edge(start, stop, -1, 81, null, -1);
-
-		groups[Groups.getGroup(edge.TYPE)].insert(edge);
-	}
-
-	private Vector resetVector(Vector vector) {
-		return vector
-			.sub(dataBox.start)
-			.mirrorY(dataBox)
-			.translate(dataBox, quadBox);
+		if (type != 81) {
+			Edge invertedEdge = new Edge(end, start, length, type, name, speed);
+			graph.addEdge(edge);
+			graph.addEdge(invertedEdge);
+		}
 	}
 
 	private int readInt() {
@@ -174,6 +126,5 @@ public class Loader {
 		matcher.find();
 		String name = matcher.group();
 		return name.length() == 0 ? null : name;
-		// If empty string, return null.
 	}
 }

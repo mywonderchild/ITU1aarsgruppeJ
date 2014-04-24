@@ -102,6 +102,11 @@ public class Vector {
 		return x*vec.x + y*vec.y;
 	}
 
+	// Cross product
+	public double cross(Vector v) {
+		return this.x * v.y - this.y * v.x;
+	}
+
 	// Length
 	public double mag() {
 		return Math.sqrt(x*x + y*y);
@@ -110,6 +115,13 @@ public class Vector {
 	// Unit vector
 	public Vector norm() {
 		return this.div(this.mag());
+	}
+
+	// Angle, distinguishes between acute and obtuse angles
+	public double angle(Vector v) {
+		double angle = Math.acos(this.dot(v) / (this.mag() * v.mag()));
+		if (this.cross(v) > 0) angle = -angle;
+		return angle;
 	}
 
 	// To array

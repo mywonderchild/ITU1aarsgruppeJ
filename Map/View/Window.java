@@ -37,7 +37,7 @@ public class Window extends JFrame {
 
 		this.canvas = canvas;
 
-		setMinimumSize(new Dimension(600, 400));
+		setMinimumSize(new Dimension(1024, 768));
 		setLayout(new BorderLayout());
 
 		// Set innerPanel, labels and textfields.
@@ -80,12 +80,10 @@ public class Window extends JFrame {
 		});
 
 		// Scrollpane
-		//JTextArea textArea = new JTextArea();
 		scrollPane = new JScrollPane();
 		directions = new JLabel("Directions");
 		scrollPane.setColumnHeaderView(directions);
 		scrollPane.setBorder(BorderFactory.createEtchedBorder());
-		//scrollPane.setBackground(new Color(235,235,235));
 		scrollPane.setVisible(false);
 
 		// SidePanel		
@@ -131,7 +129,7 @@ public class Window extends JFrame {
 
 	private void resize() {
 		canvas.setBounds(0, 0, topPanel.getWidth(), topPanel.getHeight());
-		int width = toggler.isSelected() ? 200 : 50;
+		int width = toggler.isSelected() ? 400 : 50;
 		sidePanel.setBounds(0, 0, width, topPanel.getHeight());
 	}
 

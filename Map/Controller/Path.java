@@ -10,7 +10,7 @@ import Map.Model.Edge;
 
 public class Path {
 	
-	static String directionFormat = "%s%s for %s";
+	static String directionFormat = "%s%s%s";
 	public List<Edge> edges;
 	private Segment[] segments;
 
@@ -50,9 +50,9 @@ public class Path {
 		String turn = (one != null) ? getTurn(one, two) : "";
 		String distanceString;
 		if (distance < 1000)
-			distanceString = String.format("%d for %s", Math.round(distance), "meters");
+			distanceString = String.format(" (%d %s)", Math.round(distance), "m");
 		else
-			distanceString = String.format("%.2f for %s", distance / 1000, "kilometers");
+			distanceString = String.format(" (%.2f %s)", distance / 1000, "km");
 		return String.format(directionFormat, turn, name, distanceString);
 	}
 
@@ -61,11 +61,11 @@ public class Path {
 		Vector vectorTwo = two.END.VECTOR.copy().sub(two.START.VECTOR);
 		double angle = -vectorOne.angle(vectorTwo);
 		if (Math.abs(angle) < Math.PI / 4)
-			return "Continue straight and follow ";
+			return "Continue straight, follow ";
 		else if (angle > 0)
-			return "Turn right and follow ";
+			return "Turn right, follow ";
 		else
-			return "Turn left and follow ";
+			return "Turn left, follow ";
 	}
 
 	private class Segment {

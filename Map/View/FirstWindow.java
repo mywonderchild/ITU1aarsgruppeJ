@@ -38,10 +38,9 @@ public class FirstWindow extends JFrame {
 		button1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			openKrak();	
-			closeWindow();
+				openKrak();	
+				closeWindow();
 			}
-			
 		});
 
 		button2 = new JButton("OpenStreetMap");
@@ -68,8 +67,6 @@ public class FirstWindow extends JFrame {
 		// Set up view
 		this.canvas = new Canvas();
 		this.window = new Window(canvas);
-
-
 		
 		// Tiler
 		this.tiler = new Tiler(1.3, new Vector(0.5, 0.5), canvas.getBox(), loader.all.getBox(), loader);
@@ -92,7 +89,6 @@ public class FirstWindow extends JFrame {
 		canvas.addMouseListener(mouseHandler);
 		canvas.addMouseMotionListener(mouseHandler);
 		canvas.addMouseWheelListener(mouseHandler);
-
 	}
 
 	public void closeWindow() {

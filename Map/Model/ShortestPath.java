@@ -2,7 +2,7 @@ package Map.Model;
 
 import java.lang.Iterable;
 import java.util.List;
-import java.util.Stack;
+import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Collections;
 import java.lang.IllegalArgumentException;
@@ -55,13 +55,12 @@ public class ShortestPath {
 		if(node > dist.length-1) throw new IllegalArgumentException("Node " + node + " does not exist in graph");
 		if(!hasPathTo(node)) return null;
 
-		Stack<Edge> edges = new Stack<Edge>();
+		LinkedList<Edge> edges = new LinkedList<>();
 		Edge edge;
 		while((edge = prev[node]) != null) {
-			edges.push(edge);
+			edges.addFirst(edge);
 			node = edge.START.ID;
 		}
-		Collections.reverse(edges);
 
 		return new Path(edges);
 	}

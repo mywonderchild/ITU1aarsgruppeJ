@@ -16,7 +16,6 @@ public class Edge {
 	public final double TIME;
 	public final Vector CENTER;
 
-
 	public Edge(Node start, Node end, double length, int type, String name, int speed) {
 		START = start;
 		END = end;

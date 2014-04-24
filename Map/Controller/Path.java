@@ -59,7 +59,7 @@ public class Path {
 	String getTurn(Edge one, Edge two) {
 		Vector vectorOne = one.END.VECTOR.copy().sub(one.START.VECTOR);
 		Vector vectorTwo = two.END.VECTOR.copy().sub(two.START.VECTOR);
-		double angle = -vectorOne.angle(vectorTwo);
+		double angle = vectorOne.angle(vectorTwo);
 		if (Math.abs(angle) < Math.PI / 4)
 			return "Continue straight, follow ";
 		else if (angle > 0)

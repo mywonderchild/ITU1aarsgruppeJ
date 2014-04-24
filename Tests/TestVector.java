@@ -201,9 +201,9 @@ public class TestVector {
 		Vector opposite = new Vector(-1, -2);
 		Vector left = new Vector(-2, 1);
 		assertEquals(0, vector.angle(straight), delta);
-		assertEquals(Math.PI / 2, vector.angle(right), delta);
+		assertEquals(-Math.PI / 2, vector.angle(right), delta);
 		assertEquals(Math.PI, vector.angle(opposite), delta);
-		assertEquals(-Math.PI / 2, vector.angle(left), delta);
+		assertEquals(Math.PI / 2, vector.angle(left), delta);
 	}
 
 	@Test

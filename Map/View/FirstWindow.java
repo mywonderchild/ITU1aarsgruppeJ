@@ -89,6 +89,15 @@ public class FirstWindow extends JFrame {
 		canvas.addMouseListener(mouseHandler);
 		canvas.addMouseMotionListener(mouseHandler);
 		canvas.addMouseWheelListener(mouseHandler);
+
+		window.fromText.getDocument()
+			.addDocumentListener(
+				new AddressListener(window.fromText, loader.addressFinder)
+			);
+		window.toText.getDocument()
+			.addDocumentListener(
+				new AddressListener(window.toText, loader.addressFinder)
+			);
 	}
 
 	public void closeWindow() {

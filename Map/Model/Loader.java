@@ -1,7 +1,7 @@
 package Map.Model;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.HashMap;
 import java.io.IOException;
 import java.io.File;
@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import Map.Vector;
 import Map.Box;
 import Map.Model.Groups;
+import Map.Controller.AddressFinder;
 
 public class Loader {
 	public static final Pattern PATTERN = Pattern.compile("((?<=').*(?=')|[^',]+)");
@@ -24,7 +25,8 @@ public class Loader {
 	public QuadTree all;
 	public QuadTree[] groups;
 	public Graph graph;
-	StringTokenizer tokenizer;
+	public AddressFinder addressFinder;
+	public TreeMap<String, String> addresses;
 	Vector min, max;
 	Box quadBox, dataBox;
 
@@ -62,7 +64,7 @@ public class Loader {
 		br.close();
 		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
-		// Create QuadTrees and Graph
+		// Create QuadTrees, Graph, and TreeMap
 		quadBox = new Box(
 			new Vector(0, 0),
 			(new Vector(1000, 1000)).mult(dataBox.ratio())
@@ -72,6 +74,7 @@ public class Loader {
 		for(int i = 0; i < groups.length; i++)
 			groups[i] = new QuadTree(quadBox);
 		graph = new Graph(nodes.size());
+		addresses = new TreeMap<String, String>();
 
 		// Reset node vectors
 		timer = System.currentTimeMillis();
@@ -97,6 +100,9 @@ public class Loader {
 			processEdge(line);
 		br.close();
 		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
+
+		// AddressFinder
+		addressFinder = new AddressFinder(addresses);
 
 		// Garbage collect
 		timer = System.currentTimeMillis();
@@ -141,6 +147,9 @@ public class Loader {
 		Edge invertedEdge = new Edge(end, start, length, type, name, speed);
 		graph.addEdge(edge);
 		graph.addEdge(invertedEdge);
+
+		if(name != null)
+			addresses.put(name,name);
 	}
 
 	private void processCoast(String line) {

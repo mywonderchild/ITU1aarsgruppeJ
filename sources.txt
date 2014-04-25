@@ -21,6 +21,7 @@
 ./Map/Model/ShortestPath.java
 ./Map/Vector.java
 ./Map/View/Canvas.java
+./Map/View/DropTextField.java
 ./Map/View/FirstWindow.java
 ./Map/View/Painter.java
 ./Map/View/Tiler.java

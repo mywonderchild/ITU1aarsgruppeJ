@@ -190,7 +190,7 @@ public class Tiler {
 			lines.add(linePool.get(i).set(
 				vectors[0], vectors[1],
 				Groups.getColor(edge),
-				1
+				Groups.getWidth(edge)
 			));
 		}
 		

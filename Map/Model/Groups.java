@@ -60,4 +60,32 @@ public class Groups {
 	public static Color getColor(Edge edge) throws RuntimeException {
 		return getGroupColor(getGroup(edge.TYPE));
 	}
+
+	public static int getGroupWidth(int group) throws RuntimeException {
+
+		// Return color
+		switch(group) {
+			case 0:
+				return 3;
+			case 1:
+				return 1;
+			case 2:
+				return 1;
+			case 3:
+				return 1;
+			case 4:
+				return 1;
+			case 5:
+				return 1;
+			case 6:
+				return 1;
+			default:
+				throw new RuntimeException("Road group " + group + " is not recognized");
+		}
+	}
+
+	public static int getWidth(Edge edge) throws RuntimeException {
+		return getGroupWidth(getGroup(edge.TYPE));
+	}
+
 }

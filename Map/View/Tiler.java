@@ -49,10 +49,9 @@ public class Tiler {
 		}
 	}
 
-	public boolean setZoom(double zoom) {
+	public void setZoom(double zoom) {
 
-		if (zoom > maxZoom || zoom < minZoom) return false;
-		this.zoom = zoom;
+		this.zoom = Math.min(Math.max(zoom, minZoom), maxZoom);
 
 		Vector viewDimensions = viewBox.dimensions();
 		tileSize = (int)(Math.sqrt(viewDimensions.x * viewDimensions.y) / 4);
@@ -63,14 +62,13 @@ public class Tiler {
 
 		Vector mapDimensions = viewDimensions
 			.div(viewBox.ratio())
-			.div(zoom)
+			.div(this.zoom)
 			.mult(modelBox.ratio());
 		mapBox = new Box(new Vector(0, 0), mapDimensions);
 
 		int tilesX = (int)Math.ceil(mapDimensions.x / tileSize);
 		int tilesY = (int)Math.ceil(mapDimensions.y / tileSize);
 		tiles = new BufferedImage[tilesX][tilesY];
-		return true;
 	}
 
 	public void reset() {

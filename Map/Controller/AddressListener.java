@@ -6,6 +6,8 @@ import javax.swing.event.DocumentEvent;
 import Map.View.DropTextField;
 
 public class AddressListener implements DocumentListener {
+	private static final int SUGGESTIONS = 5; // number of suggested addresses
+
 	private final DropTextField tf;
 	private final AddressFinder af;
 
@@ -27,7 +29,7 @@ public class AddressListener implements DocumentListener {
 	private void update() {
 		String text = tf.getText();
 		if(text.length() >= 2) {
-			tf.setItems(af.find(text, 5));
+			tf.setItems(af.find(text, SUGGESTIONS));
 			tf.showPop();
 		}
 		else {

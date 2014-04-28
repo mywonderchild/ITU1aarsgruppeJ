@@ -8,6 +8,7 @@ import javax.swing.event.MenuKeyListener;
 import javax.swing.event.MenuKeyEvent;
 
 import java.awt.Dimension;
+import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -19,17 +20,10 @@ public class DropTextField extends JTextField {
 		super(columns);
 		this.rows = rows;
 		pop = new JPopupMenu();
-		//pop.setFocusable(false);
-		for(int i = 0; i < rows; i++)
-			pop.add("" + i); // fill out pop
 	}
 
 	public void setItems(String[] items) {
-		if(items.length != rows) throw new IllegalArgumentException("Given array of length " + items.length + ". Expected " + rows);
-
-		for(int i = 0; i < items.length; i++)
-			pop.remove(0);
-
+		clearItems();
 		for(int i = 0; i < items.length; i++) {
 			JMenuItem item = new JMenuItem(items[i]);
 			item.addActionListener(new MenuActionListener(items[i]));
@@ -37,15 +31,22 @@ public class DropTextField extends JTextField {
 		}
 	}
 
+	public void clearItems() {
+		pop.removeAll();
+	}
+
 	public void showPop() {
-		hidePop();
-		Dimension tfSize = getSize(); // actual current size
-		pop.setPopupSize(tfSize.width, pop.getPreferredSize().height);
-		// pop.setInvoker(this);
-		// pop.setLocation(getLocation().x, getLocation().y);
-		// pop.setVisible(true);
-		pop.show(this, 0, tfSize.height);
-		requestFocusInWindow();
+		hidePop(); // prevents nasty bug. swingiling!
+
+		Dimension tfSize = getSize(); // actual textfield size
+
+		int height = 0; // pref height of all children:
+		for(Component comp : pop.getComponents())
+			height += comp.getPreferredSize().height;
+		pop.setPopupSize(tfSize.width, height);
+
+		pop.show(this, 0, tfSize.height); // just beneath textfield
+		requestFocusInWindow(); // popup has stolen focus - show it who is boss
 	}
 
 	public void hidePop() {

@@ -15,14 +15,27 @@ public class AddressFinder {
 	}
 
 	public String find(String address) {
-		String best = null;
-		int bestDist = Integer.MAX_VALUE;
+		return find(address, 1)[0];
+	}
+
+	public String[] find(String address, int amount) {
+		String best[] = new String[amount];
+		int bestDist[] = new int[amount];
+		for(int i = 0; i < bestDist.length; i++)
+			bestDist[i] = Integer.MAX_VALUE;
+		int cutoff = Integer.MAX_VALUE;
 
 		for(String key : map.keySet()) {
 			int dist = dist(address, key);
-			if(dist < bestDist) {
-				best = key;
-				bestDist = dist;
+			if(dist < cutoff) {
+				for(int i = 0; i < bestDist.length; i++) {
+					if(dist < bestDist[i]) {
+						best[i] = key;
+						bestDist[i] = dist;
+						if(i == bestDist.length-1) cutoff = dist;
+						break;
+					}
+				}
 			}
 		}
 		return best;

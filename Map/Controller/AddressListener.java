@@ -2,13 +2,14 @@ package Map.Controller;
 
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
-import javax.swing.JTextField;
+
+import Map.View.DropTextField;
 
 public class AddressListener implements DocumentListener {
-	private final JTextField tf;
+	private final DropTextField tf;
 	private final AddressFinder af;
 
-	public AddressListener(JTextField tf, AddressFinder af) {
+	public AddressListener(DropTextField tf, AddressFinder af) {
 		this.tf = tf;
 		this.af = af;
 	}
@@ -26,7 +27,11 @@ public class AddressListener implements DocumentListener {
 	private void update() {
 		String text = tf.getText();
 		if(text.length() >= 2) {
-			System.out.println(af.find(text));
+			tf.setItems(af.find(text, 5));
+			tf.showPop();
+		}
+		else {
+			tf.hidePop();
 		}
 	}
 }

@@ -10,6 +10,7 @@ public class Groups {
 	public final static int[] GROUPMAP;
 	public final static Color[] COLORMAP;
 	public final static int[] WIDTHMAP;
+	public final static int[] MAXWIDTHMAP;
 
 	static {
 		// We view "Motortrafik" and "Sekundærrute" as main roads
@@ -45,7 +46,10 @@ public class Groups {
 		};
 
 		// Build widthmap
-		WIDTHMAP = new int[] {3, 1, 1, 1, 1, 1, 1};
+		WIDTHMAP = new int[] {2, 1, 1, 1, 1, 1, 1};
+
+		// MAX widthmap
+		MAXWIDTHMAP = new int[] {3, 2, 1, 1, 1, 1, 1};
 	}
 
 	public static int getGroup(int type) throws RuntimeException {
@@ -71,5 +75,12 @@ public class Groups {
 	public static int getWidth(Edge edge) throws RuntimeException {
 		return getGroupWidth(getGroup(edge.TYPE));
 	}
+	
+	private static int getMaxGroupWidth(int group) {
+		return MAXWIDTHMAP[group];
+	}
 
+	public static int getMaxWidth(Edge edge) throws RuntimeException {
+		return getMaxGroupWidth(getGroup(edge.TYPE));
+	}
 }

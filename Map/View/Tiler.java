@@ -188,7 +188,7 @@ public class Tiler {
 			lines.add(linePool.get(i).set(
 				vectors[0], vectors[1],
 				Groups.getColor(edge),
-				Groups.getWidth(edge)
+				lineWidth(edge)
 			));
 		}
 		
@@ -241,4 +241,14 @@ public class Tiler {
 		else
 			return groups;
 	}
+	
+	public int lineWidth(Edge edge) {
+		if(zoom > 0.15)
+			return 	(int)((Groups.getWidth(edge))*(1+(0.2*Groups.getWidth(edge)/zoom)));
+		else if (zoom > 0.05)
+			return (int)((Groups.getWidth(edge))*(1+(0.05*Groups.getWidth(edge)/zoom)));
+		else 
+			return Groups.getMaxWidth(edge);
+	}
+
 }

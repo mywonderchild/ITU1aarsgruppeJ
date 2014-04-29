@@ -11,14 +11,23 @@ import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.FocusEvent;
 
 public class DropTextField extends JTextField {
 	private final JPopupMenu pop;
 	private final int rows;
+	private DropTextField self = this;
 
 	public DropTextField(int columns, int rows) {
 		super(columns);
 		this.rows = rows;
+		addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {}
+			public void focusLost(FocusEvent e) {
+				hidePop();
+			}
+		});
 		pop = new JPopupMenu();
 	}
 

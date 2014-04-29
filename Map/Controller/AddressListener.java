@@ -1,5 +1,8 @@
 package Map.Controller;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 
@@ -10,10 +13,12 @@ public class AddressListener implements DocumentListener {
 
 	private final DropTextField tf;
 	private final AddressFinder af;
+	private Timer timer;
 
 	public AddressListener(DropTextField tf, AddressFinder af) {
 		this.tf = tf;
 		this.af = af;
+		timer = new Timer(true); // daemon tread
 	}
 
 	@Override
@@ -21,19 +26,30 @@ public class AddressListener implements DocumentListener {
 	}
 
 	@Override
-	public void insertUpdate(DocumentEvent e) { update(); }
+	public void insertUpdate(DocumentEvent e) {
+		tf.hidePop();
+		queueUpdate();
+	}
 
 	@Override
-	public void removeUpdate(DocumentEvent e) { update(); }
+	public void removeUpdate(DocumentEvent e) {
+		tf.hidePop();
+		queueUpdate();
+	}
 
-	private void update() {
-		String text = tf.getText();
-		if(text.length() >= 2) {
-			tf.setItems(af.find(text, SUGGESTIONS));
-			tf.showPop();
-		}
-		else {
-			tf.hidePop();
+	private void queueUpdate() {
+		timer.cancel();
+		timer = new Timer(true);
+		timer.schedule(new UpdateTask(), 500);
+	}
+
+	private class UpdateTask extends TimerTask {
+		public void run() {
+			String text = tf.getText();
+			if(text.length() >= 2) {
+				tf.setItems(af.find(text, SUGGESTIONS));
+				tf.showPop();
+			}
 		}
 	}
 }

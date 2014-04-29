@@ -24,7 +24,7 @@ public class Edge {
 		NAME = name;
 		SPEED = speed;
 
-		TIME = LENGTH/1000 / SPEED;
+		TIME = LENGTH/1000 / SPEED * 1.15; // 15% extra, as Krak does.
 		CENTER = START.VECTOR
 			.copy()
 			.add(END.VECTOR)

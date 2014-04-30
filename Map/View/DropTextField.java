@@ -6,6 +6,7 @@ import javax.swing.JMenuItem;
 import javax.swing.Action;
 import javax.swing.event.MenuKeyListener;
 import javax.swing.event.MenuKeyEvent;
+import javax.swing.text.DefaultCaret;
 
 import java.awt.Dimension;
 import java.awt.Component;
@@ -21,6 +22,7 @@ public class DropTextField extends JTextField {
 
 	public DropTextField(int columns, int rows) {
 		super(columns);
+		setCaret(new DefaultCaret());
 		this.rows = rows;
 		addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {}
@@ -56,6 +58,7 @@ public class DropTextField extends JTextField {
 
 		pop.show(this, 0, tfSize.height); // just beneath textfield
 		requestFocusInWindow(); // popup has stolen focus - show it who is boss
+		setCaretPosition(getText().length());
 		select(getText().length(), getText().length()); // set cursor to end
 	}
 

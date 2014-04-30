@@ -21,7 +21,6 @@ public class DropTextField extends JTextField {
 
 	public DropTextField(int columns, int rows) {
 		super(columns);
-		putClientProperty("Quaqua.TextComponent.autoSelect", Boolean.FALSE);
 		this.rows = rows;
 		addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {}
@@ -57,6 +56,7 @@ public class DropTextField extends JTextField {
 
 		pop.show(this, 0, tfSize.height); // just beneath textfield
 		requestFocusInWindow(); // popup has stolen focus - show it who is boss
+		setCaretPosition(getDocument().getLength());
 	}
 
 	public void hidePop() {

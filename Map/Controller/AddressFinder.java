@@ -19,24 +19,17 @@ public class AddressFinder {
 	}
 
 	public String[] find(String address, int amount) {
-		String best[] = new String[amount];
-		int bestDist[] = new int[amount];
-		for(int i = 0; i < bestDist.length; i++)
-			bestDist[i] = Integer.MAX_VALUE;
-		int cutoff = Integer.MAX_VALUE;
+		TreeMap<Integer, String> dists = new TreeMap<Integer, String>();
 
 		for(String key : map.keySet()) {
-			int dist = dist(address, key);
-			if(dist < cutoff) {
-				for(int i = 0; i < bestDist.length; i++) {
-					if(dist < bestDist[i]) {
-						best[i] = key;
-						bestDist[i] = dist;
-						if(i == bestDist.length-1) cutoff = dist;
-						break;
-					}
-				}
-			}
+			// fill map with all dists
+			dists.put(dist(address, key), key);
+		}
+
+		String[] best = new String[amount];
+		for(int i = 0; i < amount; i++) {
+			// fill return array with best matches
+			best[i] = dists.pollFirstEntry().getValue();
 		}
 		return best;
 	}

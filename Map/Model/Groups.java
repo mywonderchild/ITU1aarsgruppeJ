@@ -3,14 +3,15 @@ package Map.Model;
 import java.awt.Color;
 
 import Map.Model.Edge;
+import Map.View.Tiler;
 
 public class Groups {
 
+	public double zoom;
 	public final static int[][] GROUPS;
 	public final static int[] GROUPMAP;
 	public final static Color[] COLORMAP;
-	public final static int[] WIDTHMAP;
-	public final static int[] MAXWIDTHMAP;
+	public final static float[] WIDTHMAP;
 
 	static {
 		// We view "Motortrafik" and "Sekundærrute" as main roads
@@ -45,12 +46,9 @@ public class Groups {
 			Color.BLACK
 		};
 
-		// Build widthmap
-		WIDTHMAP = new int[] {2, 1, 1, 1, 1, 1, 1};
-
-		// MAX widthmap
-		MAXWIDTHMAP = new int[] {3, 2, 1, 1, 1, 1, 1};
+		WIDTHMAP = new float[] {1.3f, 1.0f, 0.7f, 1.0f, 1.0f, 1.0f, 0.7f};
 	}
+	
 
 	public static int getGroup(int type) throws RuntimeException {
 		int group = GROUPMAP[type];
@@ -60,6 +58,7 @@ public class Groups {
 			throw new RuntimeException("Road group not found, type is: " + type);
 	}
 
+
 	private static Color getGroupColor(int group) {
 		return COLORMAP[group];
 	}
@@ -68,19 +67,12 @@ public class Groups {
 		return getGroupColor(getGroup(edge.TYPE));
 	}
 
-	private static int getGroupWidth(int group) {
+	
+	private static float getGroupWidth(int group) {
 		return WIDTHMAP[group];
 	}
 
-	public static int getWidth(Edge edge) throws RuntimeException {
+	public static float getWidth(Edge edge) throws RuntimeException {
 		return getGroupWidth(getGroup(edge.TYPE));
-	}
-	
-	private static int getMaxGroupWidth(int group) {
-		return MAXWIDTHMAP[group];
-	}
-
-	public static int getMaxWidth(Edge edge) throws RuntimeException {
-		return getMaxGroupWidth(getGroup(edge.TYPE));
-	}
+	}	
 }

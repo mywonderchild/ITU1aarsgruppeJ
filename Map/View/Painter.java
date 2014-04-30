@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.BasicStroke;
+import java.util.HashMap;
 
 import Map.Vector;
 import Map.Box;
@@ -11,15 +12,15 @@ import Map.Line;
 
 public class Painter {
 
-	static BasicStroke[] strokeCache = new BasicStroke[100];
+	static HashMap<Float, BasicStroke> strokeMap = new HashMap<>();
 
 	public static void paintLines(Graphics2D g, ArrayList<Line> lines) {
 		if(lines == null) return;
 		for(Line line : lines) {
 			g.setColor(line.color);
-			if (strokeCache[line.width] == null)
-				strokeCache[line.width] = new BasicStroke(line.width);
-			g.setStroke(strokeCache[line.width]);
+			if (!strokeMap.containsKey(line.width))
+				strokeMap.put(line.width, new BasicStroke(line.width));
+			g.setStroke(strokeMap.get(line.width));
 			g.drawLine(
 				(int) line.start.x, (int) line.start.y,
 				(int) line.stop.x, (int) line.stop.y

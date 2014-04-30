@@ -56,6 +56,7 @@ public class DropTextField extends JTextField {
 
 		pop.show(this, 0, tfSize.height); // just beneath textfield
 		requestFocusInWindow(); // popup has stolen focus - show it who is boss
+		setCaretPosition(getText().length());
 	}
 
 	public void hidePop() {

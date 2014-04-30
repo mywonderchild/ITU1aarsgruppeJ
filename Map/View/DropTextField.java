@@ -22,7 +22,11 @@ public class DropTextField extends JTextField {
 
 	public DropTextField(int columns, int rows) {
 		super(columns);
-		setCaret(new DefaultCaret());
+
+		DefaultCaret caret = new DefaultCaret();
+		caret.setBlinkRate(300);
+		setCaret(caret);
+
 		this.rows = rows;
 		addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {}
@@ -58,8 +62,7 @@ public class DropTextField extends JTextField {
 
 		pop.show(this, 0, tfSize.height); // just beneath textfield
 		requestFocusInWindow(); // popup has stolen focus - show it who is boss
-		setCaretPosition(getText().length());
-		select(getText().length(), getText().length()); // set cursor to end
+		setCaretPosition(getText().length()); // set cursor to end
 	}
 
 	public void hidePop() {

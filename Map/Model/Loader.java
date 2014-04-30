@@ -21,13 +21,14 @@ public class Loader {
 	public Matcher matcher;
 
 	private String nodePath, edgePath;
+	private Vector max;
+
 	public HashMap<Integer, Node> nodes;
 	public QuadTree all;
 	public QuadTree[] groups;
 	public Graph graph;
-	Vector max;
 	public AddressFinder addressFinder;
-	public TreeMap<String, String> addresses;
+	public HashMap<String, String> addresses;
 
 	public Loader() {
 		System.out.println("JVM OS architecture: " + System.getProperty("os.arch"));
@@ -69,7 +70,7 @@ public class Loader {
 		groups = new QuadTree[Groups.GROUPS.length];
 		for(int i = 0; i < groups.length; i++) groups[i] = new QuadTree(quadBox);
 		graph = new Graph(nodes.size());
-		addresses = new TreeMap<String, String>();
+		addresses = new HashMap<String, String>();
 
 		// Edges
 		timer = System.currentTimeMillis();

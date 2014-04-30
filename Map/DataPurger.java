@@ -2,6 +2,7 @@ package Map;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import Map.Vector;
 import Map.Box;
@@ -82,7 +83,7 @@ public class DataPurger {
 
 		// Create destinationbox according to databox scale
 		Vector stop = (new Vector(1000, 1000)).mult(dataBox.ratio());
-		nodesOut.printf("%.4f,%.4f\n", stop.x, stop.y); // Jot down max values for loader
+		nodesOut.println(String.format(Locale.ENGLISH, "%.4f,%.4f", stop.x, stop.y)); // Jot down max values for loader
 		Box destinationBox = new Box(new Vector(0, 0), stop);
 
 		// Reset and output nodes
@@ -91,8 +92,8 @@ public class DataPurger {
 				.sub(dataBox.start)
 				.mirrorY(dataBox)
 				.translate(dataBox, destinationBox);
-			String format = "%d,%.4f,%.4f\n";
-			nodesOut.printf(format, node.ID, node.VECTOR.x, node.VECTOR.y);
+			String format = "%d,%.4f,%.4f";
+			nodesOut.println(String.format(Locale.ENGLISH, format, node.ID, node.VECTOR.x, node.VECTOR.y));
 		}
 	}
 

@@ -4,9 +4,6 @@
 ./Map/Controller/KeyboardHandler.java
 ./Map/Controller/MouseHandler.java
 ./Map/Controller/Path.java
-./Map/Data/saxEventHandler.java
-./Map/Data/saxFilter.java
-./Map/Data/saxPurger.java
 ./Map/DataPurger.java
 ./Map/Line.java
 ./Map/Main.java

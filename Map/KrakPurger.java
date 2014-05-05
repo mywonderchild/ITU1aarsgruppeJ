@@ -9,7 +9,7 @@ import Map.Box;
 import Map.Model.Node;
 import Map.Model.Edge;
 
-public class DataPurger {
+public class KrakPurger {
 
 	static BufferedReader nodesIn, edgesIn, coastlineIn;
 	static PrintWriter nodesOut, edgesOut;
@@ -112,19 +112,19 @@ public class DataPurger {
 
 	public static void main(String[] args) throws IOException {
 
-		nodesIn = new BufferedReader(new FileReader(new File("Map/Data/kdv_node_unload.txt")));
-		edgesIn = new BufferedReader(new FileReader(new File("Map/Data/kdv_unload.txt")));
-		coastlineIn = new BufferedReader(new FileReader(new File("Map/Data/coastline.txt")));
+		nodesIn = new BufferedReader(new FileReader(new File("Map/Data/krak/kdv_node_unload.txt")));
+		edgesIn = new BufferedReader(new FileReader(new File("Map/Data/krak/kdv_unload.txt")));
+		coastlineIn = new BufferedReader(new FileReader(new File("Map/Data/krak/coastline.txt")));
 
 		nodesIn.readLine(); // First line is useless tags
 		edgesIn.readLine();	// First line is useless tags
 
-		nodesOut = new PrintWriter("Map/Data/purged_nodes.txt", "UTF-8");
-		edgesOut = new PrintWriter("Map/Data/purged_edges.txt", "UTF-8");
+		nodesOut = new PrintWriter("Map/Data/krak/purged_nodes.txt", "UTF-8");
+		edgesOut = new PrintWriter("Map/Data/krak/purged_edges.txt", "UTF-8");
 
-		DataPurger.purgeNodes(2, 3, 4);
-		DataPurger.purgeEdges(new int[] {0, 1, 2, 5, 6, 18, 25});
-		DataPurger.purgeCoastline();
+		purgeNodes(2, 3, 4);
+		purgeEdges(new int[] {0, 1, 2, 5, 6, 18, 25});
+		purgeCoastline();
 		resetAndOutputNodes();
 
 		nodesOut.flush();

@@ -31,13 +31,13 @@ public class Loader {
 	public AddressFinder addressFinder;
 	public Map<String, List<Edge>> addresses;
 
-	public Loader() {
+	public Loader(String dataSet) {
 		System.out.println("JVM OS architecture: " + System.getProperty("os.arch"));
 		System.out.println("----------------------------------------");
 		long timer = System.currentTimeMillis();
 
 		try {
-			String dir = "Map/Data/";
+			String dir = String.format("Map/Data/%s/", dataSet);
 			nodePath = dir + "purged_nodes.txt";
 			edgePath = dir + "purged_edges.txt";
 			load();

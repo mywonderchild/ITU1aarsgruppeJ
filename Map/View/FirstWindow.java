@@ -39,13 +39,20 @@ public class FirstWindow extends JFrame {
 		button1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				openKrak();	
+				load("krak");	
 				closeWindow();
 			}
 		});
 
 		button2 = new JButton("OpenStreetMap");
 		button2.setBackground(Color.LIGHT_GRAY);
+		button2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				load("osm");	
+				closeWindow();
+			}
+		});
 
 		centerPanel = new JPanel();
 		centerPanel.setLayout(new GridLayout(0, 1));
@@ -60,10 +67,10 @@ public class FirstWindow extends JFrame {
 		this.pack();
 	}
 
-	public void openKrak() {
+	public void load(String dataSet) {
 
 		// Set up model
-		this.loader = new Loader();
+		this.loader = new Loader(dataSet);
 
 		// Set up view
 		this.canvas = new Canvas();

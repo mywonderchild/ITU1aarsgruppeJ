@@ -84,8 +84,10 @@ public class Window extends JFrame {
 
 		// Scrollpane
 		scrollPane = new JScrollPane();
-		directions = new JLabel("Directions:");
-		scrollPane.setColumnHeaderView(directions);
+		directions = new JLabel("");
+		directions.setVerticalAlignment(JLabel.TOP);
+		directions.setVerticalTextPosition(JLabel.TOP);
+		scrollPane.getViewport().add( directions );
 		scrollPane.setBorder(BorderFactory.createEtchedBorder());
 		scrollPane.setVisible(false);
 

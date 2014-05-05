@@ -108,17 +108,18 @@ public class Loader {
 		double length = readDouble();
 		int type = readInt();
 		String name = readString();
+		int place = readInt();
 		int speed = readInt();
-		Edge edge = new Edge(start, end, length, type, name, speed);
+		Edge edge = new Edge(start, end, length, type, name, place, speed);
 
 		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 
 		if (type != 81) {
-			Edge invertedEdge = new Edge(end, start, length, type, name, speed);
+			Edge invertedEdge = new Edge(end, start, length, type, name, place, speed);
 			graph.addEdge(edge);
 			graph.addEdge(invertedEdge);
-			if(name != null) addresses.put(name,name);
+			if(name != null) addresses.put(edge.NAME, edge.NAME);
 		}
 	}
 

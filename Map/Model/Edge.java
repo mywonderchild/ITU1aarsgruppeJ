@@ -16,12 +16,12 @@ public class Edge {
 	public final double TIME;
 	public final Vector CENTER;
 
-	public Edge(Node start, Node end, double length, int type, String name, int speed) {
+	public Edge(Node start, Node end, double length, int type, String name, int zip, int speed) {
 		START = start;
 		END = end;
 		LENGTH = length;
 		TYPE = type;
-		NAME = name;
+		NAME = name + ", " + zip;
 		SPEED = speed;
 
 		TIME = LENGTH/1000 / SPEED * 1.15; // 15% extra, as Krak does.

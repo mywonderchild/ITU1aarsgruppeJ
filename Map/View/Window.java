@@ -44,8 +44,8 @@ public class Window extends JFrame {
 		// Set innerPanel, labels and textfields.
 		innerPanel = new JPanel(new MigLayout());
 		JLabel text = new JLabel("Enter directions: ");
-		JLabel from =  new JLabel("(A) ");
-		JLabel to =  new JLabel("(B) ");
+		JLabel from =  new JLabel("From: ");
+		JLabel to =  new JLabel("To: ");
 		fromText = new DropTextField(50, 5);
 		toText = new DropTextField(50, 5);
 		innerPanel.add(text, "span, wrap");
@@ -82,7 +82,7 @@ public class Window extends JFrame {
 
 		// Scrollpane
 		scrollPane = new JScrollPane();
-		directions = new JLabel("Directions");
+		directions = new JLabel("Directions:");
 		scrollPane.setColumnHeaderView(directions);
 		scrollPane.setBorder(BorderFactory.createEtchedBorder());
 		scrollPane.setVisible(false);

@@ -19,6 +19,7 @@ public class AddressFinder {
 		return find(address, 1)[0];
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Edge>[] find(String address, int amount) {
 		PriorityQueue<Integer, List<Edge>> pq = new PriorityQueue<Integer, List<Edge>>();
 		for(Entry<String, List<Edge>> entry : map.entrySet()) {

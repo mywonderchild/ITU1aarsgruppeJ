@@ -42,7 +42,7 @@ public class AddressFieldListener implements DocumentListener {
 	private void queueUpdate() {
 		timer.cancel();
 		timer = new Timer(true);
-		timer.schedule(new UpdateTask(), 500);
+		timer.schedule(new UpdateTask(), 200);
 	}
 
 	private class UpdateTask extends TimerTask {

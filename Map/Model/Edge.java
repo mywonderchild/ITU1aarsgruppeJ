@@ -21,7 +21,7 @@ public class Edge {
 		END = end;
 		LENGTH = length;
 		TYPE = type;
-		NAME = name + ", " + zip;
+		NAME = name + (zip > 0 ? ", " + zip : ""); // add zip to name, if edge has real zip
 		SPEED = speed;
 
 		TIME = LENGTH/1000 / SPEED * 1.15; // 15% extra, as Krak does.

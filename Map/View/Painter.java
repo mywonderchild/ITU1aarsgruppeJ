@@ -19,7 +19,7 @@ public class Painter {
 		for(Line line : lines) {
 			g.setColor(line.color);
 			if (!strokeMap.containsKey(line.width))
-				strokeMap.put(line.width, new BasicStroke(line.width));
+				strokeMap.put(line.width, new BasicStroke(line.width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 			g.setStroke(strokeMap.get(line.width));
 			g.drawLine(
 				(int) line.start.x, (int) line.start.y,

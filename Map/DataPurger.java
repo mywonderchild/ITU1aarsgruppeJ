@@ -37,8 +37,21 @@ public class DataPurger {
 
 		// Purge and output
 		String line = null;
+		Long speed;
+		double length, time;
 		while ((line = edgesIn.readLine()) != null) {
 			String[] tokens = line.split(",");
+
+			// Check and fix missing speed data
+			if (Integer.parseInt(tokens[25]) <= 0) {
+				length = Double.parseDouble(tokens[2]) / 1000;
+				time = Math.max(0.001, Double.parseDouble(tokens[26])) / 60 * (1 / 1.15);
+				speed = Math.max(1, Math.round(length / time));
+				tokens[25] = speed.toString();
+				// System.out.printf("%s %.2f %.2f %s\n", tokens[6], length, time, tokens[25]);
+			}
+
+			// Output keys
 			for (int key : keys) {
 				edgesOut.print(tokens[key]);
 				if (key != keys[keys.length -1]) edgesOut.print(",");

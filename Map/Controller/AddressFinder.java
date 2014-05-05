@@ -3,33 +3,31 @@ package Map.Controller;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.lang.Iterable;
+import java.util.List;
 
 import Map.Model.Edge;
+import Map.Model.PriorityQueue;
 
 public class AddressFinder {
-	Map<String, String> map;
+	Map<String, List<Edge>> map;
 
-	public AddressFinder(Map<String, String> roads) {
+	public AddressFinder(Map<String, List<Edge>> roads) {
 		this.map = roads;
 	}
 
-	public String find(String address) {
+	public List<Edge> find(String address) {
 		return find(address, 1)[0];
 	}
 
-	public String[] find(String address, int amount) {
-		TreeMap<Integer, String> dists = new TreeMap<Integer, String>();
-
-		for(String key : map.keySet()) {
-			// fill map with all dists
-			dists.put(dist(address, key), key);
+	public List<Edge>[] find(String address, int amount) {
+		PriorityQueue<Integer, List<Edge>> pq = new PriorityQueue<Integer, List<Edge>>();
+		for(Entry<String, List<Edge>> entry : map.entrySet()) {
+			pq.push(dist(address, entry.getKey()), entry.getValue());
 		}
 
-		String[] best = new String[amount];
+		List<Edge>[] best = (List<Edge>[]) new List[amount];
 		for(int i = 0; i < amount; i++) {
-			// fill return array with best matches
-			best[i] = dists.pollFirstEntry().getValue();
+			best[i] = (List<Edge>) pq.pop().getValue();
 		}
 		return best;
 	}
@@ -63,7 +61,7 @@ public class AddressFinder {
 				else {
 					d[i][j] = min(
 						d[i-1][j] + 1,	// del
-						d[i][j-1] + (j<c1.length ? 1 : 0), 	// ins, free if prefix
+						d[i][j-1] + ((j<c1.length && d[i][j] == 0) ? 1 : 0), 	// ins, free if prefix
 						d[i-1][j-1] + 2 // sub
 					);
 				}

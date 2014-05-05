@@ -3,10 +3,6 @@ package Map.View;
 import javax.swing.JTextField;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
-import javax.swing.Action;
-import javax.swing.event.MenuKeyListener;
-import javax.swing.event.MenuKeyEvent;
-import javax.swing.text.DefaultCaret;
 
 import java.awt.Dimension;
 import java.awt.Component;
@@ -22,19 +18,17 @@ public class DropTextField extends JTextField {
 
 	public DropTextField(int columns, int rows) {
 		super(columns);
-
-		DefaultCaret caret = new DefaultCaret();
-		caret.setBlinkRate(300);
-		setCaret(caret);
-
 		this.rows = rows;
+		
+		pop = new JPopupMenu();
+		pop.setFocusable(false);
+
 		addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {}
 			public void focusLost(FocusEvent e) {
 				hidePop();
 			}
 		});
-		pop = new JPopupMenu();
 	}
 
 	public void setItems(String[] items) {
@@ -51,18 +45,14 @@ public class DropTextField extends JTextField {
 	}
 
 	public void showPop() {
-		hidePop(); // prevents nasty bug. swingiling!
-
 		Dimension tfSize = getSize(); // actual textfield size
-
 		int height = 0; // pref height of all children:
 		for(Component comp : pop.getComponents())
 			height += comp.getPreferredSize().height;
 		pop.setPopupSize(tfSize.width, height);
 
+		hidePop(); // prevents nasty bug. swingiling!
 		pop.show(this, 0, tfSize.height); // just beneath textfield
-		requestFocusInWindow(); // popup has stolen focus - show it who is boss
-		setCaretPosition(getText().length()); // set cursor to end
 	}
 
 	public void hidePop() {

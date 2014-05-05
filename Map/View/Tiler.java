@@ -175,8 +175,9 @@ public class Tiler {
 		Box queryBox = getQueryBox(tileBox.copy());
 
 		ArrayList<Edge> edges = new ArrayList<>();
-		for(QuadTree tree : visibleGroups())
-			edges.addAll(tree.queryRange(queryBox));
+		QuadTree[] visible = visibleGroups();
+		for(int i = visible.length-1; i >= 0; i--)
+			edges.addAll(visible[i].queryRange(queryBox));
 
 		ArrayList<Line> lines = new ArrayList<>();
 		for (int i = 0; i < edges.size(); i++) {

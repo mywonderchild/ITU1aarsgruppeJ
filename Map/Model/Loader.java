@@ -1,7 +1,8 @@
 package Map.Model;
 
+import java.util.List;
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
 import java.io.File;
@@ -23,12 +24,12 @@ public class Loader {
 	private String nodePath, edgePath;
 	private Vector max;
 
-	public HashMap<Integer, Node> nodes;
+	public Map<Integer, Node> nodes;
 	public QuadTree all;
 	public QuadTree[] groups;
 	public Graph graph;
 	public AddressFinder addressFinder;
-	public HashMap<String, String> addresses;
+	public Map<String, List<Edge>> addresses;
 
 	public Loader() {
 		System.out.println("JVM OS architecture: " + System.getProperty("os.arch"));
@@ -70,7 +71,7 @@ public class Loader {
 		groups = new QuadTree[Groups.GROUPS.length];
 		for(int i = 0; i < groups.length; i++) groups[i] = new QuadTree(quadBox);
 		graph = new Graph(nodes.size());
-		addresses = new HashMap<String, String>();
+		addresses = new HashMap<String, List<Edge>>();
 
 		// Edges
 		timer = System.currentTimeMillis();
@@ -119,7 +120,19 @@ public class Loader {
 			Edge invertedEdge = new Edge(end, start, length, type, name, place, speed);
 			graph.addEdge(edge);
 			graph.addEdge(invertedEdge);
-			if(name != null) addresses.put(edge.NAME, edge.NAME);
+			if(name != null) {
+				List<Edge> edges = addresses.get(edge.NAME);
+				if(edges != null) {
+					// already there; just add the edge to list
+					edges.add(edge);
+				}
+				else {
+					// not there; create new list with edge
+					edges = new ArrayList<Edge>();
+					edges.add(edge);
+					addresses.put(edge.NAME, edges);
+				}
+			}
 		}
 	}
 

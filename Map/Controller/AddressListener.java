@@ -1,5 +1,6 @@
 package Map.Controller;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -7,6 +8,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 
 import Map.View.DropTextField;
+import Map.Model.Edge;
 
 public class AddressListener implements DocumentListener {
 	private static final int SUGGESTIONS = 5; // number of suggested addresses
@@ -47,7 +49,11 @@ public class AddressListener implements DocumentListener {
 		public void run() {
 			String text = tf.getText();
 			if(text.length() >= 2) {
-				tf.setItems(af.find(text, SUGGESTIONS));
+				List<Edge>[] result = af.find(text, SUGGESTIONS);
+				String[] items = new String[SUGGESTIONS];
+				for(int i = 0; i < SUGGESTIONS; i++)
+					items[i] = result[i].get(0).NAME;
+				tf.setItems(items);
 				tf.showPop();
 			}
 		}

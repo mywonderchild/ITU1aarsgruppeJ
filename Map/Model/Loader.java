@@ -111,15 +111,15 @@ public class Loader {
 		int speed = readInt();
 		Edge edge = new Edge(start, end, length, type, name, speed);
 
-		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 
-		if (type != 81) {
-			Edge invertedEdge = new Edge(end, start, length, type, name, speed);
-			graph.addEdge(edge);
-			graph.addEdge(invertedEdge);
-			if(name != null) addresses.put(name,name);
-		}
+		if (type == 81) return;
+
+		all.insert(edge);
+		Edge invertedEdge = new Edge(end, start, length, type, name, speed);
+		graph.addEdge(edge);
+		graph.addEdge(invertedEdge);
+		if(name != null) addresses.put(name,name);
 	}
 
 	private int readInt() {

@@ -32,6 +32,7 @@ public class Window extends JFrame {
 	public JToggleButton toggler;
 	public JScrollPane scrollPane;
 	public DropTextField fromText, toText;
+	public JButton routeButton;
 	
 	public Window(Canvas canvas) {
 		super();
@@ -46,6 +47,7 @@ public class Window extends JFrame {
 		JLabel text = new JLabel("Enter directions: ");
 		JLabel from =  new JLabel("(A) ");
 		JLabel to =  new JLabel("(B) ");
+		routeButton = new JButton("Get route");
 		fromText = new DropTextField(50, 5);
 		toText = new DropTextField(50, 5);
 		innerPanel.add(text, "span, wrap");
@@ -53,7 +55,7 @@ public class Window extends JFrame {
 		innerPanel.add(fromText, "span, wrap");
 		innerPanel.add(to);
 		innerPanel.add(toText, "span, wrap");
-		innerPanel.add(new JButton("Get route"),"skip, al 100%");
+		innerPanel.add(routeButton,"skip, al 100%");
 		innerPanel.setVisible(false);
 
 		// Toggler

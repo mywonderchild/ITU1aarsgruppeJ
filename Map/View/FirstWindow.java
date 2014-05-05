@@ -93,12 +93,14 @@ public class FirstWindow extends JFrame {
 
 		window.fromText.getDocument()
 			.addDocumentListener(
-				new AddressListener(window.fromText, loader.addressFinder)
+				new AddressFieldListener(window.fromText, loader.addressFinder)
 			);
 		window.toText.getDocument()
 			.addDocumentListener(
-				new AddressListener(window.toText, loader.addressFinder)
+				new AddressFieldListener(window.toText, loader.addressFinder)
 			);
+
+		window.routeButton.addActionListener(new AddressButtonListener(window.fromText, window.toText, canvas, window, tiler, loader));
 	}
 
 	public void closeWindow() {

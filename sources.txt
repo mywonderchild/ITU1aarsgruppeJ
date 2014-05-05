@@ -1,6 +1,7 @@
 ./Map/Box.java
+./Map/Controller/AddressButtonListener.java
+./Map/Controller/AddressFieldListener.java
 ./Map/Controller/AddressFinder.java
-./Map/Controller/AddressListener.java
 ./Map/Controller/KeyboardHandler.java
 ./Map/Controller/MouseHandler.java
 ./Map/Controller/Path.java

@@ -61,7 +61,7 @@ public class DataPurger {
 			if (previous == null || !previous.equals(start)) nodes.add(new Node(start, ++nodeId));
 			nodes.add(new Node(stop, ++nodeId));
 			previous = stop;
-			edgesOut.printf("%d,%d,%d,%d,'',%d\n", nodeId - 1, nodeId, 0, 81, 0);
+			edgesOut.printf("%d,%d,%d,%d,'',%d,%d\n", nodeId - 1, nodeId, 0, 81, 0, 0);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class DataPurger {
 		edgesOut = new PrintWriter("Map/Data/purged_edges.txt", "UTF-8");
 
 		DataPurger.purgeNodes(2, 3, 4);
-		DataPurger.purgeEdges(new int[] {0, 1, 2, 5, 6, 25});
+		DataPurger.purgeEdges(new int[] {0, 1, 2, 5, 6, 18, 25});
 		DataPurger.purgeCoastline();
 		resetAndOutputNodes();
 

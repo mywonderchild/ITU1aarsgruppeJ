@@ -109,16 +109,16 @@ public class Loader {
 		double length = readDouble();
 		int type = readInt();
 		String name = readString();
-		int place = readInt();
+		int zip = readInt();
 		int speed = readInt();
-		Edge edge = new Edge(start, end, length, type, name, place, speed);
+		Edge edge = new Edge(start, end, length, type, name, zip, speed);
 
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 		
 		if (type == 81) return;
 
 		all.insert(edge);
-		Edge invertedEdge = new Edge(end, start, length, type, name, speed);
+		Edge invertedEdge = new Edge(end, start, length, type, name, zip, speed);
 		graph.addEdge(edge);
 		graph.addEdge(invertedEdge);
 		if(name != null) {

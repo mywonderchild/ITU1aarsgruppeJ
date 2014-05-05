@@ -53,5 +53,6 @@ public class AddressButtonListener implements ActionListener {
 		tiler.path = sp.pathTo(edges2.get(0).START.ID);
 		window.setDirections(tiler.path.getDirections());
 		if(tiler.path == null) System.out.println("No path found!");
+		canvas.repaint();
 	}
 }

@@ -113,25 +113,25 @@ public class Loader {
 		int speed = readInt();
 		Edge edge = new Edge(start, end, length, type, name, place, speed);
 
-		all.insert(edge);
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
+		
+		if (type == 81) return;
 
-		if (type != 81) {
-			Edge invertedEdge = new Edge(end, start, length, type, name, place, speed);
-			graph.addEdge(edge);
-			graph.addEdge(invertedEdge);
-			if(name != null) {
-				List<Edge> edges = addresses.get(edge.NAME);
-				if(edges != null) {
-					// already there; just add the edge to list
-					edges.add(edge);
-				}
-				else {
-					// not there; create new list with edge
-					edges = new ArrayList<Edge>();
-					edges.add(edge);
-					addresses.put(edge.NAME, edges);
-				}
+		all.insert(edge);
+		Edge invertedEdge = new Edge(end, start, length, type, name, speed);
+		graph.addEdge(edge);
+		graph.addEdge(invertedEdge);
+		if(name != null) {
+			List<Edge> edges = addresses.get(edge.NAME);
+			if(edges != null) {
+				// already there; just add the edge to list
+				edges.add(edge);
+			}
+			else {
+				// not there; create new list with edge
+				edges = new ArrayList<Edge>();
+				edges.add(edge);
+				addresses.put(edge.NAME, edges);
 			}
 		}
 	}

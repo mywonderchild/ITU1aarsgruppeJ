@@ -50,10 +50,10 @@ public class Window extends JFrame {
 		toText = new DropTextField(50, 5);
 		innerPanel.add(text, "span, wrap");
 		innerPanel.add(from);
-		innerPanel.add(fromText, "wmax 150, wrap");
+		innerPanel.add(fromText, "span, wrap");
 		innerPanel.add(to);
-		innerPanel.add(toText, "wmax 150, wrap");
-		innerPanel.add(new JButton("Get route"),"skip, gapleft 65");
+		innerPanel.add(toText, "span, wrap");
+		innerPanel.add(new JButton("Get route"),"skip, al 100%");
 		innerPanel.setVisible(false);
 
 		// Toggler

@@ -29,6 +29,7 @@ public class FirstWindow extends JFrame {
 	public JButton button1, button2;
 
 	public FirstWindow() {
+		setLocation(0,0);
 		setMinimumSize(new Dimension(600,400));
 		setResizable(false);
 		setLayout(null);

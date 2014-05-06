@@ -20,11 +20,11 @@ public class Groups {
 		GROUPS = new int[][] {
 			{1, 21, 31, 41}, // Highways
 			{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}, // Main roads
-			{8, 10, 28, 48}, // Paths
-			{11}, // Pedestrian
 			{80}, // Naval
 			{81}, // Coastline
-			{0, 5, 6, 25, 26, 35, 45, 46, 95, 99} // Other
+			{0, 5, 6, 25, 26, 35, 45, 46, 95, 99}, // Other
+			{8, 10, 28, 48}, // Paths
+			{11} // Pedestrian
 		};
 
 		// Build groupmap
@@ -39,14 +39,14 @@ public class Groups {
 		COLORMAP = new Color[] {
 			Color.RED,
 			Color.BLUE,
-			Color.GREEN,
-			Color.MAGENTA,
 			Color.CYAN,
 			Color.BLACK,
-			Color.BLACK
+			Color.BLACK,
+			Color.GREEN,
+			Color.MAGENTA,
 		};
 
-		WIDTHMAP = new float[] {1.3f, 1.0f, 0.7f, 1.0f, 1.0f, 1.0f, 0.7f};
+		WIDTHMAP = new float[] {1.3f, 1.0f, 1.0f, 1.0f, 0.7f, 0.7f, 1.0f};
 	}
 	
 

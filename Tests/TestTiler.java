@@ -87,10 +87,10 @@ public class TestTiler {
 	}
 
 	@Test
-	public void translateToTile() {
+	public void translateToRectangle() {
 		Box tileBox = tiler.getTileBox(0, 0);
 		Vector vector = new Vector(0.5, 0.5);
-		Vector translated = tiler.translateToTile(vector, tileBox);
+		Vector translated = tiler.translateToRectangle(vector, tileBox);
 		assertEquals(83.33, translated.x, 0.5);
 		assertEquals(83.33, translated.y, 0.5);
 	}

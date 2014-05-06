@@ -29,12 +29,14 @@ public class AddressFieldListener implements DocumentListener {
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {
+		if(tf.isDropInserting()) return;
 		tf.hidePop();
 		queueUpdate();
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent e) {
+		if(tf.isDropRemoving()) return;
 		tf.hidePop();
 		queueUpdate();
 	}

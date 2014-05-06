@@ -3,6 +3,8 @@ package Map.View;
 import javax.swing.JTextField;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.PlainDocument;
 
 import java.awt.Dimension;
 import java.awt.Component;
@@ -13,18 +15,21 @@ import java.awt.event.FocusEvent;
 
 public class DropTextField extends JTextField {
 	private final JPopupMenu pop;
-	private final int rows;
-	private DropTextField self = this;
+	private boolean insertFlag, removeFlag;
+	public boolean isDropInserting() { return insertFlag; }
+	public boolean isDropRemoving() { return removeFlag; }
 
-	public DropTextField(int columns, int rows) {
+	public DropTextField(int columns) {
 		super(columns);
-		this.rows = rows;
 		
 		pop = new JPopupMenu();
 		pop.setFocusable(false);
 
+		setDocument(new DropDocument());
 		addFocusListener(new FocusListener() {
+			@Override
 			public void focusGained(FocusEvent e) {}
+			@Override
 			public void focusLost(FocusEvent e) {
 				hidePop();
 			}
@@ -68,8 +73,23 @@ public class DropTextField extends JTextField {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			insertFlag = true; removeFlag = true;
 			setText(item);
 			hidePop();
+		}
+	}
+
+	private class DropDocument extends PlainDocument {
+		@Override
+		public void fireInsertUpdate(DocumentEvent e) {
+			super.fireInsertUpdate(e);
+			insertFlag = false;
+		}
+
+		@Override
+		public void fireRemoveUpdate(DocumentEvent e) {
+			super.fireRemoveUpdate(e);
+			removeFlag = false;
 		}
 	}
 }

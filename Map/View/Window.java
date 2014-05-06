@@ -48,8 +48,8 @@ public class Window extends JFrame {
 		JLabel from =  new JLabel("(A) ");
 		JLabel to =  new JLabel("(B) ");
 		routeButton = new JButton("Get route");
-		fromText = new DropTextField(50, 5);
-		toText = new DropTextField(50, 5);
+		fromText = new DropTextField(50);
+		toText = new DropTextField(50);
 		innerPanel.add(text, "span, wrap");
 		innerPanel.add(from);
 		innerPanel.add(fromText, "span, wrap");

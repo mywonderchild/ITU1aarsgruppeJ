@@ -23,7 +23,6 @@ private HashSet<String> waynodeset;
 private PrintWriter purgededgeWriter;
 private PrintWriter nodeDataWriter;
 private PrintWriter nodeTagWriter;
-private PrintWriter edgeDataWriter;
 private PrintWriter edgeTagWriter;
 private PrintWriter wayDataWriter;
 private BufferedReader readedgetag;
@@ -35,7 +34,6 @@ private File outputNodeData;
 private File purgedNodefile;
 private File purgedEdgdefile;
 private File outputNodeTag;
-private File outputEdgeData;
 private File outputEdgeTag;
 private File outputWayData;
 private ArrayList<String> nodedata;
@@ -61,39 +59,23 @@ private String testString;
 
 	public saxEventHandler(){
 		try{
-		outputNodeData = new File("/nodedata.txt");
-		outputNodeTag = new File("/nodetag.txt");
-		outputEdgeData = new File("/edgedata.txt");
-		outputEdgeTag = new File("/edgetag.txt");
-		outputWayData = new File("/waydata.txt");
-		purgedEdgdefile = new File("/purged_edges.txt");
-		purgedNodefile = new File("/purged_nodes.txt");
+		outputNodeData = new File("./Data/osm/nodedata.txt");
+		outputNodeTag = new File("./Data/osm/nodetag.txt");
+		outputEdgeTag = new File("./Data/osm/edgetag.txt");
+		outputWayData = new File("./Data/osm/waydata.txt");
+		purgedEdgdefile = new File("./Data/osm/purged_edges.txt");
+		purgedNodefile = new File("./Data/osm/purged_nodes.txt");
+		System.out.printf("File is located at %s%n", outputWayData.getAbsolutePath());
 
-
-		if(!outputNodeData.exists()){
-			outputNodeData.createNewFile();
-		}
-		if(!outputNodeTag.exists()){
-			outputNodeTag.createNewFile();
-		}
-		if(!outputEdgeData.exists()){
-			outputEdgeData.createNewFile();
-		}
-		if(!outputEdgeTag.exists()){
-			outputEdgeTag.createNewFile();
-		}
-		if(!outputWayData.exists()){
-			outputWayData.createNewFile();
-		}
-		if(!purgedNodefile.exists()){
-			purgedNodefile.createNewFile();
-		}
-		if(!purgedEdgdefile.exists()){
-			purgedEdgdefile.createNewFile();
-		}
+		outputNodeData.createNewFile();
+		outputNodeTag.createNewFile();
+		outputEdgeTag.createNewFile();
+		outputWayData.createNewFile();
+		purgedNodefile.createNewFile();
+		purgedEdgdefile.createNewFile();
+		
 		nodeDataWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputNodeData)));
 		nodeTagWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputNodeTag)));
-		edgeDataWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputEdgeData)));
 		edgeTagWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputEdgeTag)));
 		wayDataWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputWayData)));
 		purgedNodeWriter = new PrintWriter(new BufferedWriter(new FileWriter(purgedNodefile)));
@@ -159,19 +141,19 @@ private String testString;
 	}
 
 	private String getWaygroup(String s){
+// || s.equals("rest_area") || s.equals("service") || s.equals("services") || s.equals("yes") ||
 
-
-		if(s.equals("motorway") || s.equals("rest_area") || s.equals("services") || s.equals("yes") ||  s.equals("motorway_link")){
-			return "0";
-		}
-		if(s.equals("trunk") || s.equals("trunk_link")){
+		if(s.equals("motorway") ||  s.equals("motorway_link")){
 			return "1";
 		}
-		if(s.equals("track") || s.equals("footway") || s.equals("byway") || s.equals("bridleway") || s.equals("steps") || s.equals("path") || s.equals("cycleway")){
+		if(s.equals("trunk") || s.equals("trunk_link") || s.equals("primary_link") || s.equals("secondary_link") || s.equals("primary") || s.equals("secondary")){
 			return "2";
 		}
+		if(s.equals("track") || s.equals("footway") || s.equals("byway") || s.equals("bridleway") || s.equals("steps") || s.equals("path") || s.equals("cycleway")){
+			return "8";
+		}
 		if(s.equals("pedestrian") || s.equals("living_street")){
-			return "3";
+			return "11";
 		}
 		if(false){
 			return "4";
@@ -179,11 +161,7 @@ private String testString;
 		if(false){
 			return "5";
 		}
-		if(s.equals("primary") || s.equals("parking_aisle") ||s.equals("bus_stop") || s.equals("racetrack") || s.equals("raceway") || s.equals("proposed") || s.equals("construction") || s.equals("secondary") || s.equals("tertiary") || s.equals("unclassified") || s.equals("residential") ||s.equals("service") || s.equals("primary_link") || s.equals("secondary_link") || s.equals("tertiary_link") || s.equals("bus_guideway") || s.equals("road")){
-			return "6";
-		}
 		else{
-			testString = testString+","+s;
 			return "6";
 		}
 	}
@@ -237,7 +215,7 @@ private String testString;
 				edgetag.add(wayID+","+attributes.getValue(1));
 			}
 			if (whatOpen.equals("way") && attributes.getValue(0).equals("name")){
-				nodetag.add(wayID+";'"+attributes.getValue(1)+"'");
+				nodetag.add(wayID+";'"+attributes.getValue(1).replace("'","")+"'");
 			}
 		}
 		if (localName.equals("bounds")){
@@ -329,6 +307,7 @@ private String testString;
         edgeTagWriter.close();
         nodeTagWriter.close();
         nodeDataWriter.close();
+		wayDataWriter.close();
         edgedata.clear();
         edgetag.clear();
         waydata.clear();   
@@ -435,16 +414,25 @@ private String testString;
 			purgededgeWriter.write(edgedata.get(i)+"\n");
 			}
 			edgedata.clear();
+			readedgetag.close();
+			readedgedata.close();
+			readnodetag.close();
+			readnodedata.close();
+			readwaydata.close();
+			purgededgeWriter.close();
+			purgedNodeWriter.close();
+			outputNodeData.delete();
+			outputNodeTag.delete();
+			outputEdgeTag.delete();
+			outputWayData.delete();
 
 		}catch (IOException e) {
-			System.out.println("SKRIV ET ELLER ANDET SJOVT");
+			e.printStackTrace();
 		}
 
-		edgeDataWriter.close();
-		purgededgeWriter.close();
-		purgedNodeWriter.close();
-		wayDataWriter.close();
-		System.out.println(testString);
+
+		
+		
 
         
     }

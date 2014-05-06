@@ -33,8 +33,8 @@ public class Tiler {
 	public Path path;
 	private QuadTree[] groups;
 	private ArrayList<Line> linePool = new ArrayList<Line>();
-	private BufferedImage renderTile;
-	private Graphics2D render;
+	private BufferedImage buffer;
+	private Graphics2D bufferGraphics;
 
 	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader) {
 		this.center = center;
@@ -56,9 +56,9 @@ public class Tiler {
 		Vector viewDimensions = viewBox.dimensions();
 		tileSize = (int)(Math.sqrt(viewDimensions.x * viewDimensions.y) / 4);
 
-		renderTile = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_RGB);
-		render = renderTile.createGraphics();
-		render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		buffer = new BufferedImage((int)viewDimensions.x + tileSize * 2, (int)viewDimensions.y + tileSize * 2, BufferedImage.TYPE_INT_RGB);
+		bufferGraphics = buffer.createGraphics();
+		bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		Vector mapDimensions = viewDimensions
 			.div(viewBox.ratio())
@@ -79,12 +79,11 @@ public class Tiler {
 	public void render(Graphics2D graphics) {
 		section = getSection();
 		int[][] sectionTiles = getTiles(section);
-		// int[][][] rectangles = getRectangles(sectionTiles);
-		// renderRectangles(rectangles);
+		for (int[][] rectangle : getRectangles(sectionTiles))
+			renderRectangle(rectangle);
 		for (int[] tile : sectionTiles) {
 			int x = tile[0];
 			int y = tile[1];
-			renderTile(x, y);
 			graphics.drawImage(
 				tiles[x][y],
 				null,
@@ -136,8 +135,8 @@ public class Tiler {
 		if (width <= 0 || height <= 0) return new int[0][0];
 		int[][] selected = new int[width * height][2];
 		int cursor = 0;
-		for (int x = query[0][0]; x < query[1][0]; x++) {
-			for (int y = query[0][1]; y < query[1][1]; y++) {
+		for (int y = query[0][1]; y < query[1][1]; y++) {
+			for (int x = query[0][0]; x < query[1][0]; x++) {
 				selected[cursor][0] = x;
 				selected[cursor][1] = y;
 				cursor++;
@@ -146,45 +145,89 @@ public class Tiler {
 		return selected;
 	}
 
-	public int[][][] getRectangles(int[][] selected) {
+	public ArrayList<int[][]> getRectangles(int[][] selected) {
+
+		// Find the dimensions of the section of tiles
 		int[] start = selected[0];
 		int[] stop = selected[selected.length - 1];
 		int[] dimensions = new int[] {
-			stop[0] - start[0],
-			stop[1] - start[1],
+			stop[0] - start[0] + 1,
+			stop[1] - start[1] + 1,
 		};
+
+		// Make a map over the render state of tiles
 		boolean[][] rendered = new boolean[dimensions[0]][dimensions[1]];
+		for (int i = 0; i < dimensions[1]; i++)
+			for (int j = 0; j < dimensions[0]; j++)
+				rendered[j][i] = tiles[j + start[0]][i + start[1]] != null ? true : false;
+
+		// Prepare for rectangle detection algorithm
 		int[][] horizontal = new int[dimensions[0]][dimensions[1]];
 		int[][] vertical = new int[dimensions[0]][dimensions[1]];
-		for (int i = 0; i < dimensions[0]; i++) {
-			for (int j = 0; j < dimensions[1]; j++) {
-				rendered[i][j] = tiles[i + start[0]][j + start[1]] != null ? true : false;
-				System.out.print(rendered[i][j] ? "r" : "x");
+		ArrayList<int[][]> rectangles = new ArrayList<>();
+		int max = 1, x = 0, y = 0;
+
+		// Run until there are no more rectangles left
+		while (true) {
+
+			// Build map of horizontal and vertical values of rectangles dynamically
+			for (int i = dimensions[1] - 1; i >= 0; i--)
+				for (int j = dimensions[0] - 1; j >= 0; j--)
+					if (!rendered[j][i]) {
+						horizontal[j][i] = 1;
+						if (j != dimensions[0] - 1) horizontal[j][i] += horizontal[j + 1][i];
+						vertical[j][i] = 1;
+						if (i != dimensions[1] - 1) vertical[j][i] += vertical[j][i + 1];
+					} else {
+						horizontal[j][i] = 0;
+						vertical[j][i] = 0;
+					}
+
+			// Find the largest rectangle
+			max = 0;
+			for (int i = 0; i < dimensions[1]; i++)
+				for (int j = 0; j < dimensions[0]; j++)
+					if (horizontal[j][i] * vertical[j][i] > max) {
+						max = horizontal[j][i] * vertical[j][i];
+						x = j;
+						y = i;
+					}
+
+			// Save rectangle if one is found, break otherwise
+			if (max > 0) {
+				for (int i = y; i < y + vertical[x][y]; i++)
+					for (int j = x; j < x + horizontal[x][y]; j++)
+						rendered[j][i] = true;
+				rectangles.add(new int[][] {
+					{start[0] + x, start[1] + y},
+					{horizontal[x][y], vertical[x][y]}
+				});
+			} else {
+				break;
 			}
-			System.out.println();
 		}
-		System.out.println();
-		return null;
+
+		return rectangles;
 	}
 
-	public void renderTile(int x, int y) {
+	public void renderRectangle(int[][] rectangle) {
 
-		if (tiles[x][y] != null) return;
+		Box rectangleBox = getRectangleBox(rectangle);
+		Box queryBox = getQueryBox(rectangleBox.copy());
 
-		Box tileBox = getTileBox(x, y);
-		Box queryBox = getQueryBox(tileBox.copy());
-
+		// Get edges from QT's
 		ArrayList<Edge> edges = new ArrayList<>();
 		QuadTree[] visible = visibleGroups();
 		for(int i = visible.length-1; i >= 0; i--)
 			edges.addAll(visible[i].queryRange(queryBox));
 
+		// Make lines
 		ArrayList<Line> lines = new ArrayList<>();
 		for (int i = 0; i < edges.size(); i++) {
 			Edge edge = edges.get(i);
 			Vector[] vectors = edge.getVectors();
 			for (Vector vector : vectors)
-				vector = translateToTile(vector, tileBox);
+				vector = translateToRectangle(vector, rectangleBox);
 			if (i >= linePool.size()) linePool.add(new Line());
 			lines.add(linePool.get(i).set(
 				vectors[0], vectors[1],
@@ -192,15 +235,34 @@ public class Tiler {
 				lineWidth(edge)
 			));
 		}
-		
-		render.setColor(Color.WHITE);
-		render.fillRect(0, 0, tileSize, tileSize);
-		Painter.paintLines(render, lines);
 
-		ColorModel colorModel = renderTile.getColorModel();
-		boolean premultiplied = colorModel.isAlphaPremultiplied();
-		WritableRaster raster = renderTile.copyData(null);
-		tiles[x][y] = new BufferedImage(colorModel, raster, premultiplied, null);
+		// Render image to buffer
+		bufferGraphics.setColor(Color.WHITE);
+		bufferGraphics.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
+		Painter.paintLines(bufferGraphics, lines);
+
+		// Save buffer fragments to tiles
+		int x, y;
+		int[] tilePixels = new int[tileSize * tileSize];
+		for (int i = 0; i < rectangle[1][1]; i++) {
+			for (int j = 0; j < rectangle[1][0]; j++) {
+				x = rectangle[0][0] + j;
+				y = rectangle[0][1] + i;
+				tiles[x][y] = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_RGB);
+				buffer.getRGB(
+					j * tileSize, i * tileSize,
+					tileSize, tileSize,
+					tilePixels,
+					0, tileSize
+				);
+				tiles[x][y].setRGB(
+					0, 0,
+					tileSize, tileSize,
+					tilePixels,
+					0, tileSize
+				);
+ 			}
+		}
 	}
 
 	public Box getTileBox(int x, int y) {
@@ -209,17 +271,29 @@ public class Tiler {
 		return new Box(start, stop);
 	}
 
-	public Box getQueryBox(Box tileBox) {
-		tileBox.translate(mapBox, modelBox);
-		tileBox.start.add(modelBox.start);
-		tileBox.stop.add(modelBox.start);
-		return tileBox;
+	public Box getRectangleBox(int[][] rectangle) {
+		Vector start = new Vector(
+			rectangle[0][0] * tileSize,
+			rectangle[0][1] * tileSize
+		);
+		Vector stop = new Vector(
+			start.x + rectangle[1][0] * tileSize,
+			start.y + rectangle[1][1] * tileSize
+		);
+		return new Box(start, stop);
 	}
 
-	public Vector translateToTile(Vector vector, Box tileBox) {
+	public Box getQueryBox(Box rectangleBox) {
+		rectangleBox.translate(mapBox, modelBox);
+		rectangleBox.start.add(modelBox.start);
+		rectangleBox.stop.add(modelBox.start);
+		return rectangleBox;
+	}
+
+	public Vector translateToRectangle(Vector vector, Box rectangleBox) {
 		return vector
 			.translate(modelBox, mapBox)
-			.sub(tileBox.start);
+			.sub(rectangleBox.start);
 	}
 
 	public Vector translateToModel(Vector vector) {

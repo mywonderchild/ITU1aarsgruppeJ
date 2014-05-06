@@ -50,14 +50,18 @@ public class DropTextField extends JTextField {
 	}
 
 	public void showPop() {
+		hidePop(); // prevents nasty bug. swingiling!
+
 		Dimension tfSize = getSize(); // actual textfield size
+
 		int height = 0; // pref height of all children:
 		for(Component comp : pop.getComponents())
 			height += comp.getPreferredSize().height;
 		pop.setPopupSize(tfSize.width, height);
 
-		hidePop(); // prevents nasty bug. swingiling!
 		pop.show(this, 0, tfSize.height); // just beneath textfield
+		requestFocusInWindow(); // popup has stolen focus - show it who is boss
+		setCaretPosition(getText().length()); // set cursor to end
 	}
 
 	public void hidePop() {

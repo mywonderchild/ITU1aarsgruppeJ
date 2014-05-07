@@ -88,6 +88,7 @@ public class Window extends JFrame {
 		directions.setVerticalAlignment(JLabel.TOP);
 		directions.setVerticalTextPosition(JLabel.TOP);
 		scrollPane.getViewport().add( directions );
+		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 		scrollPane.setBorder(BorderFactory.createEtchedBorder());
 		scrollPane.setVisible(false);
 

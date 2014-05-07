@@ -27,6 +27,7 @@ import Map.Controller.Path;
 public class Tiler {
 
 	public Box mapBox, viewBox, modelBox, section;
+	private Canvas canvas;
 	public int tileSize;
 	public BufferedImage[][] tiles;
 	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5, zoomOrigin;
@@ -39,7 +40,6 @@ public class Tiler {
 	private Graphics2D bufferGraphics;
 	private BufferedImage snapshot;
 	private Timer timer;
-	private Canvas canvas;
 	private boolean fake;
 
 	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader, Canvas canvas) {
@@ -59,16 +59,19 @@ public class Tiler {
 	public void setZoom(double zoom, boolean fake) {
 
 		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
+		double oldZoom = zoom;
+		this.zoom = zoomBounded;
 		Vector viewDimensions = viewBox.dimensions();
 
 		if (fake) {
 			if (snapshot == null) {
-				zoomOrigin = this.zoom;
+				zoomOrigin = oldZoom;
 				snapshot = new BufferedImage((int)viewDimensions.x, (int)viewDimensions.y, BufferedImage.TYPE_INT_RGB);
 				Graphics2D graphics = (Graphics2D)snapshot.getGraphics();
 				graphics.setColor(Color.WHITE);
 				graphics.fillRect(0, 0, snapshot.getWidth(), snapshot.getHeight());
 				render(graphics);
+				graphics.dispose();
 			}
 
 			this.fake = true;
@@ -79,13 +82,9 @@ public class Tiler {
 				@Override
 				public void run() {setZoom(zoomBounded, false);}
 			}, 200);
-
-			this.zoom = zoomBounded;
+			
 		} else {
-			this.zoom = zoomBounded;
 			this.fake = false;
-
-			snapshot = null;
 
 			tileSize = (int)(Math.sqrt(viewDimensions.x * viewDimensions.y) / 4);
 
@@ -274,9 +273,9 @@ public class Tiler {
 
 		// Get edges from QT's
 		ArrayList<Edge> edges = new ArrayList<>();
-		QuadTree[] visible = visibleGroups();
+		int[] visible = Groups.getVisibleGroups(zoom);
 		for(int i = visible.length-1; i >= 0; i--)
-			edges.addAll(visible[i].queryRange(queryBox));
+			edges.addAll(groups[visible[i]].queryRange(queryBox));
 
 		// Make lines
 		ArrayList<Line> lines = new ArrayList<>();
@@ -289,7 +288,7 @@ public class Tiler {
 			lines.add(linePool.get(i).set(
 				vectors[0], vectors[1],
 				Groups.getColor(edge),
-				lineWidth(edge)
+				Groups.getWidth(edge, zoom)
 			));
 		}
 
@@ -356,18 +355,5 @@ public class Tiler {
 		return vector
 			.translate(modelBox, mapBox)
 			.sub(section.start);
-	}
-
-	private QuadTree[] visibleGroups() {
-		if (zoom >= 0.15)
-			return new QuadTree[]{groups[0], groups[1], groups[2], groups[3]};
-		else if (zoom >= 0.05)
-			return new QuadTree[]{groups[0], groups[1], groups[2], groups[3], groups[4]};
-		else
-			return groups;
-	}
-	
-	public float lineWidth(Edge edge) {
-		return (float)((Groups.getWidth(edge))*(1+(0.05*((Groups.getWidth(edge))/zoom))));	
 	}
 }

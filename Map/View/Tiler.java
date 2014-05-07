@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,7 +43,8 @@ public class Tiler {
 	private BufferedImage snapshot;
 	private Timer timer;
 	private boolean fake;
-	AffineTransform transformer = new AffineTransform();
+	private AffineTransform transformer = new AffineTransform();
+	private GraphicsConfiguration gc;
 
 	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader, Canvas canvas) {
 		this.center = center;
@@ -50,6 +53,10 @@ public class Tiler {
 		this.canvas = canvas;
 		resetCenter = center.copy();
 		resetZoom = zoom;
+		gc = GraphicsEnvironment
+			.getLocalGraphicsEnvironment()
+			.getDefaultScreenDevice()
+			.getDefaultConfiguration();
 		setZoom(zoom, false);
 		if (loader != null) {
 			this.all = loader.all;
@@ -67,7 +74,10 @@ public class Tiler {
 		if (fake) {
 			if (snapshot == null) {
 				zoomOrigin = oldZoom;
-				snapshot = new BufferedImage((int)viewDimensions.x, (int)viewDimensions.y, BufferedImage.TYPE_INT_RGB);
+				snapshot = gc.createCompatibleImage(
+					(int)viewDimensions.x,
+					(int)viewDimensions.y
+				);
 				Graphics2D graphics = (Graphics2D)snapshot.getGraphics();
 				graphics.setColor(Color.WHITE);
 				graphics.fillRect(0, 0, snapshot.getWidth(), snapshot.getHeight());
@@ -92,7 +102,10 @@ public class Tiler {
 
 			tileSize = (int)(Math.sqrt(viewDimensions.x * viewDimensions.y) / 4);
 
-			buffer = new BufferedImage((int)viewDimensions.x + tileSize * 2, (int)viewDimensions.y + tileSize * 2, BufferedImage.TYPE_INT_RGB);
+			buffer = gc.createCompatibleImage(
+				(int)viewDimensions.x + tileSize * 2,
+				(int)viewDimensions.y + tileSize * 2
+			);
 			bufferGraphics = buffer.createGraphics();
 			bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -303,7 +316,7 @@ public class Tiler {
 			for (int j = 0; j < rectangle[1][0]; j++) {
 				x = rectangle[0][0] + j;
 				y = rectangle[0][1] + i;
-				tiles[x][y] = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_RGB);
+				tiles[x][y] = gc.createCompatibleImage(tileSize, tileSize);
 				buffer.getRGB(
 					j * tileSize, i * tileSize,
 					tileSize, tileSize,

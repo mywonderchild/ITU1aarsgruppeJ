@@ -58,7 +58,6 @@ public class Groups {
 			throw new RuntimeException("Road group not found, type is: " + type);
 	}
 
-
 	private static Color getGroupColor(int group) {
 		return COLORMAP[group];
 	}
@@ -67,12 +66,21 @@ public class Groups {
 		return getGroupColor(getGroup(edge.TYPE));
 	}
 
-	
 	private static float getGroupWidth(int group) {
 		return WIDTHMAP[group];
 	}
 
-	public static float getWidth(Edge edge) throws RuntimeException {
-		return getGroupWidth(getGroup(edge.TYPE));
-	}	
+	public static float getWidth(Edge edge, double zoom) throws RuntimeException {
+		float width = getGroupWidth(getGroup(edge.TYPE));
+		return (float) ((width)*(1+(0.05*((width)/zoom))));
+	}
+
+	public static int[] getVisibleGroups(double zoom) {
+		if (zoom >= 0.15)
+			return new int[] {0, 1, 2, 3};
+		else if (zoom >= 0.05)
+			return new int[] {0, 1, 2, 3, 4};
+		else
+			return new int[] {0, 1, 2, 3, 4, 5, 6};
+	}
 }

@@ -4,14 +4,19 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import java.lang.InterruptedException;
+
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
+
+import java.awt.KeyboardFocusManager;
 
 import Map.View.DropTextField;
 import Map.Model.Edge;
 
 public class AddressFieldListener implements DocumentListener {
 	private static final int SUGGESTIONS = 5; // number of suggested addresses
+	private int threadid = Integer.MIN_VALUE;
 
 	private final DropTextField tf;
 	private final AddressFinder af;
@@ -42,17 +47,34 @@ public class AddressFieldListener implements DocumentListener {
 	}
 
 	private void queueUpdate() {
-		timer.cancel();
-		timer = new Timer(true);
-		timer.schedule(new UpdateTask(), 200);
+		Thread t = new UpdateThread();
+		t.setDaemon(true);
+		t.start();
 	}
 
-	private class UpdateTask extends TimerTask {
+	private class UpdateThread extends Thread {
+		private final int id = ++threadid;
+
+		public UpdateThread() {
+			System.out.println("UpdateThread " + id);
+		}
+
 		@Override
 		public void run() {
 			String text = tf.getText();
 			if(text.length() >= 2) {
-				List<Edge>[] result = af.find(text, SUGGESTIONS);
+				Thread t = af.getFindThread(text, SUGGESTIONS, this);
+				t.setDaemon(true);
+				t.start();
+				try {
+					synchronized(this){ wait(); } // wait for find thread to finish
+				} catch(InterruptedException e) { e.printStackTrace(); }
+				if(!isValid() || !tf.equals(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner())) {
+					System.out.println("UpdateThread " + id + " invalid");
+					return;
+				}// stop update thread if no longer valid
+
+				List<Edge>[] result = af.getResult();
 				String[] items = new String[SUGGESTIONS];
 				for(int i = 0; i < SUGGESTIONS; i++) {
 					Edge edge = result[i].get(0);
@@ -60,7 +82,12 @@ public class AddressFieldListener implements DocumentListener {
 				}
 				tf.setItems(items);
 				tf.showPop();
+				System.out.println("UpdateThread " + id + " finished");
 			}
+		}
+
+		private boolean isValid() {
+			return id == threadid;
 		}
 	}
 }

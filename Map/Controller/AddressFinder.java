@@ -9,28 +9,30 @@ import Map.Model.Edge;
 import Map.Model.PriorityQueue;
 
 public class AddressFinder {
-	Map<String, List<Edge>> map;
+	private final Map<String, List<Edge>> map;
+	private List<Edge>[] best;
+	private boolean working;
+	private int threadid = Integer.MIN_VALUE;
 
 	public AddressFinder(Map<String, List<Edge>> roads) {
 		this.map = roads;
 	}
 
-	public List<Edge> find(String address) {
-		return find(address, 1)[0];
+	public Thread getFindThread(String address, Object callback) {
+		return getFindThread(address, 1, callback);
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Edge>[] find(String address, int amount) {
-		PriorityQueue<Integer, List<Edge>> pq = new PriorityQueue<Integer, List<Edge>>();
-		for(Entry<String, List<Edge>> entry : map.entrySet()) {
-			pq.push(dist(address, entry.getKey()), entry.getValue());
-		}
+	public Thread getFindThread(String address, int amount, Object callback) {
+		return new FindThread(address, amount, callback);
+	}
 
-		List<Edge>[] best = (List<Edge>[]) new List[amount];
-		for(int i = 0; i < amount; i++) {
-			best[i] = (List<Edge>) pq.pop().getValue();
-		}
+	public List<Edge>[] getResult() {
+		if(working) return null;
 		return best;
+	}
+
+	public boolean hasResult() {
+		return best != null && !working;
 	}
 
 	private static int dist(String s1, String s2) {
@@ -76,5 +78,52 @@ public class AddressFinder {
 		for(int i : args)
 			if(i < min) min = i;
 		return min;
+	}
+
+	private class FindThread extends Thread {
+		private final int id = ++threadid;
+		private final String address;
+		private final int amount;
+		private final Object callback;
+
+		public FindThread(String address, int amount, Object callback) {
+			this.address = address;
+			this.amount = amount;
+			this.callback = callback;
+			System.out.println("FindThread " + id);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public void run() {
+			working = true;
+			PriorityQueue<Integer, List<Edge>> pq = new PriorityQueue<Integer, List<Edge>>();
+			for(Entry<String, List<Edge>> entry : map.entrySet()) {
+				pq.push(dist(address, entry.getKey()), entry.getValue());
+				if(!isValid()) { // if no longer valid
+					System.out.println("FindThread " + id + " invalid at " + pq.size());
+					notifyCaller();
+					return; // kill thread
+				}
+				Thread.yield();
+			}
+
+			best = (List<Edge>[]) new List[amount];
+			for(int i = 0; i < amount; i++) {
+				best[i] = (List<Edge>) pq.pop().getValue();
+			}
+			working = false;
+			System.out.println("FindThread " + id + " finished");
+			notifyCaller();
+		}
+
+		private boolean isValid() {
+			return id == threadid;
+		}
+
+		private void notifyCaller() {
+			if(callback != null)
+				synchronized(callback) { callback.notify(); }
+		}
 	}
 }

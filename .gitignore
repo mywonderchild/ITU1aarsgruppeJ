@@ -15,3 +15,5 @@ main.pdf
 Map/Data/kdv*
 *.db
 Rapport/main.pdf
+Map/Data/osm/purged_edges.txt
+Map/Data/osm/purged_nodes.txt

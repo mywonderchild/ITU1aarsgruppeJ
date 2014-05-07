@@ -17,6 +17,8 @@ public class Canvas extends JPanel {
 	@Override
 	public void paintComponent(Graphics graphics) {
 		if (tiler != null) {
+			graphics.setColor(Color.WHITE);
+			graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
 			tiler.render((Graphics2D)graphics);
 			if (selectionBox != null) Painter.paintBox((Graphics2D)graphics, selectionBox);
 		}

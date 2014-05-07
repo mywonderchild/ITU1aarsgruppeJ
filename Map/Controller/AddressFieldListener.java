@@ -48,6 +48,7 @@ public class AddressFieldListener implements DocumentListener {
 	}
 
 	private class UpdateTask extends TimerTask {
+		@Override
 		public void run() {
 			String text = tf.getText();
 			if(text.length() >= 2) {

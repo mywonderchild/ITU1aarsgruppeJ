@@ -7,8 +7,9 @@ import java.awt.image.DataBufferInt;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Color;
-
 import java.awt.geom.Rectangle2D;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import java.lang.Iterable;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class Tiler {
 	public Box mapBox, viewBox, modelBox, section;
 	public int tileSize;
 	public BufferedImage[][] tiles;
-	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5;
+	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5, zoomOrigin;
 	public Vector center, resetCenter;
 	public QuadTree all;
 	public Path path;
@@ -36,25 +37,64 @@ public class Tiler {
 	private ArrayList<Line> linePool = new ArrayList<Line>();
 	private BufferedImage buffer;
 	private Graphics2D bufferGraphics;
+	public boolean firstFake;
+	private BufferedImage snapshot;
+	private Timer timer;
+	private Canvas canvas;
+	private boolean fake;
 
-	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader) {
+	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader, Canvas canvas) {
 		this.center = center;
 		this.viewBox = viewBox;
 		this.modelBox = modelBox;
+		this.canvas = canvas;
 		resetCenter = center.copy();
 		resetZoom = zoom;
-		setZoom(zoom);
+		setZoom(zoom, false);
 		if (loader != null) {
 			this.all = loader.all;
 			this.groups = loader.groups;
 		}
 	}
 
-	public void setZoom(double zoom) {
+	public void setZoom(double zoom, boolean fake) {
 
-		this.zoom = Math.min(Math.max(zoom, minZoom), maxZoom);
-
+		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
 		Vector viewDimensions = viewBox.dimensions();
+
+		this.fake = fake;
+
+		if (fake) {
+			if (snapshot == null) {
+				zoomOrigin = this.zoom;
+				snapshot = new BufferedImage((int)viewDimensions.x, (int)viewDimensions.y, BufferedImage.TYPE_INT_RGB);
+				Graphics2D graphics = (Graphics2D)snapshot.getGraphics();
+				graphics.setColor(Color.WHITE);
+				graphics.fillRect(0, 0, snapshot.getWidth(), snapshot.getHeight());
+				firstFake = true;
+				render(graphics);
+				firstFake = false;
+			}
+
+			if (timer != null) timer.cancel();
+			timer = new Timer(true);
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					setZoom(zoomBounded, false);
+					canvas.repaint();
+				}
+			}, 200);
+
+			this.zoom = zoomBounded;
+
+			return;
+		}
+
+		this.zoom = zoomBounded;
+
+		snapshot = null;
+
 		tileSize = (int)(Math.sqrt(viewDimensions.x * viewDimensions.y) / 4);
 
 		buffer = new BufferedImage((int)viewDimensions.x + tileSize * 2, (int)viewDimensions.y + tileSize * 2, BufferedImage.TYPE_INT_RGB);
@@ -72,17 +112,26 @@ public class Tiler {
 		tiles = new BufferedImage[tilesX][tilesY];
 	}
 
-	public void fakeRender(Graphics2D graphics) {
-
-
-	}
-
 	public void reset() {
 		this.center = resetCenter;
-		setZoom(resetZoom);
+		setZoom(resetZoom, false);
 	}
 
 	public void render(Graphics2D graphics) {
+		if (fake && !firstFake) {
+			double scale = zoom / zoomOrigin;
+			int offsetX = (int)(snapshot.getWidth() * (1 - scale) / 2);
+			int offsetY = (int)(snapshot.getHeight() * (1 - scale) / 2);
+			graphics.drawImage(
+				snapshot,
+				0, 0,
+				snapshot.getWidth(), snapshot.getHeight(),
+				0 + offsetX, 0 + offsetY,
+				snapshot.getWidth() - offsetX, snapshot.getHeight() - offsetY,
+				null
+			);
+			return;
+		}
 		section = getSection();
 		int[][] sectionTiles = getTiles(section);
 		for (int[][] rectangle : getRectangles(sectionTiles))

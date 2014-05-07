@@ -23,7 +23,7 @@ public class saxFilter extends XMLFilterImpl
 		super.endElement(uri, localName, qName);
 		}
 		if (localName.equals("tag")){
-			if(lastopen.equals("addr:street") || lastopen.equals("highway")){
+			if(lastopen.equals("addr:street") || lastopen.equals("highway") || lastopen.equals("postal_code") || lastopen.equals("maxspeed") || lastopen.equals("natural")){
 				super.endElement(uri, localName, qName);
 			}
 		}
@@ -50,7 +50,7 @@ public class saxFilter extends XMLFilterImpl
        	AttributesImpl newattribute = new AttributesImpl(attributes);
 
        	if (localName.equals("tag")){
-			if (attributes.getValue(0).equals("name") || attributes.getValue(0).equals("highway")){
+			if (attributes.getValue(0).equals("name") || attributes.getValue(0).equals("highway") || attributes.getValue(0).equals("postal_code") || attributes.getValue(0).equals("maxspeed") || (attributes.getValue(0).equals("natural") && attributes.getValue(1).equals("coastline"))){
 
 				super.startElement(uri, localName, qName, newattribute);
 			}

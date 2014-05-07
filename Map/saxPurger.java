@@ -20,7 +20,7 @@ public static void main(String args[]) throws Exception{
 	reader = XMLReaderFactory.createXMLReader();
 	filter.setParent(reader);
 	filter.setContentHandler(eHandler);
-	filter.parse("./Data/osm/denmark-latest.osm");
+	filter.parse(args[0]);
 	// reader.setContentHandler(eHandler);
 	// reader.parse(args[0]);
 }

@@ -37,7 +37,6 @@ public class Tiler {
 	private ArrayList<Line> linePool = new ArrayList<Line>();
 	private BufferedImage buffer;
 	private Graphics2D bufferGraphics;
-	public boolean firstFake;
 	private BufferedImage snapshot;
 	private Timer timer;
 	private Canvas canvas;
@@ -62,8 +61,6 @@ public class Tiler {
 		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
 		Vector viewDimensions = viewBox.dimensions();
 
-		this.fake = fake;
-
 		if (fake) {
 			if (snapshot == null) {
 				zoomOrigin = this.zoom;
@@ -71,45 +68,43 @@ public class Tiler {
 				Graphics2D graphics = (Graphics2D)snapshot.getGraphics();
 				graphics.setColor(Color.WHITE);
 				graphics.fillRect(0, 0, snapshot.getWidth(), snapshot.getHeight());
-				firstFake = true;
 				render(graphics);
-				firstFake = false;
 			}
+
+			this.fake = true;
 
 			if (timer != null) timer.cancel();
 			timer = new Timer(true);
 			timer.schedule(new TimerTask() {
 				@Override
-				public void run() {
-					setZoom(zoomBounded, false);
-					canvas.repaint();
-				}
+				public void run() {setZoom(zoomBounded, false);}
 			}, 200);
 
 			this.zoom = zoomBounded;
+		} else {
+			this.zoom = zoomBounded;
+			this.fake = false;
 
-			return;
+			snapshot = null;
+
+			tileSize = (int)(Math.sqrt(viewDimensions.x * viewDimensions.y) / 4);
+
+			buffer = new BufferedImage((int)viewDimensions.x + tileSize * 2, (int)viewDimensions.y + tileSize * 2, BufferedImage.TYPE_INT_RGB);
+			bufferGraphics = buffer.createGraphics();
+			bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+			Vector mapDimensions = viewDimensions
+				.div(viewBox.ratio())
+				.div(this.zoom)
+				.mult(modelBox.ratio());
+			mapBox = new Box(new Vector(0, 0), mapDimensions);
+
+			int tilesX = (int)Math.ceil(mapDimensions.x / tileSize);
+			int tilesY = (int)Math.ceil(mapDimensions.y / tileSize);
+			tiles = new BufferedImage[tilesX][tilesY];
 		}
 
-		this.zoom = zoomBounded;
-
-		snapshot = null;
-
-		tileSize = (int)(Math.sqrt(viewDimensions.x * viewDimensions.y) / 4);
-
-		buffer = new BufferedImage((int)viewDimensions.x + tileSize * 2, (int)viewDimensions.y + tileSize * 2, BufferedImage.TYPE_INT_RGB);
-		bufferGraphics = buffer.createGraphics();
-		bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		Vector mapDimensions = viewDimensions
-			.div(viewBox.ratio())
-			.div(this.zoom)
-			.mult(modelBox.ratio());
-		mapBox = new Box(new Vector(0, 0), mapDimensions);
-
-		int tilesX = (int)Math.ceil(mapDimensions.x / tileSize);
-		int tilesY = (int)Math.ceil(mapDimensions.y / tileSize);
-		tiles = new BufferedImage[tilesX][tilesY];
+		canvas.repaint();
 	}
 
 	public void reset() {
@@ -118,35 +113,42 @@ public class Tiler {
 	}
 
 	public void render(Graphics2D graphics) {
-		if (fake && !firstFake) {
-			double scale = zoom / zoomOrigin;
-			int offsetX = (int)(snapshot.getWidth() * (1 - scale) / 2);
-			int offsetY = (int)(snapshot.getHeight() * (1 - scale) / 2);
-			graphics.drawImage(
-				snapshot,
-				0, 0,
-				snapshot.getWidth(), snapshot.getHeight(),
-				0 + offsetX, 0 + offsetY,
-				snapshot.getWidth() - offsetX, snapshot.getHeight() - offsetY,
-				null
-			);
-			return;
+
+		if (fake) {
+			System.out.println("fakeRender");
+			fakeRender(graphics);
+		} else {
+			System.out.println("render");
+			section = getSection();
+			int[][] sectionTiles = getTiles(section);
+			for (int[][] rectangle : getRectangles(sectionTiles))
+				renderRectangle(rectangle);
+			for (int[] tile : sectionTiles) {
+				int x = tile[0];
+				int y = tile[1];
+				graphics.drawImage(
+					tiles[x][y],
+					null,
+					x * tileSize - (int)section.start.x,
+					y * tileSize - (int)section.start.y
+				);
+			}
+			renderPath(graphics);
 		}
-		section = getSection();
-		int[][] sectionTiles = getTiles(section);
-		for (int[][] rectangle : getRectangles(sectionTiles))
-			renderRectangle(rectangle);
-		for (int[] tile : sectionTiles) {
-			int x = tile[0];
-			int y = tile[1];
-			graphics.drawImage(
-				tiles[x][y],
-				null,
-				x * tileSize - (int)section.start.x,
-				y * tileSize - (int)section.start.y
-			);
-		}
-		renderPath(graphics);
+	}
+
+	public void fakeRender(Graphics2D graphics) {
+		double scale = zoom / zoomOrigin;
+		int offsetX = (int)(snapshot.getWidth() * (1 - scale) / 2);
+		int offsetY = (int)(snapshot.getHeight() * (1 - scale) / 2);
+		graphics.drawImage(
+			snapshot,
+			0, 0,
+			snapshot.getWidth(), snapshot.getHeight(),
+			0 + offsetX, 0 + offsetY,
+			snapshot.getWidth() - offsetX, snapshot.getHeight() - offsetY,
+			null
+		);
 	}
 
 	public void renderPath(Graphics2D graphics) {

@@ -55,7 +55,6 @@ public class KeyboardHandler{
 		public void actionPerformed(ActionEvent e) {
 			if(!allowMapAction()) return;
 			tiler.setZoom(tiler.zoom * zoom, true);
-			canvas.repaint();
 		};
 	};
 
@@ -64,7 +63,6 @@ public class KeyboardHandler{
 		public void actionPerformed(ActionEvent e) {
 			if(!allowMapAction()) return;
 			tiler.reset();
-			canvas.repaint();
 		};
 	};
 

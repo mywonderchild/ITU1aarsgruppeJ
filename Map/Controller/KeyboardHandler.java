@@ -3,6 +3,8 @@ package Map.Controller;
 import Map.View.*;
 import javax.swing.KeyStroke;
 import javax.swing.Action;
+import javax.swing.JTextField;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -51,6 +53,7 @@ public class KeyboardHandler{
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			if(!allowMapAction()) return;
 			tiler.setZoom(tiler.zoom * zoom);
 			canvas.repaint();
 		};
@@ -59,6 +62,7 @@ public class KeyboardHandler{
 	private class ZoomResetter extends AbstractAction{
 
 		public void actionPerformed(ActionEvent e) {
+			if(!allowMapAction()) return;
 			tiler.reset();
 			canvas.repaint();
 		};
@@ -73,6 +77,7 @@ public class KeyboardHandler{
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			if(!allowMapAction()) return;
 			Box box = tiler.modelBox;
 			Vector center = tiler.translateToModel(tiler.viewBox.getCenter().add(distance))
 				.sub(tiler.translateToModel(tiler.viewBox.getCenter()))
@@ -82,6 +87,9 @@ public class KeyboardHandler{
 		};
 	};
 
+	private boolean allowMapAction() {
+		return !(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner() instanceof JTextField);
+	}
 
 	private void Bindkey(String key, String actionName, Action action){
 			canvas.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(key),actionName);

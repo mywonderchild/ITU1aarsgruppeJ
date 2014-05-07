@@ -36,7 +36,7 @@ public class DropTextField extends JTextField {
 		});
 	}
 
-	public void setItems(String[] items) {
+	public synchronized void setItems(String[] items) {
 		clearItems();
 		for(int i = 0; i < items.length; i++) {
 			JMenuItem item = new JMenuItem(items[i]);
@@ -45,7 +45,7 @@ public class DropTextField extends JTextField {
 		}
 	}
 
-	public void clearItems() {
+	public synchronized void clearItems() {
 		pop.removeAll();
 	}
 

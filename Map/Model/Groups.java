@@ -46,7 +46,7 @@ public class Groups {
 			Color.MAGENTA,
 		};
 
-		WIDTHMAP = new float[] {1.3f, 1.0f, 1.0f, 1.0f, 0.7f, 0.7f, 1.0f};
+		WIDTHMAP = new float[] {1.3f, 1.0f, 1.0f, 1.0f, 0.75f, 0.7f, 0.7f};
 	}
 	
 

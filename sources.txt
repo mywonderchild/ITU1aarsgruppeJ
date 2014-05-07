@@ -17,6 +17,9 @@
 ./Map/Model/PriorityQueue.java
 ./Map/Model/QuadTree.java
 ./Map/Model/ShortestPath.java
+./Map/saxEventHandler.java
+./Map/saxFilter.java
+./Map/saxPurger.java
 ./Map/Vector.java
 ./Map/View/Canvas.java
 ./Map/View/DropTextField.java

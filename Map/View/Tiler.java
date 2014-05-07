@@ -3,6 +3,7 @@ package Map.View;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.ColorModel;
+import java.awt.image.DataBufferInt;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Color;
@@ -243,7 +244,6 @@ public class Tiler {
 
 		// Save buffer fragments to tiles
 		int x, y;
-		int[] tilePixels = new int[tileSize * tileSize];
 		for (int i = 0; i < rectangle[1][1]; i++) {
 			for (int j = 0; j < rectangle[1][0]; j++) {
 				x = rectangle[0][0] + j;
@@ -252,13 +252,7 @@ public class Tiler {
 				buffer.getRGB(
 					j * tileSize, i * tileSize,
 					tileSize, tileSize,
-					tilePixels,
-					0, tileSize
-				);
-				tiles[x][y].setRGB(
-					0, 0,
-					tileSize, tileSize,
-					tilePixels,
+					((DataBufferInt) tiles[x][y].getRaster().getDataBuffer()).getData(),
 					0, tileSize
 				);
  			}

@@ -35,12 +35,12 @@ public class Window extends JFrame {
 	public JButton routeButton;
 	
 	public Window(Canvas canvas) {
-		super();
 
 		this.canvas = canvas;
 
 		setMinimumSize(new Dimension(1024, 768));
 		setLayout(new BorderLayout());
+		getContentPane().setBackground(Color.WHITE);
 
 		// Set innerPanel, labels and textfields.
 		innerPanel = new JPanel(new MigLayout());

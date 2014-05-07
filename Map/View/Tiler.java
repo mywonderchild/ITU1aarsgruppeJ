@@ -72,6 +72,11 @@ public class Tiler {
 		tiles = new BufferedImage[tilesX][tilesY];
 	}
 
+	public void fakeRender(Graphics2D graphics) {
+
+
+	}
+
 	public void reset() {
 		this.center = resetCenter;
 		setZoom(resetZoom);

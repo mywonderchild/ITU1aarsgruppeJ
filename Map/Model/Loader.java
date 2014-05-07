@@ -122,7 +122,8 @@ public class Loader {
 		graph.addEdge(edge);
 		graph.addEdge(invertedEdge);
 		if(name != null) {
-			List<Edge> edges = addresses.get(edge.NAME);
+			String address = name + (zip > 0 ? ", " + zip : ""); // add zip to name, if edge has real zip
+			List<Edge> edges = addresses.get(address);
 			if(edges != null) {
 				// already there; just add the edge to list
 				edges.add(edge);
@@ -131,7 +132,7 @@ public class Loader {
 				// not there; create new list with edge
 				edges = new ArrayList<Edge>();
 				edges.add(edge);
-				addresses.put(edge.NAME, edges);
+				addresses.put(address, edges);
 			}
 		}
 	}

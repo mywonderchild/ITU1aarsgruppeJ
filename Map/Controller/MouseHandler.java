@@ -150,9 +150,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 	public void mouseMoved(MouseEvent e) {
 		Vector target = new Vector(e.getX(), e.getY());
 		target = tiler.translateToModel(target);
-		String closest = tiler.all.findClosestEdge(target, true).NAME;
-		if (closest != window.closest.getText())
-			window.closest.setText(closest);
+		Edge closest = tiler.all.findClosestEdge(target, true);
+		String name = closest.NAME + (closest.ZIP > 0 ? ", " + closest.ZIP : ""); // add zip to name, if edge has real zip;
+		window.closest.setText(name);
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e){

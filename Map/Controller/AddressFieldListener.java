@@ -53,8 +53,10 @@ public class AddressFieldListener implements DocumentListener {
 			if(text.length() >= 2) {
 				List<Edge>[] result = af.find(text, SUGGESTIONS);
 				String[] items = new String[SUGGESTIONS];
-				for(int i = 0; i < SUGGESTIONS; i++)
-					items[i] = result[i].get(0).NAME;
+				for(int i = 0; i < SUGGESTIONS; i++) {
+					Edge edge = result[i].get(0);
+					items[i] = edge.NAME + (edge.ZIP > 0 ? ", " + edge.ZIP : ""); // add zip to name, if edge has real zip;
+				}
 				tf.setItems(items);
 				tf.showPop();
 			}

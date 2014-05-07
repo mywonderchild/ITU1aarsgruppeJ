@@ -11,6 +11,7 @@ public class Edge {
 	public final double LENGTH;
 	public final int TYPE;
 	public final String NAME;
+	public final int ZIP;
 	public final int SPEED;
 
 	public final double TIME;
@@ -21,7 +22,8 @@ public class Edge {
 		END = end;
 		LENGTH = length;
 		TYPE = type;
-		NAME = name + (zip > 0 ? ", " + zip : ""); // add zip to name, if edge has real zip
+		NAME = name;
+		ZIP = zip;
 		SPEED = speed;
 
 		TIME = LENGTH/1000 / SPEED * 1.15; // 15% extra, as Krak does.

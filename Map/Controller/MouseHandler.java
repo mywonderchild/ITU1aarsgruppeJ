@@ -53,7 +53,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 
 		if (SwingUtilities.isMiddleMouseButton(e)) {
 			tiler.reset();
-			canvas.repaint();
 		} else if(SwingUtilities.isLeftMouseButton(e)) {
 			if (sp == null) return;
 
@@ -118,11 +117,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			Vector dimensions = selection.dimensions();
 			Vector zoom = dimensions.div(tiler.modelBox.dimensions());
 			if (zoom.x > zoom.y)
-				tiler.setZoom(zoom.x);
+				tiler.setZoom(zoom.x, true);
 			else
-				tiler.setZoom(zoom.y);
-
-			canvas.repaint();
+				tiler.setZoom(zoom.y, true);
 		}
 
 		reset();
@@ -158,8 +155,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 	public void mouseWheelMoved(MouseWheelEvent e){
 		boolean zoomIn = e.getWheelRotation() > 0;
 		double scalar = zoomIn ? 1.1 : 0.9;
-		tiler.setZoom(tiler.zoom * scalar);
-		canvas.repaint();
+		tiler.setZoom(tiler.zoom * scalar, true);
     }
 
 	public void mouseEntered(MouseEvent e) {

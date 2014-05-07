@@ -77,7 +77,7 @@ public class FirstWindow extends JFrame {
 		this.window = new Window(canvas);
 		
 		// Tiler
-		this.tiler = new Tiler(1.3, new Vector(0.5, 0.5), canvas.getBox(), loader.all.getBox(), loader);
+		this.tiler = new Tiler(1.3, new Vector(0.5, 0.5), canvas.getBox(), loader.all.getBox(), loader, canvas);
 		canvas.tiler = tiler;
 		canvas.repaint();
 
@@ -87,7 +87,7 @@ public class FirstWindow extends JFrame {
 			{componentResized(null);}
 			public void componentResized(ComponentEvent e) {
 				tiler.viewBox = canvas.getBox();
-				tiler.setZoom(tiler.zoom);
+				tiler.setZoom(tiler.zoom, true);
 		    }
 		    public void componentHidden(ComponentEvent e) {}
 		    public void componentMoved(ComponentEvent e) {}

@@ -24,7 +24,7 @@ public class TestTiler {
 	public void setup() {
 		double zoom = 0.5;
 		Vector center = new Vector(0.5, 0.5);
-		tiler = new Tiler(zoom, center, viewBox, modelBox, null);
+		tiler = new Tiler(zoom, center, viewBox, modelBox, null, null);
 	}
 
 	@Test

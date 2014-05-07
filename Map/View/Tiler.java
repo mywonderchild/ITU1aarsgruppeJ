@@ -109,7 +109,7 @@ public class Tiler {
 				translateToView(edge.START.VECTOR.copy()),
 				translateToView(edge.END.VECTOR.copy()),
 				Color.MAGENTA,
-				2
+				(float)(1.5*(1+(0.05*(1.5/zoom))))
 			));
 		}
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -319,5 +319,4 @@ public class Tiler {
 	public float lineWidth(Edge edge) {
 		return (float)((Groups.getWidth(edge))*(1+(0.05*((Groups.getWidth(edge))/zoom))));	
 	}
-
 }

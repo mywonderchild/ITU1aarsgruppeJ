@@ -7,7 +7,7 @@ import java.awt.image.DataBufferInt;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Color;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.AffineTransform;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,6 +41,7 @@ public class Tiler {
 	private BufferedImage snapshot;
 	private Timer timer;
 	private boolean fake;
+	AffineTransform transformer = new AffineTransform();
 
 	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader, Canvas canvas) {
 		this.center = center;
@@ -117,40 +118,36 @@ public class Tiler {
 	public void render(Graphics2D graphics) {
 
 		if (fake) {
-			System.out.println("fakeRender");
 			fakeRender(graphics);
 		} else {
-			System.out.println("render");
 			section = getSection();
 			int[][] sectionTiles = getTiles(section);
 			for (int[][] rectangle : getRectangles(sectionTiles))
 				renderRectangle(rectangle);
+			int x, y;
 			for (int[] tile : sectionTiles) {
-				int x = tile[0];
-				int y = tile[1];
-				graphics.drawImage(
-					tiles[x][y],
-					null,
+				x = tile[0];
+				y = tile[1];
+				transformer.setToIdentity();
+				transformer.translate(
 					x * tileSize - (int)section.start.x,
 					y * tileSize - (int)section.start.y
 				);
+				graphics.drawRenderedImage(tiles[x][y], transformer);
 			}
 			renderPath(graphics);
 		}
 	}
 
 	public void fakeRender(Graphics2D graphics) {
-		double scale = zoom / zoomOrigin;
-		int offsetX = (int)(snapshot.getWidth() * (1 - scale) / 2);
-		int offsetY = (int)(snapshot.getHeight() * (1 - scale) / 2);
-		graphics.drawImage(
-			snapshot,
-			0, 0,
-			snapshot.getWidth(), snapshot.getHeight(),
-			0 + offsetX, 0 + offsetY,
-			snapshot.getWidth() - offsetX, snapshot.getHeight() - offsetY,
-			null
+		transformer.setToIdentity();
+		double scale = zoomOrigin / zoom;
+		transformer.translate(
+			(int)(snapshot.getWidth() * (1 - scale) / 2),
+			(int)(snapshot.getHeight() * (1 - scale) / 2)
 		);
+		transformer.scale(scale, scale);
+		graphics.drawRenderedImage(snapshot, transformer);
 	}
 
 	public void renderPath(Graphics2D graphics) {

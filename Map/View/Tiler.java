@@ -172,7 +172,7 @@ public class Tiler {
 				translateToView(edge.START.VECTOR.copy()),
 				translateToView(edge.END.VECTOR.copy()),
 				Color.MAGENTA,
-				(float)(1.5*(1+(0.05*(1.5/zoom))))
+				(float)(1.3*(1+(0.05*(1.3/zoom))))
 			));
 		}
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

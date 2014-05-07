@@ -1,6 +1,7 @@
 package Map.Controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,11 +21,13 @@ public class AddressFieldListener implements DocumentListener {
 
 	private final DropTextField tf;
 	private final AddressFinder af;
+	private final Map<Integer, String> cities;
 	private Timer timer;
 
-	public AddressFieldListener(DropTextField tf, AddressFinder af) {
+	public AddressFieldListener(DropTextField tf, AddressFinder af, Map<Integer, String> cities) {
 		this.tf = tf;
 		this.af = af;
+		this.cities = cities;
 		timer = new Timer(true); // daemon tread
 	}
 
@@ -78,7 +81,13 @@ public class AddressFieldListener implements DocumentListener {
 			String[] items = new String[SUGGESTIONS];
 			for(int i = 0; i < SUGGESTIONS; i++) {
 				Edge edge = result[i].get(0);
-				items[i] = edge.NAME + (edge.ZIP > 0 ? ", " + edge.ZIP : ""); // add zip to name, if edge has real zip;
+				String suffix = "";
+				if(edge.ZIP > 0) {
+					suffix = ", " + edge.ZIP;
+					String city = cities.get(edge.ZIP);
+					if(city != null) suffix += " " + city;
+				}
+				items[i] = edge.NAME + suffix; // add zip to name, if edge has real zip;
 			}
 			tf.setItems(items);
 			tf.showPop();

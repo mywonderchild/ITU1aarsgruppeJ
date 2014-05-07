@@ -21,7 +21,7 @@ public class Loader {
 	public static final Pattern PATTERN = Pattern.compile("((?<=').*(?=')|[^',]+)");
 	public Matcher matcher;
 
-	private String nodePath, edgePath;
+	private String nodePath, edgePath, cityPath;
 	private Vector max;
 
 	public Map<Integer, Node> nodes;
@@ -30,6 +30,7 @@ public class Loader {
 	public Graph graph;
 	public AddressFinder addressFinder;
 	public Map<String, List<Edge>> addresses;
+	public Map<Integer, String> cities;
 
 	public Loader(String dataSet) {
 		System.out.println("JVM OS architecture: " + System.getProperty("os.arch"));
@@ -40,6 +41,7 @@ public class Loader {
 			String dir = String.format("Map/Data/%s/", dataSet);
 			nodePath = dir + "purged_nodes.txt";
 			edgePath = dir + "purged_edges.txt";
+			cityPath = dir + "zip.txt";
 			load();
 		} catch(IOException e) {
 			System.out.println(e.getMessage());
@@ -65,19 +67,28 @@ public class Loader {
 		br.close();
 		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
-		// Create QuadTrees and Graph
+		// Create QuadTrees, Graph and maps
 		Box quadBox = new Box(new Vector(0, 0), max);
 		all = new QuadTree(quadBox);
 		groups = new QuadTree[Groups.GROUPS.length];
 		for(int i = 0; i < groups.length; i++) groups[i] = new QuadTree(quadBox);
 		graph = new Graph(nodes.size());
 		addresses = new HashMap<String, List<Edge>>();
+		cities = new HashMap<Integer, String>();
 
 		// Edges
 		timer = System.currentTimeMillis();
 		System.out.print("Loading edges... ");
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(edgePath), "UTF8"));
 		while((line = br.readLine()) != null) processEdge(line);
+		br.close();
+		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
+
+		// Cities
+		timer = System.currentTimeMillis();
+		System.out.print("Loading cities... ");
+		br = new BufferedReader(new InputStreamReader(new FileInputStream(cityPath), "UTF8"));
+		while((line = br.readLine()) != null) processCity(line);
 		br.close();
 		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
@@ -135,6 +146,14 @@ public class Loader {
 				addresses.put(address, edges);
 			}
 		}
+	}
+
+	private void processCity(String line) {
+		matcher = PATTERN.matcher(line);
+
+		int zip = readInt();
+		String city = readString();
+		cities.put(zip, city);
 	}
 
 	private int readInt() {

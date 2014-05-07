@@ -47,6 +47,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		canvas.selectionBox = null;
 	}
 
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		Vector mousepos = new Vector(e.getX(), e.getY());
 		tiler.translateToModel(mousepos);
@@ -74,6 +75,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		}
 	}
 
+	@Override
 	public void mousePressed(MouseEvent e) {
 
 		// Left and right button pressed are not exclusive.
@@ -96,6 +98,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		}
 	}
 
+	@Override
 	public void mouseReleased(MouseEvent e) {
 
 		if (rightDown) {
@@ -125,6 +128,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		reset();
 	}
 
+	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (leftDown) {
 			Vector stop = new Vector(e.getX(), e.getY());
@@ -144,23 +148,31 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		}
 	}
 
+	@Override
 	public void mouseMoved(MouseEvent e) {
 		Vector target = new Vector(e.getX(), e.getY());
 		target = tiler.translateToModel(target);
 		Edge closest = tiler.all.findClosestEdge(target, true);
-		String name = closest.NAME + (closest.ZIP > 0 ? ", " + closest.ZIP : ""); // add zip to name, if edge has real zip;
+		String suffix = "";
+		if(closest.ZIP > 0) {
+			suffix = ", " + closest.ZIP;
+			String city = loader.cities.get(closest.ZIP);
+			if(city != null) suffix += " " + city;
+		}
+		String name = closest.NAME + suffix; // add zip to name, if edge has real zip;
 		window.closest.setText(name);
 	}
 
+	@Override
 	public void mouseWheelMoved(MouseWheelEvent e){
 		boolean zoomIn = e.getWheelRotation() > 0;
 		double scalar = zoomIn ? 1.1 : 0.9;
 		tiler.setZoom(tiler.zoom * scalar, true);
     }
 
-	public void mouseEntered(MouseEvent e) {
-	}
+    @Override
+	public void mouseEntered(MouseEvent e) {}
 
-	public void mouseExited(MouseEvent e) {
-	}
+	@Override
+	public void mouseExited(MouseEvent e) {}
 }

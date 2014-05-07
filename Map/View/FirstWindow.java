@@ -100,11 +100,11 @@ public class FirstWindow extends JFrame {
 
 		window.fromText.getDocument()
 			.addDocumentListener(
-				new AddressFieldListener(window.fromText, loader.addressFinder)
+				new AddressFieldListener(window.fromText, loader.addressFinder, loader.cities)
 			);
 		window.toText.getDocument()
 			.addDocumentListener(
-				new AddressFieldListener(window.toText, loader.addressFinder)
+				new AddressFieldListener(window.toText, loader.addressFinder, loader.cities)
 			);
 
 		window.routeButton.addActionListener(new AddressButtonListener(window.fromText, window.toText, canvas, window, tiler, loader));

@@ -16,7 +16,7 @@ import Map.Model.Edge;
 
 public class AddressFieldListener implements DocumentListener {
 	private static final int SUGGESTIONS = 5; // number of suggested addresses
-	private int threadid = Integer.MIN_VALUE;
+	private int threadid = 0;
 
 	private final DropTextField tf;
 	private final AddressFinder af;
@@ -56,12 +56,12 @@ public class AddressFieldListener implements DocumentListener {
 		private final int id = ++threadid;
 
 		public UpdateThread() {
-			System.out.println("UpdateThread " + id);
 		}
 
 		@Override
 		public void run() {
 			String text = tf.getText();
+			if(text.length() == 0) return;
 
 			Thread t = af.getFindThread(text, SUGGESTIONS, this);
 			t.setDaemon(true);
@@ -71,7 +71,6 @@ public class AddressFieldListener implements DocumentListener {
 			} catch(InterruptedException e) { e.printStackTrace(); }
 
 			if(!isValid() || !tf.equals(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner())) {
-				System.out.println("UpdateThread " + id + " invalid");
 				return;
 			} // stop update thread if no longer valid
 
@@ -83,7 +82,6 @@ public class AddressFieldListener implements DocumentListener {
 			}
 			tf.setItems(items);
 			tf.showPop();
-			System.out.println("UpdateThread " + id + " finished");
 		}
 
 		private boolean isValid() {

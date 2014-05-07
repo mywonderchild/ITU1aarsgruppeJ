@@ -12,7 +12,7 @@ public class AddressFinder {
 	private final Map<String, List<Edge>> map;
 	private List<Edge>[] best;
 	private boolean working;
-	private int threadid = Integer.MIN_VALUE;
+	private int threadid = 0;
 
 	public AddressFinder(Map<String, List<Edge>> roads) {
 		this.map = roads;
@@ -90,7 +90,6 @@ public class AddressFinder {
 			this.address = address;
 			this.amount = amount;
 			this.callback = callback;
-			System.out.println("FindThread " + id);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -101,7 +100,6 @@ public class AddressFinder {
 			for(Entry<String, List<Edge>> entry : map.entrySet()) {
 				pq.push(dist(address, entry.getKey()), entry.getValue());
 				if(!isValid()) { // if no longer valid
-					System.out.println("FindThread " + id + " invalid at " + pq.size());
 					notifyCaller();
 					return; // kill thread
 				}
@@ -113,7 +111,6 @@ public class AddressFinder {
 				best[i] = (List<Edge>) pq.pop().getValue();
 			}
 			working = false;
-			System.out.println("FindThread " + id + " finished");
 			notifyCaller();
 		}
 

@@ -62,28 +62,28 @@ public class AddressFieldListener implements DocumentListener {
 		@Override
 		public void run() {
 			String text = tf.getText();
-			if(text.length() >= 2) {
-				Thread t = af.getFindThread(text, SUGGESTIONS, this);
-				t.setDaemon(true);
-				t.start();
-				try {
-					synchronized(this){ wait(); } // wait for find thread to finish
-				} catch(InterruptedException e) { e.printStackTrace(); }
-				if(!isValid() || !tf.equals(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner())) {
-					System.out.println("UpdateThread " + id + " invalid");
-					return;
-				}// stop update thread if no longer valid
 
-				List<Edge>[] result = af.getResult();
-				String[] items = new String[SUGGESTIONS];
-				for(int i = 0; i < SUGGESTIONS; i++) {
-					Edge edge = result[i].get(0);
-					items[i] = edge.NAME + (edge.ZIP > 0 ? ", " + edge.ZIP : ""); // add zip to name, if edge has real zip;
-				}
-				tf.setItems(items);
-				tf.showPop();
-				System.out.println("UpdateThread " + id + " finished");
+			Thread t = af.getFindThread(text, SUGGESTIONS, this);
+			t.setDaemon(true);
+			t.start();
+			try {
+				synchronized(this){ wait(); } // wait for find thread to finish
+			} catch(InterruptedException e) { e.printStackTrace(); }
+
+			if(!isValid() || !tf.equals(KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner())) {
+				System.out.println("UpdateThread " + id + " invalid");
+				return;
+			} // stop update thread if no longer valid
+
+			List<Edge>[] result = af.getResult();
+			String[] items = new String[SUGGESTIONS];
+			for(int i = 0; i < SUGGESTIONS; i++) {
+				Edge edge = result[i].get(0);
+				items[i] = edge.NAME + (edge.ZIP > 0 ? ", " + edge.ZIP : ""); // add zip to name, if edge has real zip;
 			}
+			tf.setItems(items);
+			tf.showPop();
+			System.out.println("UpdateThread " + id + " finished");
 		}
 
 		private boolean isValid() {

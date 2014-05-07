@@ -59,7 +59,7 @@ public class Tiler {
 	public void setZoom(double zoom, boolean fake) {
 
 		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
-		double oldZoom = zoom;
+		double oldZoom = this.zoom;
 		this.zoom = zoomBounded;
 		Vector viewDimensions = viewBox.dimensions();
 
@@ -80,7 +80,10 @@ public class Tiler {
 			timer = new Timer(true);
 			timer.schedule(new TimerTask() {
 				@Override
-				public void run() {setZoom(zoomBounded, false);}
+				public void run() {
+					snapshot = null;
+					setZoom(zoomBounded, false);
+				}
 			}, 200);
 			
 		} else {

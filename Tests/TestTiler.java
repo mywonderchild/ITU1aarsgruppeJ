@@ -32,8 +32,8 @@ public class TestTiler {
 		Vector dimensions = tiler.mapBox.dimensions();
 		assertEquals(500, dimensions.x, 0.5);
 		assertEquals(333, dimensions.y, 0.5);
-		assertEquals(2, tiler.tiles.length);
-		assertEquals(2, tiler.tiles[0].length);
+		assertEquals(2, tiler.tilesX);
+		assertEquals(2, tiler.tilesY);
 	}
 
 	@Test

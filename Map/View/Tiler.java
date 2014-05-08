@@ -1,20 +1,21 @@
 package Map.View;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBufferInt;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
+import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBufferInt;
+import java.awt.image.WritableRaster;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
 import java.lang.Iterable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import Map.Box;
 import Map.Vector;
@@ -30,17 +31,16 @@ public class Tiler {
 
 	public Box mapBox, viewBox, modelBox, section;
 	private Canvas canvas;
-	public int tileSize;
-	public BufferedImage[][] tiles;
+	public int tileSize, tilesX, tilesY;
+	public HashMap<Long, BufferedImage> tiles = new HashMap<>();
 	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5, zoomOrigin;
 	public Vector center, resetCenter;
 	public QuadTree all;
 	public Path path;
 	private QuadTree[] groups;
 	private ArrayList<Line> linePool = new ArrayList<Line>();
-	private BufferedImage buffer;
+	private BufferedImage buffer, snapshot;
 	private Graphics2D bufferGraphics;
-	private BufferedImage snapshot;
 	private Timer timer;
 	private boolean fake;
 	private AffineTransform transformer = new AffineTransform();
@@ -76,7 +76,8 @@ public class Tiler {
 				zoomOrigin = oldZoom;
 				snapshot = gc.createCompatibleImage(
 					(int)viewDimensions.x,
-					(int)viewDimensions.y
+					(int)viewDimensions.y,
+					Transparency.OPAQUE
 				);
 				Graphics2D graphics = (Graphics2D)snapshot.getGraphics();
 				graphics.setColor(Color.WHITE);
@@ -96,7 +97,6 @@ public class Tiler {
 					setZoom(zoomBounded, false);
 				}
 			}, 200);
-			
 		} else {
 			this.fake = false;
 
@@ -104,7 +104,8 @@ public class Tiler {
 
 			buffer = gc.createCompatibleImage(
 				(int)viewDimensions.x + tileSize * 2,
-				(int)viewDimensions.y + tileSize * 2
+				(int)viewDimensions.y + tileSize * 2,
+				Transparency.OPAQUE
 			);
 			bufferGraphics = buffer.createGraphics();
 			bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -115,9 +116,9 @@ public class Tiler {
 				.mult(modelBox.ratio());
 			mapBox = new Box(new Vector(0, 0), mapDimensions);
 
-			int tilesX = (int)Math.ceil(mapDimensions.x / tileSize);
-			int tilesY = (int)Math.ceil(mapDimensions.y / tileSize);
-			tiles = new BufferedImage[tilesX][tilesY];
+			tilesX = (int)Math.ceil(mapDimensions.x / tileSize);
+			tilesY = (int)Math.ceil(mapDimensions.y / tileSize);
+			tiles.clear();
 		}
 
 		canvas.repaint();
@@ -146,7 +147,7 @@ public class Tiler {
 					x * tileSize - (int)section.start.x,
 					y * tileSize - (int)section.start.y
 				);
-				graphics.drawRenderedImage(tiles[x][y], transformer);
+				graphics.drawRenderedImage(tiles.get(getTileKey(x, y)), transformer);
 			}
 			renderPath(graphics);
 		}
@@ -195,8 +196,8 @@ public class Tiler {
 		int[][] query = new int[2][2];
 		query[0][0] = Math.max((int)(section.start.x / tileSize), 0);
 		query[0][1] = Math.max((int)(section.start.y / tileSize), 0);
-		query[1][0] = Math.min((int)Math.ceil(section.stop.x / tileSize), tiles.length);
-		query[1][1] = Math.min((int)Math.ceil(section.stop.y / tileSize), tiles[0].length);
+		query[1][0] = Math.min((int)Math.ceil(section.stop.x / tileSize), tilesX);
+		query[1][1] = Math.min((int)Math.ceil(section.stop.y / tileSize), tilesY);
 
 		// Return the tiles
 		int width = query[1][0] - query[0][0];
@@ -228,7 +229,7 @@ public class Tiler {
 		boolean[][] rendered = new boolean[dimensions[0]][dimensions[1]];
 		for (int i = 0; i < dimensions[1]; i++)
 			for (int j = 0; j < dimensions[0]; j++)
-				rendered[j][i] = tiles[j + start[0]][i + start[1]] != null ? true : false;
+				rendered[j][i] = tiles.containsKey(getTileKey(j + start[0], i + start[1]));
 
 		// Prepare for rectangle detection algorithm
 		int[][] horizontal = new int[dimensions[0]][dimensions[1]];
@@ -316,15 +317,20 @@ public class Tiler {
 			for (int j = 0; j < rectangle[1][0]; j++) {
 				x = rectangle[0][0] + j;
 				y = rectangle[0][1] + i;
-				tiles[x][y] = gc.createCompatibleImage(tileSize, tileSize);
+				BufferedImage tile = gc.createCompatibleImage(tileSize, tileSize, Transparency.OPAQUE);
 				buffer.getRGB(
 					j * tileSize, i * tileSize,
 					tileSize, tileSize,
-					((DataBufferInt) tiles[x][y].getRaster().getDataBuffer()).getData(),
+					((DataBufferInt) tile.getRaster().getDataBuffer()).getData(),
 					0, tileSize
 				);
+				tiles.put(getTileKey(x, y), tile);
  			}
 		}
+	}
+
+	public long getTileKey(int x, int y) {
+		return x * 1000000000 + y;
 	}
 
 	public Box getTileBox(int x, int y) {

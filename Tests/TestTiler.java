@@ -45,53 +45,55 @@ public class TestTiler {
 		assertEquals(229, section.stop.y, 0.5);
 	}
 
+	// @Test
+	// public void getTiles() {
+	// 	Box section = new Box(new Vector(0, 0), new Vector(0, 0));
+	// 	int[][] expectedOne = new int[][]{{0, 0}};
+	// 	int[][] expectedFour = new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+
+	// 	// Section just below boundary that gets 1 tile
+	// 	section.stop.x = 250;
+	// 	section.stop.y = 250;
+	// 	assertArrayEquals(expectedOne, tiler.getTiles(section));
+
+	// 	// Section just over boundary that gets 4 tiles
+	// 	section.stop.x = 251;
+	// 	section.stop.y = 251;
+	// 	assertArrayEquals(expectedFour, tiler.getTiles(section));
+
+	// 	// Very small section (2 x 2) that gets 4 tiles
+	// 	section.start.x = 249;
+	// 	section.start.y = 249;
+	// 	assertArrayEquals(expectedFour, tiler.getTiles(section));
+	// }
+
+	// @Test
+	// public void getQueryBox() {
+	// 	Box tileBox = tiler.getTileBox(0, 0);
+	// 	Box queryBox = tiler.getQueryBox(tileBox);
+	// 	assertEquals(0, queryBox.start.x, delta);
+	// 	assertEquals(0, queryBox.start.y, delta);
+	// 	assertEquals(1.5, queryBox.stop.x, delta);
+	// 	assertEquals(1.5, queryBox.stop.y, delta);
+	// }
+
+	// @Test
+	// public void translateToRectangle() {
+	// 	Box tileBox = tiler.getTileBox(0, 0);
+	// 	Vector vector = new Vector(0.5, 0.5);
+	// 	Vector translated = tiler.translateToRectangle(vector, tileBox);
+	// 	assertEquals(83.33, translated.x, 0.5);
+	// 	assertEquals(83.33, translated.y, 0.5);
+	// }
+
 	@Test
-	public void getTiles() {
-		Box section = new Box(new Vector(0, 0), new Vector(0, 0));
-		int[][] expectedOne = new int[][]{{0, 0}};
-		int[][] expectedFour = new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}};
-
-		// Section just below boundary that gets 1 tile
-		section.stop.x = 250;
-		section.stop.y = 250;
-		assertArrayEquals(expectedOne, tiler.getTiles(section));
-
-		// Section just over boundary that gets 4 tiles
-		section.stop.x = 251;
-		section.stop.y = 251;
-		assertArrayEquals(expectedFour, tiler.getTiles(section));
-
-		// Very small section (2 x 2) that gets 4 tiles
-		section.start.x = 249;
-		section.start.y = 249;
-		assertArrayEquals(expectedFour, tiler.getTiles(section));
+	public void getTileKey() {
+		assertEquals(1000000002, tiler.getTileKey(1, 2));
 	}
 
 	@Test
-	public void getTileBox() {
-		Box tileBox = tiler.getTileBox(0, 0);
-		assertEquals(0, tileBox.start.x, delta);
-		assertEquals(0, tileBox.start.y, delta);
-		assertEquals(250, tileBox.stop.x, delta);
-		assertEquals(250, tileBox.stop.y, delta);
-	}
-
-	@Test
-	public void getQueryBox() {
-		Box tileBox = tiler.getTileBox(0, 0);
-		Box queryBox = tiler.getQueryBox(tileBox);
-		assertEquals(0, queryBox.start.x, delta);
-		assertEquals(0, queryBox.start.y, delta);
-		assertEquals(1.5, queryBox.stop.x, delta);
-		assertEquals(1.5, queryBox.stop.y, delta);
-	}
-
-	@Test
-	public void translateToRectangle() {
-		Box tileBox = tiler.getTileBox(0, 0);
-		Vector vector = new Vector(0.5, 0.5);
-		Vector translated = tiler.translateToRectangle(vector, tileBox);
-		assertEquals(83.33, translated.x, 0.5);
-		assertEquals(83.33, translated.y, 0.5);
+	public void getXY() {
+		int[] xy = new int[] {1, 2};
+		assertArrayEquals(xy, tiler.getXY(1000000002));
 	}
 }

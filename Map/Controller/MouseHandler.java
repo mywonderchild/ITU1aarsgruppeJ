@@ -120,9 +120,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			Vector dimensions = selection.dimensions();
 			Vector zoom = dimensions.div(tiler.modelBox.dimensions());
 			if (zoom.x > zoom.y)
-				tiler.setZoom(zoom.x, true);
+				tiler.setZoom(zoom.x, false);
 			else
-				tiler.setZoom(zoom.y, true);
+				tiler.setZoom(zoom.y, false);
 		}
 
 		reset();

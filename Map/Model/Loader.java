@@ -25,8 +25,7 @@ public class Loader {
 	private Vector max;
 
 	public Map<Integer, Node> nodes;
-	public QuadTree all;
-	public QuadTree[] groups;
+	public QuadTree qt;
 	public Graph graph;
 	public AddressFinder addressFinder;
 	public Map<String, List<Edge>> addresses;
@@ -69,9 +68,7 @@ public class Loader {
 
 		// Create QuadTrees, Graph and maps
 		Box quadBox = new Box(new Vector(0, 0), max);
-		all = new QuadTree(quadBox);
-		groups = new QuadTree[Groups.GROUPS.length];
-		for(int i = 0; i < groups.length; i++) groups[i] = new QuadTree(quadBox);
+		qt = new QuadTree(quadBox);
 		graph = new Graph(nodes.size());
 		addresses = new HashMap<String, List<Edge>>();
 		cities = new HashMap<Integer, String>();
@@ -124,11 +121,10 @@ public class Loader {
 		int speed = readInt();
 		Edge edge = new Edge(start, end, length, type, name, zip, speed);
 
-		groups[Groups.getGroup(edge.TYPE)].insert(edge);
+		qt.insert(edge);
 		
 		if (type == 81) return;
 
-		all.insert(edge);
 		Edge invertedEdge = new Edge(end, start, length, type, name, zip, speed);
 		graph.addEdge(edge);
 		graph.addEdge(invertedEdge);

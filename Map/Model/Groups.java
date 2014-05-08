@@ -50,6 +50,10 @@ public class Groups {
 	}
 	
 
+	public static int getGroup(Edge edge) throws RuntimeException {
+		return getGroup(edge.TYPE);
+	}
+
 	public static int getGroup(int type) throws RuntimeException {
 		int group = GROUPMAP[type];
 		if (group != -1)

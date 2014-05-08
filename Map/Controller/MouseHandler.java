@@ -57,7 +57,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		} else if(SwingUtilities.isLeftMouseButton(e)) {
 			if (sp == null) return;
 
-			Path path = sp.pathTo(loader.all.findClosestNode(mousepos).ID);
+			Path path = sp.pathTo(loader.qt.findClosestNode(mousepos).ID);
 			if(path == null) {
 				System.out.println("No path found!");
 				tiler.path = null;
@@ -69,7 +69,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			}
 			canvas.repaint();
 		} else if(SwingUtilities.isRightMouseButton(e)) {
-			sp = new ShortestPath(graph, loader.all.findClosestNode(mousepos).ID);
+			sp = new ShortestPath(graph, loader.qt.findClosestNode(mousepos).ID);
 			tiler.path = null;
 			canvas.repaint();
 		}
@@ -152,7 +152,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 	public void mouseMoved(MouseEvent e) {
 		Vector target = new Vector(e.getX(), e.getY());
 		target = tiler.translateToModel(target);
-		Edge closest = tiler.all.findClosestEdge(target, true);
+		Edge closest = tiler.qt.findClosestEdge(target, true);
 		String suffix = "";
 		if(closest.ZIP > 0) {
 			suffix = ", " + closest.ZIP;

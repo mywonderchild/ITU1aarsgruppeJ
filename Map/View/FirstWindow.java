@@ -77,7 +77,7 @@ public class FirstWindow extends JFrame {
 		this.window = new Window(canvas);
 		
 		// Tiler
-		this.tiler = new Tiler(1.3, new Vector(0.5, 0.5), canvas.getBox(), loader.all.getBox(), loader, canvas);
+		this.tiler = new Tiler(1.3, new Vector(0.5, 0.5), canvas.getBox(), loader.qt.getBox(), loader, canvas);
 		canvas.tiler = tiler;
 		canvas.repaint();
 

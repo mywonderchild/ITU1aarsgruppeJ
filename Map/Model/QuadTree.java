@@ -9,26 +9,36 @@ import Map.Vector;
 public class QuadTree
 {
 	private static final int NODE_CAPACITY = 500;
+    public static final int[] ALL;
+    static {
+        ALL = new int[Groups.GROUPS.length];
+        for(int i = 0; i < ALL.length; i++) ALL[i] = i;
+    }
 
 	private Box box;
-	private QuadTree[] children;
-	private Edge[] edges;
-	private int n = 0;
+	private QuadTree[][] children;
+	private Edge[][] edges;
+	private int[] n;
 
 	private double maxLen = 0;
 
 	public QuadTree(Box box) {
 		this.box = box;
-		edges = new Edge[NODE_CAPACITY];
+
+        int groups = Groups.GROUPS.length;
+        children = new QuadTree[groups][];
+		edges = new Edge[groups][NODE_CAPACITY];
+        n = new int[groups];
 	}
 
 	public boolean insert(Edge edge) {
+        int g = Groups.getGroup(edge.TYPE);
 
 		if (!edge.getCenter().isInside(box))
 			return false; // Element does not belong here!
 
-		if(n < NODE_CAPACITY) {
-			edges[n++] = edge;
+		if(n[g] < NODE_CAPACITY) {
+			edges[g][n[g]++] = edge;
 
 			// Update max edge length
 			double edgeLen = edge.getVectors()[0].dist(edge.getVectors()[1]);
@@ -37,8 +47,8 @@ public class QuadTree
 			return true;
 		}
 
-		if (children == null) subdivide(); // Subdivide if not already.
-		for (QuadTree child : children) // Try to insert edge in children
+		if (children[g] == null) subdivide(g); // Subdivide if not already.
+		for (QuadTree child : children[g]) // Try to insert edge in children
 			if (child.insert(edge)) return true;
 
 		// Must never happen:
@@ -46,41 +56,47 @@ public class QuadTree
 			+ "but failed to insert the edge into any of its children.");
 	}
 
-	public void subdivide() {
+	public void subdivide(int group) {
 
 		Vector center = box.getCenter();
-		children = new QuadTree[]{
+		children[group] = new QuadTree[]{
 			new QuadTree(new Box(box.start, center)), // North-west
 			new QuadTree(new Box(new Vector(center.x, box.start.y), new Vector(box.stop.x, center.y))), // North-east
 			new QuadTree(new Box(new Vector(box.start.x, center.y), new Vector(center.x, box.stop.y))), // South-west
 			new QuadTree(new Box(center, box.stop)) // South-east
 		};
 
-		for(Edge edge : edges)
-			for (QuadTree child : children)
-				if (child.insert(edge))
-					break;
-		edges = null;
+        for(int i = 0; i < n[group]; i++) {
+            for(QuadTree child : children[group]) {
+                if(child.insert(edges[group][i])) break;
+            }
+        }
+		edges[group] = null;
 	}
 
-	public ArrayList<Edge> queryRange(Box query) {
+	public ArrayList<Edge> queryRange(Box query, int[] groups) {
 		ArrayList<Edge> result = new ArrayList<>();
-		queryRange(query.copy().grow(maxLen), result);
+		queryRange(query.copy().grow(maxLen), groups, result);
 		return result;
 	}
 
-	public void queryRange(Box query, ArrayList<Edge> result) {
+	public void queryRange(Box query, int[] groups, ArrayList<Edge> result) {
 
 		if(!box.overlapping(query)) return;
 
-		if (children == null) {
-			for (int i = 0; i < n; i++)
-				if (edges[i].getCenter().isInside(query))
-					result.add(edges[i]);
-		} else {
-			for (QuadTree child : children)
-				child.queryRange(query, result);
-		}
+        for(int g = 0; g < groups.length; g++) {
+            if (children[g] == null) {
+                for (int i = 0; i < n[g]; i++) {
+    				if (edges[g][i].getCenter().isInside(query))
+    					result.add(edges[g][i]);
+                }
+            }
+            else {
+                for (QuadTree child : children[g])
+                    child.queryRange(query, groups, result);
+            }
+        }
+		
 	}
 
     public Edge findClosestEdge(Vector point, boolean withName) {
@@ -94,7 +110,7 @@ public class QuadTree
         ArrayList<Edge> edges = null;
         // Find some edge(s):
         while(edges == null) {
-        	edges = queryRange(query);
+        	edges = queryRange(query, ALL);
         	
         	if(withName) { // check if any name is present
         		boolean nameFound = false;
@@ -120,7 +136,7 @@ public class QuadTree
         double closestDist = Double.POSITIVE_INFINITY;
     	
     	query.grow(maxLen/2); // grow query with ½ longest edge
-        edges = queryRange(query);
+        edges = queryRange(query, ALL);
 
         for (Edge edge : edges) {
         	if(withName && edge.NAME == null) continue; // no name, no game
@@ -164,7 +180,7 @@ public class QuadTree
         ArrayList<Edge> edges = null;
         // Find some edge(s):
         while(edges == null) {
-        	edges = queryRange(query);
+        	edges = queryRange(query, ALL);
         	query.scale(2); // double query size
         }
 
@@ -178,7 +194,7 @@ public class QuadTree
         double closestDist = Double.POSITIVE_INFINITY;
     	
     	query.grow(maxLen/2); // grow query with ½ longest edge
-        edges = queryRange(query);
+        edges = queryRange(query, ALL);
 
         for (Edge edge : edges) {
         	double startDist = point.dist(edge.START.VECTOR);

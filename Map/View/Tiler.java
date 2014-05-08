@@ -35,9 +35,8 @@ public class Tiler {
 	public HashMap<Long, BufferedImage> tiles = new HashMap<>();
 	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5, zoomOrigin;
 	public Vector center, resetCenter;
-	public QuadTree all;
+	public QuadTree qt;
 	public Path path;
-	private QuadTree[] groups;
 	private ArrayList<Line> linePool = new ArrayList<Line>();
 	private BufferedImage buffer, snapshot;
 	private Graphics2D bufferGraphics;
@@ -59,8 +58,7 @@ public class Tiler {
 			.getDefaultConfiguration();
 		setZoom(zoom, false);
 		if (loader != null) {
-			this.all = loader.all;
-			this.groups = loader.groups;
+			this.qt = loader.qt;
 		}
 	}
 
@@ -286,10 +284,8 @@ public class Tiler {
 		Box queryBox = getQueryBox(rectangleBox.copy());
 
 		// Get edges from QT's
-		ArrayList<Edge> edges = new ArrayList<>();
 		int[] visible = Groups.getVisibleGroups(zoom);
-		for(int i = visible.length-1; i >= 0; i--)
-			edges.addAll(groups[visible[i]].queryRange(queryBox));
+		ArrayList<Edge> edges = qt.queryRange(queryBox, visible);
 
 		// Make lines
 		ArrayList<Line> lines = new ArrayList<>();

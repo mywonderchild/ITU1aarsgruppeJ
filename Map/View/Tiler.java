@@ -316,13 +316,13 @@ public class Tiler {
 	}
 
 	public long getTileKey(int x, int y) {
-		return (long)x * 1000000000 + y; // This works for x & y < 10^9
+		return (long)x << 32 | y;
 	}
 
 	public int[] getXY(long tileKey) {
 		return new int[] {
-			(int) (tileKey / 1000000000),
-			(int) (tileKey % 1000000000)
+			(int)(tileKey >> 32),
+			(int)tileKey
 		};
 	}
 

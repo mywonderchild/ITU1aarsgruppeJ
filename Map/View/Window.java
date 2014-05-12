@@ -140,15 +140,33 @@ public class Window extends JFrame {
 	}
 
 	public void setDirections(ArrayList<String> directions) {
+		setDirections(directions, null);
+	}
+
+	public void setDirections(ArrayList<String> directions, NotFound error) {
+		String html = "<html><body>";
+
 		if(directions == null) {
-			this.directions.setText(null);
-			return;
+			if(error == null) this.directions.setText(null);
+			else {
+				switch(error) {
+					case FROM:	html += "<font color=\"red\">'From' address not found!</font>";
+								break;
+					case TO:	html += "<font color=\"red\">'To' address not found!</font>";
+								break;
+					case BOTH:	html += "<font color=\"red\">'From' and 'To' addresses not found!</font>";
+				}
+			}
+		}
+		else {
+			for(String direction : directions)
+				html += direction + "<br>";
 		}
 
-		String html = "<html><body>";
-		for (String direction : directions) html += direction + "<br>";
 		html += "</body></html>";
 		this.directions.setText(html);
 		if (!toggler.isSelected()) toggler.doClick();
 	}
+
+	public enum NotFound { FROM, TO, BOTH; }
 }

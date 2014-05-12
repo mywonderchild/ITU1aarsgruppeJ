@@ -38,14 +38,15 @@ public class AddressButtonListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		List<Edge> edges1 = addresses.get(tf1.getText());
 		List<Edge> edges2 = addresses.get(tf2.getText());
+		
 		if(edges1 == null && edges2 == null) {
-			System.out.println("Neither from or to found!");
+			window.setDirections(null, Window.NotFound.BOTH);
 			return;
 		} else if(edges1 == null) {
-			System.out.println("From not found!");
+			window.setDirections(null, Window.NotFound.FROM);
 			return;
 		} else if(edges2 == null) {
-			System.out.println("To not found!");
+			window.setDirections(null, Window.NotFound.TO);
 			return;
 		}
 

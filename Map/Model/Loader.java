@@ -76,19 +76,19 @@ public class Loader {
 		addresses = new HashMap<String, List<Edge>>();
 		cities = new HashMap<Integer, String>();
 
-		// Edges
-		timer = System.currentTimeMillis();
-		System.out.print("Loading edges... ");
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(edgePath), "UTF8"));
-		while((line = br.readLine()) != null) processEdge(line);
-		br.close();
-		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
-
 		// Cities
 		timer = System.currentTimeMillis();
 		System.out.print("Loading cities... ");
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(cityPath), "UTF8"));
 		while((line = br.readLine()) != null) processCity(line);
+		br.close();
+		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
+
+		// Edges
+		timer = System.currentTimeMillis();
+		System.out.print("Loading edges... ");
+		br = new BufferedReader(new InputStreamReader(new FileInputStream(edgePath), "UTF8"));
+		while((line = br.readLine()) != null) processEdge(line);
 		br.close();
 		System.out.println("done in " + (System.currentTimeMillis()-timer) + "ms.");
 
@@ -112,6 +112,14 @@ public class Loader {
 		nodes.put(node.ID, node);
 	}
 
+	private void processCity(String line) {
+		matcher = PATTERN.matcher(line);
+
+		int zip = readInt();
+		String city = readString();
+		cities.put(zip, city);
+	}
+
 	private void processEdge(String line) {
 		matcher = PATTERN.matcher(line);
 
@@ -133,7 +141,11 @@ public class Loader {
 		graph.addEdge(edge);
 		graph.addEdge(invertedEdge);
 		if(name != null) {
-			String address = name + (zip > 0 ? ", " + zip : ""); // add zip to name, if edge has real zip
+			String suffix = zip > 0 ? ", " + zip : "";
+			String city = cities.get(zip);
+			if(zip > 0 && city != null) suffix += " " + city;
+			
+			String address = name + suffix; // add zip and city to name, if edge has real zip
 			List<Edge> edges = addresses.get(address);
 			if(edges != null) {
 				// already there; just add the edge to list
@@ -146,14 +158,6 @@ public class Loader {
 				addresses.put(address, edges);
 			}
 		}
-	}
-
-	private void processCity(String line) {
-		matcher = PATTERN.matcher(line);
-
-		int zip = readInt();
-		String city = readString();
-		cities.put(zip, city);
 	}
 
 	private int readInt() {

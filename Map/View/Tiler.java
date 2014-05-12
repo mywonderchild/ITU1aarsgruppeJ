@@ -74,6 +74,8 @@ public class Tiler {
 		Vector viewDimensions = viewBox.dimensions();
 
 		if (fake) {
+
+			// Save a snapshot of origin zoom level if one doesn't exist
 			if (snapshot == null) {
 				zoomOrigin = oldZoom;
 				snapshot = gc.createCompatibleImage(
@@ -130,7 +132,6 @@ public class Tiler {
 	}
 
 	public void render(Graphics2D graphics) {
-
 		if (fake) {
 			fakeRender(graphics);
 		} else {
@@ -142,6 +143,7 @@ public class Tiler {
 				renderRectangle(rectangle);
 
 			// Draw tiles
+			long timer = System.currentTimeMillis();
 			int[] xy;
 			for (long key : sectionTiles) {
 				xy = getXY(key);
@@ -152,8 +154,11 @@ public class Tiler {
 				);
 				graphics.drawRenderedImage(tiles.get(key), transformer);
 			}
+			System.out.println(System.currentTimeMillis() - timer);
+
 			renderPath(graphics);
 		}
+		graphics.dispose();
 	}
 
 	public void fakeRender(Graphics2D graphics) {
@@ -170,13 +175,14 @@ public class Tiler {
 	public void renderPath(Graphics2D graphics) {
 		if(path == null) return;
 
+		float width = 1.3f;
 		ArrayList<Line> lines = new ArrayList<Line>();
 		for(Edge edge : path.edges) {
 			lines.add(new Line().set(
 				translateToView(edge.START.VECTOR.copy()),
 				translateToView(edge.END.VECTOR.copy()),
 				Color.MAGENTA,
-				(float)(1.3*(1+(0.05*(1.3/zoom))))
+				(float)(width*(1+(0.05*(width/zoom))))
 			));
 		}
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -215,10 +221,10 @@ public class Tiler {
 		return selected;
 	}
 
-	public ArrayList<int[][]> getRectangles(long[] selected) {
+	public ArrayList<int[][]> getRectangles(long[] keys) {
 
 		LinkedList<Long> queue = new LinkedList<>();
-		for (long key : selected) if (!tiles.containsKey(key)) queue.addFirst(key);
+		for (long key : keys) if (!tiles.containsKey(key)) queue.addFirst(key);
 		HashMap<Long, Integer> horizontal = new HashMap<>();
 		HashMap<Long, Integer> vertical = new HashMap<>();
 		ArrayList<int[][]> rectangles = new ArrayList<>();

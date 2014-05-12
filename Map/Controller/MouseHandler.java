@@ -58,12 +58,11 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			if (sp == null) return;
 
 			Path path = sp.pathTo(loader.all.findClosestNode(mousepos).ID);
-			if(path == null) {
+			if (path == null) {
 				System.out.println("No path found!");
 				tiler.path = null;
 				window.setDirections(null);
-			}
-			else {
+			} else {
 				tiler.path = path;
 				window.setDirections(path.getDirections());
 			}

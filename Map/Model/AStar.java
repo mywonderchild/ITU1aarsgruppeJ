@@ -49,7 +49,6 @@ public class AStar {
 
 				double t_score = g_score[current.ID] + edge.TIME;
 				if(!open[adj.ID] || t_score < g_score[adj.ID]) {
-					calcC++;
 					came_from[adj.ID] = edge;
 					g_score[adj.ID] = t_score;
 					f_score[adj.ID] = t_score + heuristic(adj, to);
@@ -58,6 +57,7 @@ public class AStar {
 						openQueue.push(f_score[adj.ID], adj);
 						open[adj.ID] = true;
 					}
+					calcC++;
 				}
 			}
 		}
@@ -67,7 +67,7 @@ public class AStar {
 
 	private Path compile(Node to) {
 		// DEBUG //
-		System.out.printf("%.2f%% nodes closed\n", (double)closedC / g.countNodes() * 100.0);
+		System.out.printf("%.2f%% of graph used\n", (double)closedC / g.countNodes() * 100.0);
 		System.out.printf("%.2f%% recalculation\n", (double)(calcC - closedC) / closedC * 100.0);
 		// DEBUG DONE //
 
@@ -91,7 +91,7 @@ public class AStar {
 		}
 		else {
 			// Clear closed set.
-			// It is not necessary for came_from,
+			// It is not necessary for
 			// g_score and f_score to be cleared.
 			for(int i = 0; i < closed.length; i++) {
 				closed[i] = false;

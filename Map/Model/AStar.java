@@ -14,6 +14,8 @@ public class AStar {
 	private double[] g_score;
 	private double[] f_score;
 
+	private int closedC, calcC;
+
 	public AStar(Graph g) {
 		this.g = g;
 	}
@@ -37,7 +39,7 @@ public class AStar {
 			if(current.equals(to))
 				return compile(to); // destination reached
 
-			closed[current.ID] = true;
+			closed[current.ID] = true; closedC++;
 			open[current.ID] = false;
 			for(Edge edge : g.getAdj(current)) {
 				Node adj = edge.END;
@@ -47,6 +49,7 @@ public class AStar {
 
 				double t_score = g_score[current.ID] + edge.TIME;
 				if(!open[adj.ID] || t_score < g_score[adj.ID]) {
+					calcC++;
 					came_from[adj.ID] = edge;
 					g_score[adj.ID] = t_score;
 					f_score[adj.ID] = t_score + heuristic(adj, to);
@@ -63,6 +66,11 @@ public class AStar {
 	}
 
 	private Path compile(Node to) {
+		// DEBUG //
+		System.out.printf("%.2f%% nodes closed\n", (double)closedC / g.countNodes() * 100.0);
+		System.out.printf("%.2f%% recalculation\n", (double)(calcC - closedC) / closedC * 100.0);
+		// DEBUG DONE //
+
 		LinkedList<Edge> edges = new LinkedList<Edge>();
 		Edge edge;
 		while((edge = came_from[to.ID]) != null) {
@@ -88,11 +96,15 @@ public class AStar {
 			for(int i = 0; i < closed.length; i++) {
 				closed[i] = false;
 				open[i] = false;
+				came_from[i] = null;
 			}
 		}
+
+		calcC = 0;
+		closedC = 0;
 	}
 
 	private static double heuristic(Node from, Node to) {
-		return from.VECTOR.dist(to.VECTOR);
+		return from.VECTOR.dist(to.VECTOR) / 130;
 	}
 }

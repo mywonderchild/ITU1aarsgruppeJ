@@ -167,8 +167,6 @@ public class Tiler {
 
 			renderPath(graphics);
 		}
-
-		graphics.dispose();
 	}
 
 	public void fakeRender(Graphics2D graphics) {

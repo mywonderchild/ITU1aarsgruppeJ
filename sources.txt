@@ -10,6 +10,7 @@
 ./Map/Main.java
 ./Map/Model/AStar.java
 ./Map/Model/Bag.java
+./Map/Model/Dijkstra.java
 ./Map/Model/Edge.java
 ./Map/Model/Graph.java
 ./Map/Model/Groups.java
@@ -17,7 +18,6 @@
 ./Map/Model/Node.java
 ./Map/Model/PriorityQueue.java
 ./Map/Model/QuadTree.java
-./Map/Model/Dijkstra.java
 ./Map/saxEventHandler.java
 ./Map/saxFilter.java
 ./Map/saxPurger.java

@@ -24,7 +24,7 @@ public class Loader {
 	private String nodePath, edgePath, cityPath;
 	private Vector max;
 
-	public Map<Integer, Node> nodes;
+	public ArrayList<Node> nodes;
 	public QuadTree all;
 	public QuadTree[] groups;
 	public Graph graph;
@@ -59,7 +59,7 @@ public class Loader {
 		// Nodes
 		timer = System.currentTimeMillis();
 		System.out.print("Loading nodes... ");
-		nodes = new HashMap<>();
+		nodes = new ArrayList<Node>();
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(nodePath), "UTF8"));
 		String[] tokens = br.readLine().split(",");
 		max = new Vector(Double.parseDouble(tokens[0]), Double.parseDouble(tokens[1]));
@@ -109,7 +109,7 @@ public class Loader {
 		Vector vector = new Vector(readDouble(), readDouble());
 		Node node = new Node(vector, id-1);
 		
-		nodes.put(node.ID, node);
+		nodes.add(node);
 	}
 
 	private void processCity(String line) {

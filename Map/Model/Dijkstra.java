@@ -9,12 +9,12 @@ import java.lang.IllegalArgumentException;
 
 import Map.Controller.Path;
 
-public class ShortestPath {
+public class Dijkstra {
 	private double[] dist;
 	private Edge[] prev;
 
 	@SuppressWarnings("unchecked")
-	public ShortestPath(Graph g, int src) {
+	public Dijkstra(Graph g, int src) {
 		PriorityQueue<Double, Integer> pq = new PriorityQueue<>();
 		boolean[] done = new boolean[g.countNodes()];
 		dist = new double[g.countNodes()];

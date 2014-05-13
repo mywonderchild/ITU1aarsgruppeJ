@@ -50,10 +50,15 @@ public class AddressButtonListener implements ActionListener {
 			return;
 		}
 
-		ShortestPath sp = new ShortestPath(loader.graph, edges1.get(0).START.ID);
-		tiler.path = sp.pathTo(edges2.get(0).START.ID);
-		window.setDirections(tiler.path.getDirections());
-		if(tiler.path == null) System.out.println("No path found!");
+		tiler.path = loader.pathFinder.findPath(
+			edges1.get(0).START,
+			edges2.get(0).START);
+
+		if(tiler.path == null)
+			window.setDirections(null, Window.NotFound.PATH);
+		else
+			window.setDirections(tiler.path.getDirections());
+
 		canvas.repaint();
 	}
 }

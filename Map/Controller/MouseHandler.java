@@ -20,6 +20,7 @@ import Map.Model.Loader;
 import Map.Model.Graph;
 import Map.Model.ShortestPath;
 import Map.Model.Edge;
+import Map.Model.Node;
 
 public class MouseHandler implements MouseListener, MouseMotionListener, MouseWheelListener {
 
@@ -31,7 +32,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 	private boolean leftDown, rightDown;
 	private Vector origin = new Vector(0, 0);
 	private Vector panCenter;
-	private ShortestPath sp;
+	private Node from, to;
 
 	public MouseHandler(Window window, Tiler tiler, Loader loader) {
 		this.window = window;
@@ -53,25 +54,39 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 		tiler.translateToModel(mousepos);
 
 		if (SwingUtilities.isMiddleMouseButton(e)) {
+			// Middle mouse button:
 			tiler.reset();
-		} else if(SwingUtilities.isLeftMouseButton(e)) {
-			if (sp == null) return;
-
-			Path path = sp.pathTo(loader.all.findClosestNode(mousepos).ID);
-			if (path == null) {
-				System.out.println("No path found!");
-				tiler.path = null;
-				window.setDirections(null);
-			} else {
-				tiler.path = path;
-				window.setDirections(path.getDirections());
-			}
-			canvas.repaint();
-		} else if(SwingUtilities.isRightMouseButton(e)) {
-			sp = new ShortestPath(graph, loader.all.findClosestNode(mousepos).ID);
-			tiler.path = null;
-			canvas.repaint();
 		}
+		else if(SwingUtilities.isLeftMouseButton(e)) {
+			// Left mouse button:
+			to = loader.all.findClosestNode(mousepos);
+			pathFind();
+		}
+		else if(SwingUtilities.isRightMouseButton(e)) {
+			// Right mouse button:
+			from = loader.all.findClosestNode(mousepos);
+			pathFind();
+		}
+	}
+
+	private void pathFind() {
+		Path path;
+		if(from == null || to == null) {
+			path = null;
+		}
+		else {
+			path = loader.pathFinder.findPath(from, to);
+			// might be null, if no path was found.
+		}
+
+		if (path == null) {
+			tiler.path = null;
+			window.setDirections(null);
+		} else {
+			tiler.path = path;
+			window.setDirections(path.getDirections());
+		}
+		canvas.repaint();
 	}
 
 	@Override

@@ -31,6 +31,7 @@ public class Loader {
 	public AddressFinder addressFinder;
 	public Map<String, List<Edge>> addresses;
 	public Map<Integer, String> cities;
+	public AStar pathFinder;
 
 	public Loader(String dataSet) {
 		System.out.println("JVM OS architecture: " + System.getProperty("os.arch"));
@@ -94,6 +95,9 @@ public class Loader {
 
 		// AddressFinder
 		addressFinder = new AddressFinder(addresses);
+
+		// AStar pathfinder
+		pathFinder = new AStar(graph);
 
 		// Garbage collect
 		timer = System.currentTimeMillis();

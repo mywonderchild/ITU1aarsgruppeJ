@@ -155,6 +155,8 @@ public class Window extends JFrame {
 					case TO:	html += "<font color=\"red\">'To' address not found!</font>";
 								break;
 					case BOTH:	html += "<font color=\"red\">'From' and 'To' addresses not found!</font>";
+								break;
+					case PATH:	html += "<font color=\"red\">No route found!</font>";
 				}
 			}
 		}
@@ -168,5 +170,5 @@ public class Window extends JFrame {
 		if (!toggler.isSelected()) toggler.doClick();
 	}
 
-	public enum NotFound { FROM, TO, BOTH; }
+	public enum NotFound { FROM, TO, BOTH, PATH; }
 }

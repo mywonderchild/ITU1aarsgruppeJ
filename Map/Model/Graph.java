@@ -30,6 +30,10 @@ public class Graph {
 		return adj[node];
 	}
 
+	public Iterable<Edge> getAdj(Node node) {
+		return getAdj(node.ID);
+	}
+
 	public int countNodes() {
 		return adj.length;
 	}

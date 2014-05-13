@@ -8,6 +8,7 @@
 ./Map/KrakPurger.java
 ./Map/Line.java
 ./Map/Main.java
+./Map/Model/AStar.java
 ./Map/Model/Bag.java
 ./Map/Model/Edge.java
 ./Map/Model/Graph.java
@@ -16,7 +17,7 @@
 ./Map/Model/Node.java
 ./Map/Model/PriorityQueue.java
 ./Map/Model/QuadTree.java
-./Map/Model/ShortestPath.java
+./Map/Model/Dijkstra.java
 ./Map/saxEventHandler.java
 ./Map/saxFilter.java
 ./Map/saxPurger.java

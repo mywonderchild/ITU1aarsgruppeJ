@@ -86,14 +86,14 @@ public class TestTiler {
 	// 	assertEquals(83.33, translated.y, 0.5);
 	// }
 
-	@Test
-	public void getTileKey() {
-		assertEquals(1000000002, tiler.getTileKey(1, 2));
-	}
+	// @Test
+	// public void getTileKey() {
+	// 	assertEquals(1000000002, tiler.getTileKey(1, 2));
+	// }
 
-	@Test
-	public void getXY() {
-		int[] xy = new int[] {1, 2};
-		assertArrayEquals(xy, tiler.getXY(1000000002));
-	}
+	// @Test
+	// public void getXY() {
+	// 	int[] xy = new int[] {1, 2};
+	// 	assertArrayEquals(xy, tiler.getXY(1000000002));
+	// }
 }

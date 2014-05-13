@@ -33,8 +33,8 @@ public class Tiler {
 	private static final int TILESIZE = 256;
 	public Box mapBox, viewBox, modelBox, section;
 	private Canvas canvas;
+	private HashMap<Long, Tile> tileHash = new HashMap<>();
 	public int tilesX, tilesY;
-	public HashMap<Long, BufferedImage> tiles = new HashMap<>();
 	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5, zoomOrigin;
 	public Vector center, resetCenter;
 	public QuadTree all;
@@ -49,20 +49,32 @@ public class Tiler {
 	private GraphicsConfiguration gc;
 
 	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader, Canvas canvas) {
+
 		this.center = center;
 		this.viewBox = viewBox;
 		this.modelBox = modelBox;
 		this.canvas = canvas;
+		this.all = loader.all;
+		this.groups = loader.groups;
 		resetCenter = center.copy();
 		resetZoom = zoom;
+
 		gc = GraphicsEnvironment
 			.getLocalGraphicsEnvironment()
 			.getDefaultScreenDevice()
 			.getDefaultConfiguration();
+
 		setZoom(zoom, false);
-		if (loader != null) {
-			this.all = loader.all;
-			this.groups = loader.groups;
+	}
+
+	private class Tile {
+
+		public final int x, y;
+		public BufferedImage image;
+
+		public Tile(int x, int y) {
+			this.x = x;
+			this.y = y;
 		}
 	}
 
@@ -120,10 +132,10 @@ public class Tiler {
 
 			tilesX = (int)Math.ceil(mapDimensions.x / TILESIZE);
 			tilesY = (int)Math.ceil(mapDimensions.y / TILESIZE);
-			tiles.clear();
+			tileHash.clear();
 		}
 
-		if (canvas != null) canvas.repaint();
+		canvas.repaint();
 	}
 
 	public void reset() {
@@ -132,32 +144,30 @@ public class Tiler {
 	}
 
 	public void render(Graphics2D graphics) {
+
 		if (fake) {
 			fakeRender(graphics);
 		} else {
 
 			// Render the tiles in the visible section
 			section = getSection();
-			long[] sectionTiles = getTiles(section);
-			for (int[][] rectangle : getRectangles(sectionTiles))
+			Tile[] tiles = getTiles(section);
+			for (int[][] rectangle : getRectangles(tiles))
 				renderRectangle(rectangle);
 
 			// Draw tiles
-			long timer = System.currentTimeMillis();
-			int[] xy;
-			for (long key : sectionTiles) {
-				xy = getXY(key);
+			for (Tile tile : tiles) {
 				transformer.setToIdentity();
 				transformer.translate(
-					xy[0] * TILESIZE - (int)section.start.x,
-					xy[1] * TILESIZE - (int)section.start.y
+					tile.x * TILESIZE - (int)section.start.x,
+					tile.y * TILESIZE - (int)section.start.y
 				);
-				graphics.drawRenderedImage(tiles.get(key), transformer);
+				graphics.drawRenderedImage(tile.image, transformer);
 			}
-			System.out.println(System.currentTimeMillis() - timer);
 
 			renderPath(graphics);
 		}
+
 		graphics.dispose();
 	}
 
@@ -173,8 +183,7 @@ public class Tiler {
 	}
 
 	public void renderPath(Graphics2D graphics) {
-		if(path == null) return;
-
+		if (path == null) return;
 		float width = 1.3f;
 		ArrayList<Line> lines = new ArrayList<Line>();
 		for(Edge edge : path.edges) {
@@ -199,7 +208,7 @@ public class Tiler {
 		return section;
 	}
 
-	public long[] getTiles(Box section) {
+	public Tile[] getTiles(Box section) {
 
 		// Determine which tiles are inside section
 		int[][] query = new int[2][2];
@@ -211,62 +220,93 @@ public class Tiler {
 		// Return the tiles
 		int width = query[1][0] - query[0][0];
 		int height = query[1][1] - query[0][1];
-		if (width <= 0 || height <= 0) return new long[0];
-		long[] selected = new long[width * height];
+		if (width <= 0 || height <= 0) return new Tile[0];
+		Tile[] selected = new Tile[width * height];
 		int cursor = 0;
-		for (int y = query[0][1]; y < query[1][1]; y++)
+		long key;
+		for (int y = query[0][1]; y < query[1][1]; y++) {
 			for (int x = query[0][0]; x < query[1][0]; x++) {
-				selected[cursor++] = getTileKey(x, y);
+				key = getTileKey(x, y);
+				Tile tile = tileHash.get(key);
+				if (tile == null) {
+					tile = new Tile(x, y);
+					tileHash.put(key, tile);
+				}
+				selected[cursor++] = tile;
 			}
+		}
 		return selected;
 	}
 
-	public ArrayList<int[][]> getRectangles(long[] keys) {
+	public ArrayList<int[][]> getRectangles(Tile[] selected) {
 
-		LinkedList<Long> queue = new LinkedList<>();
-		for (long key : keys) if (!tiles.containsKey(key)) queue.addFirst(key);
-		HashMap<Long, Integer> horizontal = new HashMap<>();
-		HashMap<Long, Integer> vertical = new HashMap<>();
 		ArrayList<int[][]> rectangles = new ArrayList<>();
 
-		int[] xy;
-		long east, north, largest = 1, largestKey = 0;
-		int width, height;
+		int startX = selected[0].x;
+		int startY = selected[0].y;
+		int width = selected[selected.length - 1].x - selected[0].x + 1;
+		int height = selected[selected.length - 1].y - selected[0].y + 1;
 
-		// Run until there are no more rectangles left
-		while (largest > 0) {
+		// Build boolean map of tile render states
+		int count = 0;
+		boolean[][] unrendered = new boolean[width][height];
+		for (Tile tile : selected) {
+			if (tile.image == null) {
+				unrendered[tile.x - startX][tile.y - startY] = true;
+				count++;
+			}
+		}
+		if (count <= 0) return rectangles;
 
-			// Build map of horizontal and vertical values of rectangles dynamically
-			// while keeping track of the largest rectangle found
-			horizontal.clear();
-			vertical.clear();
-			largest = 0;
-			for (long key : queue) {
-				xy = getXY(key);
-				east = getTileKey(xy[0] + 1, xy[1]);
-				north = getTileKey(xy[0], xy[1] + 1);
-				width = 1 + (horizontal.containsKey(east) ? horizontal.get(east) : 0);
-				height = 1 + (vertical.containsKey(north) ? vertical.get(north) : 0);
-				horizontal.put(key, width);
-				vertical.put(key, height);
-				if (width * height > largest) {
-					largest = width * height;
-					largestKey = key;
+		int[][] histogram = new int[width][height];
+		int[][] rectangle = null;
+
+		while (count > 0) {
+
+			// Build histogram
+			for (int x = 0; x < width; x++)
+			for (int y = height - 1; y >= 0; y--)
+				if (!unrendered[x][y])
+					histogram[x][y] = 0;
+				else if (y == height - 1)
+					histogram[x][y] = 1;
+				else
+					histogram[x][y] = 1 + histogram[x][y + 1];
+
+			// Find biggest rectangle
+			int start, min, max = 0, area;
+			for (int y = 0; y < height; y++) {
+				start = 0;
+				min = Integer.MAX_VALUE;
+				for (int x = 0; x < width; x++) {
+					if (histogram[x][y] == 0) {
+						start = x + 1;
+						min = Integer.MAX_VALUE;
+					} else {
+						min = Math.min(histogram[x][y], min);
+						area = (x - start + 1) * min;
+						if (area > max) {
+							max = area;
+							rectangle = new int[][] {
+								{start, y},
+								{x - start + 1, min}
+							};
+						}
+					}
 				}
 			}
 
-			// Save rectangle if one is found
-			if (largest > 0) {
-				xy = getXY(largestKey);
-				// Remove rendered tiles from queue
-				for (int i = xy[1]; i < xy[1] + vertical.get(largestKey); i++)
-					for (int j = xy[0]; j < xy[0] + horizontal.get(largestKey); j++)
-						queue.remove(getTileKey(j, i));
-				rectangles.add(new int[][] {
-					{xy[0], xy[1]},
-					{horizontal.get(largestKey), vertical.get(largestKey)}
-				});
+			// Update render states
+			for (int y = rectangle[0][1]; y < rectangle[0][1] + rectangle[1][1]; y++) {
+				for (int x = rectangle[0][0]; x < rectangle[0][0] + rectangle[1][0]; x++){
+					unrendered[x][y] = false;
+					count--;
+				}
 			}
+
+			rectangle[0][0] += startX;
+			rectangle[0][1] += startY;
+			rectangles.add(rectangle);
 		}
 
 		return rectangles;
@@ -309,27 +349,20 @@ public class Tiler {
 			for (int j = 0; j < rectangle[1][0]; j++) {
 				x = rectangle[0][0] + j;
 				y = rectangle[0][1] + i;
-				BufferedImage tile = gc.createCompatibleImage(TILESIZE, TILESIZE, Transparency.OPAQUE);
+				Tile tile = tileHash.get(getTileKey(x, y));
+				tile.image = gc.createCompatibleImage(TILESIZE, TILESIZE, Transparency.OPAQUE);
 				buffer.getRGB(
 					j * TILESIZE, i * TILESIZE,
 					TILESIZE, TILESIZE,
-					((DataBufferInt) tile.getRaster().getDataBuffer()).getData(),
+					((DataBufferInt) tile.image.getRaster().getDataBuffer()).getData(),
 					0, TILESIZE
 				);
-				tiles.put(getTileKey(x, y), tile);
  			}
 		}
 	}
 
-	public long getTileKey(int x, int y) {
+	private long getTileKey(int x, int y) {
 		return (long)x << 32 | y;
-	}
-
-	public int[] getXY(long tileKey) {
-		return new int[] {
-			(int)(tileKey >> 32),
-			(int)tileKey
-		};
 	}
 
 	public Box getRectangleBox(int[][] rectangle) {

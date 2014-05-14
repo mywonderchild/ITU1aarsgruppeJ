@@ -35,19 +35,37 @@ Denne løsning løser helt eller delvist problemerne ved den ovenstående løsni
 - Der skal kun gemmes billeddata når der bliver tegnet nye tiles.
 - De udsnit der skal tegnes er firkantede og har en vis størrelse, hvilket gør problemet med overflødig data mindre.
 
+# Forudtegning og centraliseret lagring af tiles
+
 De løsninger vi er inspireret gør to ting markant anderledes end vi gør:
 
 - De begrænser antallet af zoom niveauer. Hvis man ikke gør dette er der uendeligt mange zoom-niveauer, og dermed uendeligt mange tiles der potentielt skal lagres.
 - De har en vedligeholdt database over tiles, således at der ikke skal tegnes nye tiles når et udsnit efterspørges, men blot hentes tiles fra databasen.
 
-# Rektangel-algoritme
+Vi overvejede en kort overgang at implementere en lignende løsning, men besluttede os for at det ville være for stor en opgave. Dette ville være en oplagt mulighed for senere optimering af programmet, og kunne både implementeres med en lokal eller en ekstern database.
 
-Fordi vi ikke har en database af tiles, skal de tegnes løbende.
+# Gruppering
 
+Fordi vi ikke har en database af tiles, skal de tegnes løbende. Til at starte med tegnede vi tiles enkeltvis, hvilket viste sig at være meget ineffektivt. En stor andel af de vejstykker der hentes fra modellen, og efterfølgende skaleres og tegnes, er slet ikke er indenfor tilen. Dette problem kan reduceres hvis tiles så vidt muligt grupperes og tegnes i rektangulære blokke. Hermed bliver mængden af spild minimeret (figure 7).
 
+[FIGURE 7]
 
+Efter at gruppen af tiles er blevet tegnet samlet, klippes tiles ud og gemmes individuelt i datastrukturen.
 
+## Største rektangel algoritme
 
+Vi fik hermed brug for en algoritme der kunne gruppere de tiles der endnu ikke var tegnet i rektangulære grupperinger. Algoritmen finder det størst mulige rektangel, og tilføjer det til en liste over rektangler. Algoritmen gentager denne procedure indtil alle tiles er grupperet (figure 5).
 
+[FIGURE 5]
 
+Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Herefter opbygges endnu en tabel over sammenhængende søjler ved at traversere kolonnerne i tabellen nedefra og op, og beregne højden af den enkelte søjle dynamisk.
 
+[FIGURE 8]
+
+Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det størst mulige rektangel der har udgangspunkt i denne celle af tabellen beregnes ved hjælp af data fra søjle tabellen. Undervejs i skanningen gemmes positionen af det største rektangel.
+
+[FIGURE 9]
+
+Afsluttende tilføjes det største rektangel til listen, og de tiles der er indenfor rektanglet markeres som tegnede.
+
+Som følge af at vores tiles er 256 * 256 pixels store, må det formodes at algoritmen typisk køres med N der ~12*8 = 96 eller mindre, forudsat at programmet køres i en opløsning på (256*12) * (256*8) ~= 2880 * 1800 pixels (MacBook Pro 15" Retina skærm) eller mindre. Den valgte algoritme kører i ~3N / O(N) / lineær tid, men en algoritme der kører i O(N^2) tid ville i denne sammenhæng også have været hurtig nok.

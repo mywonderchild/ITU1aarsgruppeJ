@@ -53,7 +53,7 @@ For at holde styr på hvilket udsnit af kortet brugeren kigger på opdateres to 
 	- Når zoom er 1 vises hele kortet.
 	- Når zoom er mellem 1 er der zoomet ud, og kortet dækker kun en andel af skærmen.
 
-Ved hjælp af disse to variable kan det beregnes hvilket udsnit af kortet brugeren har efterspurgt.
+Ved hjælp af disse to variable kan det beregnes hvilket udsnit af kortet brugeren har efterspurgt. Vi valgte denne løsning som et alternativ til absolutte koordinater for en boks for at opnå øget fleksibilitet, og fordi denne løsning virkede mere intuitiv for os.
 
 # Når zoom ændrer sig
 
@@ -80,7 +80,7 @@ Vi overvejede en kort overgang at implementere en lignende løsning, men beslutt
 
 # Gruppering
 
-Fordi vi ikke har en database af tiles, skal de tegnes løbende. Til at starte med tegnede vi tiles enkeltvis, hvilket viste sig at være meget ineffektivt. En stor andel af de vejstykker der hentes fra modellen, og efterfølgende skaleres og tegnes, er slet ikke er indenfor tilen. Dette problem kan reduceres hvis tiles så vidt muligt grupperes og tegnes i rektangulære blokke. Hermed bliver mængden af spild minimeret (figure 7).
+Som nævnt tidligere skal tiles tegnes løbende som følge af at vi ikke har en database hvor vi kan hente dem fra. Til at starte med tegnede vi tiles enkeltvis, hvilket viste sig at være meget ineffektivt. En stor andel af de vejstykker der hentes fra modellen, og efterfølgende skaleres og tegnes, er slet ikke er indenfor tilen. Dette problem kan reduceres hvis tiles så vidt muligt grupperes og tegnes i rektangulære blokke. Hermed bliver mængden af spild minimeret (figure 7).
 
 [FIGURE 7]
 
@@ -92,17 +92,33 @@ Vi fik hermed brug for en algoritme der kunne gruppere de tiles der endnu ikke v
 
 [FIGURE 5]
 
-Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Herefter opbygges endnu en tabel over sammenhængende søjler ved at traversere kolonnerne i tabellen nedefra og op, og beregne højden af den enkelte søjle dynamisk.
+### BRUTE FORCEESSR
+
+Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Den naive løsning til dette problem er en brute-force algoritme der undersøger alle mulige rektangler i denne tabel. Hvis rektanglet er det største indtil videre og kun består af tiles der mangler at blive tegnet gemmes rektanglets position. Denne procedure gentages indtil alle mulige rektanglet er undersøgt.
+
+### SMART DYNAMIC STUFFsssss
+
+Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet.
+
+Herefter opbygges endnu en tabel over sammenhængende søjler ved at traversere kolonnerne i tabellen nedefra og op, og beregne højden af den enkelte søjle dynamisk.
 
 [FIGURE 8]
 
-Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det størst mulige rektangel der indeholder denne celle af tabellen beregnes ved hjælp af data fra søjle tabellen. Undervejs i skanningen gemmes positionen af det største rektangel.
+Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det størst mulige rektangel der indeholder denne celle af tabellen beregnes ved hjælp af data fra søjle tabellen. Undervejs i skanningen gemmes positionen af det største rektangel. Hermed en gennemgang af de første tre skridt.
+
+- Cursoren er ved celle (1,1). Værdien for dette felt i søjle-tabellen er 3, og er nu højden af vores rektangel. Bredden af vores rektangel er 1, eftersom vi har undersøgt 1 felt uden at løbe ind i et felt med værdien 0 i søjle-tabellen. Arealet af det største rektangel der indeholder dette punkt er 1 * 3 = 3, og positionen af rektanglet gemmes da det er det største indtil videre.
+- Cursoren er ved celle (2,1). Værdien for dette felt i søjle-tabellen er 2, og er nu højden af vores rektangel. Bredden af vores rektangel er 2, eftersom vi har undersøgt 1 felt uden at løbe ind i et felt med værdien 0 i søjle-tabellen. Arealet af det største rektangel der indeholder dette punkt er 2 * 2 = 4, og positionen af rektanglet gemmes da det er det største indtil videre.
+- Cursoren er ved celle (3,1). Værdien for dette felt i søjle-tabellen er 0, og højden og bredden af vores rektangel nulstilles.
 
 [FIGURE 9]
 
-Afsluttende tilføjes det største rektangel til listen, og de tiles der er indenfor rektanglet markeres som tegnede.
+Afsluttende tilføjes det største rektangel til listen af rektangler, og de tiles der udgør rektanglet markeres som tegnede.
 
-Som følge af at vores tiles er 256 * 256 pixels store, må det formodes at algoritmen typisk køres med N der ~12*8 = 96 eller mindre, forudsat at programmet køres i en opløsning på (256*12) * (256*8) ~= 2880 * 1800 pixels (MacBook Pro 15" Retina skærm) eller mindre. Den valgte algoritme kører i lineær tid O(N), og blev valgt til fordel for en brute-force algoritme... --> MORE TO COME <--
+Som følge af at vores tiles er 256 * 256 pixels store, må det formodes at algoritmen typisk køres med N der ~12*8 = 96 eller mindre, forudsat at programmet køres i en opløsning på (256*12) * (256*8) ~= 2880 * 1800 pixels (MacBook Pro 15" Retina skærm) eller mindre.
+
+Den valgte algoritme kører i lineær tid O(N) hvor N er antallet af celler, og blev derfor valgt til fordel for den før-nævnte brute-force algoritme som vi formoder ville have resulteret i langt længere køretider. Vi ville gerne have beregnet køretiden for brute-force algoritmen, og sammenlignet de to køretider, men dette viste sig at være meget kompliceret at beregne køretiden for brute-force algoritmen korrekt.
+
+Et logisk argument for at den dynamiske algoritme er væsentligt hurtigere er at den efter et lineært gennemløb af cellerne kun undersøger et antal rektangler der er lineært proportionelt med N.
 
 # Tegning af tiles
 

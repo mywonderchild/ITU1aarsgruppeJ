@@ -9,7 +9,7 @@ import Map.Model.Groups;
 public class Edge {
 	public final Node START, END;
 	public final double LENGTH;
-	public final int TYPE;
+	public final byte TYPE;
 	public final String NAME;
 	public final int ZIP;
 	public final int SPEED;
@@ -17,7 +17,7 @@ public class Edge {
 	public final double TIME;
 	public final Vector CENTER;
 
-	public Edge(Node start, Node end, double length, int type, String name, int zip, int speed) {
+	public Edge(Node start, Node end, double length, byte type, String name, int zip, int speed) {
 		START = start;
 		END = end;
 		LENGTH = length;

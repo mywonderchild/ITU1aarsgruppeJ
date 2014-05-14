@@ -130,7 +130,7 @@ public class Loader {
 		Node start = nodes.get(readInt()-1);
 		Node end = nodes.get(readInt()-1);
 		double length = readDouble();
-		int type = readInt();
+		byte type = readByte();
 		String name = readString();
 		int zip = readInt();
 		int speed = readInt();
@@ -167,6 +167,11 @@ public class Loader {
 	private int readInt() {
 		matcher.find();
 		return Integer.parseInt(matcher.group());
+	}
+
+	private byte readByte() {
+		matcher.find();
+		return Byte.parseByte(matcher.group());
 	}
 
 	private double readDouble() {

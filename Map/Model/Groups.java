@@ -8,8 +8,8 @@ import Map.View.Tiler;
 public class Groups {
 
 	public double zoom;
-	public final static int[][] GROUPS;
-	public final static int[] GROUPMAP;
+	public final static byte[][] GROUPS;
+	public final static byte[] GROUPMAP;
 	public final static Color[] COLORMAP;
 	public final static float[] WIDTHMAP;
 
@@ -17,7 +17,7 @@ public class Groups {
 		// We view "Motortrafik" and "Sekundærrute" as main roads
 		// We view "Markvej" as a path
 		// Road type 0 and 95 are undocumented but present – we added them to other
-		GROUPS = new int[][] {
+		GROUPS = new byte[][] {
 			{1, 21, 31, 41}, // Highways
 			{2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44}, // Main roads
 			{80}, // Naval
@@ -28,11 +28,11 @@ public class Groups {
 		};
 
 		// Build groupmap
-		GROUPMAP = new int[100];
-		for (int i = 0; i < GROUPMAP.length; i++)
+		GROUPMAP = new byte[100];
+		for (byte i = 0; i < GROUPMAP.length; i++)
 			GROUPMAP[i] = -1;
-		for (int i = 0; i < GROUPS.length; i++)
-			for (int j = 0; j < GROUPS[i].length; j++)
+		for (byte i = 0; i < GROUPS.length; i++)
+			for (byte j = 0; j < GROUPS[i].length; j++)
 				GROUPMAP[GROUPS[i][j]] = i;
 
 		// Build colormap
@@ -50,15 +50,15 @@ public class Groups {
 	}
 	
 
-	public static int getGroup(int type) throws RuntimeException {
-		int group = GROUPMAP[type];
+	public static byte getGroup(byte type) throws RuntimeException {
+		byte group = GROUPMAP[type];
 		if (group != -1)
 			return group;
 		else
 			throw new RuntimeException("Road group not found, type is: " + type);
 	}
 
-	private static Color getGroupColor(int group) {
+	private static Color getGroupColor(byte group) {
 		return COLORMAP[group];
 	}
 
@@ -66,7 +66,7 @@ public class Groups {
 		return getGroupColor(getGroup(edge.TYPE));
 	}
 
-	private static float getGroupWidth(int group) {
+	private static float getGroupWidth(byte group) {
 		return WIDTHMAP[group];
 	}
 

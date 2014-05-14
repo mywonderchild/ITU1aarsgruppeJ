@@ -16,6 +16,8 @@ Grundlæggende synes vi at programmet er lidt for sløvt i optrækket i forbinde
 
 ## Fejl og mangler
 
+Vores reducerede OSM datasæt indeholder ingen information om hvilken by et vejstykke er associeret med. Det er hermed umuligt at skelne mellem veje der har det samme navn i forskellige byer. Kun ~30% af vejene i vores OSM datasæt har information om hastighedsbegrænsinger fordi vi ikke har formået at udnytte datakilden optimalt. Som en konsekvens af dette er vores rute-beregning upræcis, da det for lang hovedparten af vejstykkerne ikke er de faktiske hastighedsbegrænsninger der anvendes, men derimod en statisk "default" værdi.
+
 Som nævnt ovenfor er vores program ikke så hurtigt som vi ville ønske ved kørsel med OSM data, og dette må anses som en væsentlig mangel jævnfør kravene til produktet.
 
 Vi anser det som en mangel at programmet ikke tager højde for forbudte højre og venstre sving, samt ensrettede og lukkede veje, selvom det ikke er et decideret krav. Uden denne funktionalitet er der ingen garanti for at de ruter som programmet beregner er mulige og lovlige at følge i praksis.

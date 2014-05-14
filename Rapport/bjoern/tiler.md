@@ -35,12 +35,46 @@ Denne løsning løser helt eller delvist problemerne ved den ovenstående løsni
 - Der skal kun gemmes billeddata når der bliver tegnet nye tiles.
 - De udsnit der skal tegnes er firkantede og har en vis størrelse, hvilket gør problemet med overflødig data mindre.
 
+# Kort på 3 planer
+
+Når løsningen med tiles anvendes er der tre planer der skal tages højde for:
+
+- Model: Er 1000 enheder langt på den længste led. Ændrer aldrig størrelse.
+- Tiles: Er dimensioneret efter et bitmap der ville kunne indeholde tiles for hele det aktuelle zoom-niveau. I praksis bliver sådant et bitmap aldrig oprettet, blot tiles som repræsenterer fragmenter af dette bitmap. Ændrer størrelse afhængigt af zoom-niveau.
+- Skærm: Størrelsen er dimensionerne på det vindue som kortet vises i på skærmen. Ændrer størrelse når brugeren ændrer størrelsen på vinduet.
+
+# Hvor kigger brugeren
+
+For at holde styr på hvilket udsnit af kortet brugeren kigger på opdateres to uafhængige variable løbende:
+
+- Center: En relativ vektor der definerer centrum for udsnittet. Værdierne for center løber fra 0 til 1 på både x- og y-aksen – altså er (0.5, 0.5) midten af kortet.
+- Zoom: En relativ værdi der definerer hvor stor en andel af kortet der vises indenfor udsnittets længste side.
+	- Når zoom er mellem 0 og 1 er der zoomet ind, og udsnittet rummer kun en andel af kortet.
+	- Når zoom er 1 vises hele kortet.
+	- Når zoom er mellem 1 er der zoomet ud, og kortet dækker kun en andel af skærmen.
+
+Ved hjælp af disse to variable kan det beregnes hvilket udsnit af kortet brugeren har efterspurgt.
+
+# Når zoom ændrer sig
+
+Når zoom ændrer sig skal størrelsen af tiles opdateres. 
+
+# Hvilke tiles skal vises
+
+Når kortet skal tegnes skal det afgøres hvilke tiles der skal vises på skærmen.
+
+Først beregnes det hvor udsnittet befinder sig på tiles. Dette gøres ved at tage en boks der har samme dimensioner som skærm, og forskyde den i forhold til tiles således at den nu er centeret omkring center. Denne boks kalder vi for sektion (figure 10, venstre).
+
+Dernæst beregnes hvilke tiles som sektion overlapper (figure 10, højre). Det er disse tiles som skal vises på skærmen.
+
+[FIGURE 10]
+
 # Forudtegning og centraliseret lagring af tiles
 
 De løsninger vi er inspireret gør to ting markant anderledes end vi gør:
 
 - De begrænser antallet af zoom niveauer. Hvis man ikke gør dette er der uendeligt mange zoom-niveauer, og dermed uendeligt mange tiles der potentielt skal lagres.
-- De har en vedligeholdt database over tiles, således at der ikke skal tegnes nye tiles når et udsnit efterspørges, men blot hentes tiles fra databasen.
+- De har en vedligeholdt database over tiles. Ved at gøre dette undgår de at tegne nye tiles når et udsnit efterspørges – I stedet hentes tiles fra den centrale database.
 
 Vi overvejede en kort overgang at implementere en lignende løsning, men besluttede os for at det ville være for stor en opgave. Dette ville være en oplagt mulighed for senere optimering af programmet, og kunne både implementeres med en lokal eller en ekstern database.
 
@@ -62,10 +96,15 @@ Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der 
 
 [FIGURE 8]
 
-Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det størst mulige rektangel der har udgangspunkt i denne celle af tabellen beregnes ved hjælp af data fra søjle tabellen. Undervejs i skanningen gemmes positionen af det største rektangel.
+Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det størst mulige rektangel der indeholder denne celle af tabellen beregnes ved hjælp af data fra søjle tabellen. Undervejs i skanningen gemmes positionen af det største rektangel.
 
 [FIGURE 9]
 
 Afsluttende tilføjes det største rektangel til listen, og de tiles der er indenfor rektanglet markeres som tegnede.
 
-Som følge af at vores tiles er 256 * 256 pixels store, må det formodes at algoritmen typisk køres med N der ~12*8 = 96 eller mindre, forudsat at programmet køres i en opløsning på (256*12) * (256*8) ~= 2880 * 1800 pixels (MacBook Pro 15" Retina skærm) eller mindre. Den valgte algoritme kører i ~3N / O(N) / lineær tid, men en algoritme der kører i O(N^2) tid ville i denne sammenhæng også have været hurtig nok.
+Som følge af at vores tiles er 256 * 256 pixels store, må det formodes at algoritmen typisk køres med N der ~12*8 = 96 eller mindre, forudsat at programmet køres i en opløsning på (256*12) * (256*8) ~= 2880 * 1800 pixels (MacBook Pro 15" Retina skærm) eller mindre. Den valgte algoritme kører i lineær tid O(N), og blev valgt til fordel for en brute-force algoritme... --> MORE TO COME <--
+
+# Tegning af tiles
+
+## Skalering af punkter fra model til rektangel
+

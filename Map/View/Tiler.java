@@ -236,29 +236,38 @@ public class Tiler {
 		return selected;
 	}
 
-	public ArrayList<int[][]> getRectangles(Tile[] selected) {
+	public ArrayList<int[][]> getRectangles(Tile[] tiles) {
 
 		ArrayList<int[][]> rectangles = new ArrayList<>();
 
-		int startX = selected[0].x;
-		int startY = selected[0].y;
-		int width = selected[selected.length - 1].x - selected[0].x + 1;
-		int height = selected[selected.length - 1].y - selected[0].y + 1;
+		ArrayList<Tile> list = new ArrayList<>();
+		for (Tile tile : tiles) if (tile.image == null) list.add(tile);
+		if (list.size() == 0) return rectangles;
+
+		// Terminate if usual case
+		int width = (list.get(list.size() - 1).x - list.get(0).x + 1);
+		int height = (list.get(list.size() - 1).y - list.get(0).y + 1);
+		int area = width * height;
+		if (area == list.size()) {
+			rectangles.add(new int[][]{
+				{list.get(0).x, list.get(0).y},
+				{width, height}
+			});
+			return rectangles;
+		}
+
+		// Wasn't usual case, now we find the max rects
+		width = tiles[tiles.length - 1].x - tiles[0].x + 1;
+		height = tiles[tiles.length - 1].y - tiles[0].y + 1;
 
 		// Build boolean map of tile render states
-		int count = 0;
 		boolean[][] unrendered = new boolean[width][height];
-		for (Tile tile : selected) {
-			if (tile.image == null) {
-				unrendered[tile.x - startX][tile.y - startY] = true;
-				count++;
-			}
-		}
-		if (count <= 0) return rectangles;
-
+		for (Tile tile : list)
+			unrendered[tile.x - tiles[0].x][tile.y - tiles[0].y] = true;
 		int[][] histogram = new int[width][height];
 		int[][] rectangle = null;
 
+		int count = list.size();
 		while (count > 0) {
 
 			// Build histogram
@@ -272,7 +281,7 @@ public class Tiler {
 					histogram[x][y] = 1 + histogram[x][y + 1];
 
 			// Find biggest rectangle
-			int start, min, max = 0, area;
+			int start, min, max = 0;
 			for (int y = 0; y < height; y++) {
 				start = 0;
 				min = Integer.MAX_VALUE;
@@ -302,8 +311,8 @@ public class Tiler {
 				}
 			}
 
-			rectangle[0][0] += startX;
-			rectangle[0][1] += startY;
+			rectangle[0][0] += tiles[0].x;
+			rectangle[0][1] += tiles[0].y;
 			rectangles.add(rectangle);
 		}
 

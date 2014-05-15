@@ -105,6 +105,7 @@ public class AStar {
 	}
 
 	private static double heuristic(Node from, Node to) {
-		return from.VECTOR.dist(to.VECTOR) / 130;
+		// dist[meters] / 1000m / 130 kph * 60 min
+		return from.VECTOR.dist(to.VECTOR) / 1000 / 130 * 60;
 	}
 }

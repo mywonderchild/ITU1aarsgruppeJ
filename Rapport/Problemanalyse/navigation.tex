@@ -7,15 +7,17 @@ I implementeringen af rutenavigation måtte forskellige kortest-vej algoritmer o
 Sådanne kortest-vej træs algoritmer trumfes af E. W. Dijkstras grafsøgningsalgoritme. Dijkstras algoritme tager udgangspunkt i en startknude hvorfra det resterende træ genereres. Hver af dennes tilstødende knuder besøges. Et besøg består i at sammenholde den kendte afstand mellem startknuden og den besøgte med den nye afstand. Den nye afstand ses som den kendte afstand mellem startknuden og den besøgende knude sammenlagt med afstanden mellem den besøgende og den besøgte knude. Har en knude aldrig været besøgt, er afstanden til denne blot angivet som $+\infty$, hvorfor ethvert nyt forslag er en forbedring. Besøgsrækkefølgen varetages af en prioritetskø, som prioriterer de tilstødende knuder med lavest afstand til startknuden højest.
 
 \begin{figure}[h]
-  	\centering
-    \includegraphics[width=0.8\textwidth]{dijkstra1}
-	\caption{A picture of a gull.}
+	\centering
+  \includegraphics[width=0.9\textwidth]{dijkstra1}
+  \captionsetup{width=0.8\textwidth}
+  \caption{Eksempel på en vægtet orienteret graf.}
 \end{figure}
 
 \begin{figure}[h]
-  	\centering
-    \includegraphics[width=0.8\textwidth]{dijkstra2}
-	\caption{A picture of a gull.}
+	\centering
+  \includegraphics[width=0.9\textwidth]{dijkstra2}
+  \captionsetup{width=0.8\textwidth}
+  \caption{Det resulterende kortest-vej træ med udgangspunkt i den grønne startknude. Distancen mellem de individuelle knuder og startknuden ses angivet.}
 \end{figure}
 
 \subsection{A*}
@@ -23,14 +25,16 @@ Sådanne kortest-vej træs algoritmer trumfes af E. W. Dijkstras grafsøgningsal
 En anden algoritme, som blev inddraget i overvejelserne, var A*-algoritmen. Denne generer ikke, ligesom Dijkstras, et kortest-vej træ, men finder blot den korteste vej mellem en given start- og slutknude. Da A* udvider funktionaliteten af Dijkstras algoritme, er deres adfærd meget tilsvarende. Hvor Dijkstras blot iagttager den traverserede afstande mellem den besøgte knude og startknuden, vurderer A* også en heuristik $h(x)$ for afstanden til \emph{slutknuden}. Besøgsrækkefølgen varetages stadigvæk af en prioritetskø, men nu prioriteres der efter funktionen $f(x)=g(x)+h(x)$, hvor $g(x)$ er afstanden mellem den besøgte knude og startknuden som set i Dijkstras.
 
 \begin{figure}[h]
-  	\centering
-    \includegraphics[width=0.8\textwidth]{astar1}
+	\centering
+  \includegraphics[width=0.9\textwidth]{astar1}
+  \captionsetup{width=0.8\textwidth}
 	\caption{A picture of a gull.}
 \end{figure}
 
 \begin{figure}[h]
-  	\centering
-    \includegraphics[width=0.8\textwidth]{astar2}
+	\centering
+  \includegraphics[width=0.9\textwidth]{astar2}
+  \captionsetup{width=0.8\textwidth}
 	\caption{A picture of a gull.}
 \end{figure}
 

@@ -1,0 +1,32 @@
+\section{Filtrering og klargøring af data}
+\label{sec:filtreringOgKlargoeringAfData}
+
+Vi udviklede 2 moduler til at filtrere og klargøre data --- et for hvert datasæt. Fælles funktionalitet for de to moduler er:
+
+\begin{itemize}
+	\item Frasortere unødvendige data.
+	\item Ensrette formatet som data gemmes i.
+	\item Konvertere koordinater således at de ligger inden for et 1000 gange 1000 koordinatsystem med udgangspunkt i øverste venstre hjørne.
+	\item Maks x og y værdier gemmes til brug ved indlæsning.
+	\item Rette op på evt. fejl og mangler i datasæt.
+\end{itemize}
+
+\subsection{Krak}
+\label{sec:krak}
+
+For nogle af vejstykkerne i datasættet var hastigheden 0, hvilket vi anser som en fejl i de data vi har modtaget. Dette viste sig at være problematisk, eftersom vores rute-algoritme bruger vejstykkernes hastigheder til at beregne den hurtigste vej.
+
+For at afhjælpe dette problem valgte vi at beregne hastigheden ud fra vejstykkets længde og estimerede køretid med følgende formel:
+
+\vspace{1ex}
+$s = \frac{\frac{l}{1000}}{\frac{t}{60} \cdot \frac{1}{1.15}}$
+\vspace{1ex}
+
+Hvor $s$ er hastigheden i km/t, $l$ er længden i meter, og $t$ er den estimerede køretid i minutter. Formlen tager højde for at krak har lagt 15\% til deres estimerede køretider. Denne løsning er ikke perfekt, da det havde været optimalt at aflæse alle hastigheder frem for at udlede dem, men var et nødvendigt unde for at opnå den ønskede funktionalitet.
+
+De kystlinje data vi fik fra en anden gruppe var angivet som en serie af forbindelser mellem koordinater: $(x_1, y_1), (x_2, y_2)$. Disse data bliver i modulet splittet ud i en række punkter og vejstykker.
+
+\subsection{Open Street Maps}
+\label{sec:openStreetMaps}
+
+Her er en parallel tekst til den om Krak, blot om OSM.

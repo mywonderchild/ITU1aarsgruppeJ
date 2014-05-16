@@ -1,4 +1,4 @@
-# Gentegning af rendrerede segmenter
+# Gentegning af fragmenter
 
 Når brugeren navigerer kortet og bliver på samme zoom-niveau vil der være dele af kortet som allerede er tegnet, der skal tegnes til skærmen igen. Der er et overlap mellem det gamle og det nye udsnit af kortet (figure 1).
 
@@ -76,7 +76,9 @@ De løsninger vi er inspireret gør to ting markant anderledes end vi gør:
 - De begrænser antallet af zoom niveauer. Hvis man ikke gør dette er der uendeligt mange zoom-niveauer, og dermed uendeligt mange tiles der potentielt skal lagres.
 - De har en vedligeholdt database over tiles. Ved at gøre dette undgår de at tegne nye tiles når et udsnit efterspørges – I stedet hentes tiles fra den centrale database.
 
-Vi overvejede en kort overgang at implementere en lignende løsning, men besluttede os for at det ville være for stor en opgave. Dette ville være en oplagt mulighed for senere optimering af programmet, og kunne både implementeres med en lokal eller en ekstern database.
+Vi overvejede en kort overgang at implementere en database løsning, men besluttede os for at det ville være for stor en opgave. Dette ville være en oplagt mulighed for senere optimering af programmet, og kunne både implementeres med en lokal eller en ekstern database.
+
+Eftersom vi ikke anvender en databaseløsning giver det ikke mening at reducere antallet af zoom-niveauer. Da tiles alligevel skal tegnes løbende, ville dette kun være en fordel hvis brugeren vendte tilbage til et udsnit på et zoom-niveau som vedkommende allerede havde set. Da vi ikke tænker at dette scenarie opstår særlig tit, fravalgte vi at begrænse antallet af zoom-niveauer og dermed forringe programmets funktionalitet unødvendigt.
 
 # Gruppering
 
@@ -86,25 +88,23 @@ Som nævnt tidligere skal tiles tegnes løbende som følge af at vi ikke har en 
 
 Efter at gruppen af tiles er blevet tegnet samlet, klippes tiles ud og gemmes individuelt i datastrukturen.
 
-## Største rektangel algoritme
+## Definition af algoritme
 
-Vi fik hermed brug for en algoritme der kunne gruppere de tiles der endnu ikke var tegnet i rektangulære grupperinger. Algoritmen finder det størst mulige rektangel, og tilføjer det til en liste over rektangler. Algoritmen gentager denne procedure indtil alle tiles er grupperet (figure 5).
+Vi fik hermed brug for en algoritme der kunne gruppere de tiles der endnu ikke var tegnet i rektangulære grupperinger. Algoritmen tager en liste af tiles der er er sorteret rækkevis, og efterfølgende kolonnevis, som input. Algoritmen finder det størst mulige rektangel, og tilføjer det til en liste over rektangler. Algoritmen gentager denne procedure indtil alle tiles er grupperet, og returnerer en liste af rektangler (figure 5).
 
 [FIGURE 5]
 
-### BRUTE FORCEESSR
+## Brute force: Lang tid
 
-Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Den naive løsning til dette problem er en brute-force algoritme der undersøger alle mulige rektangler i denne tabel. Hvis rektanglet er det største indtil videre og kun består af tiles der mangler at blive tegnet gemmes rektanglets position. Denne procedure gentages indtil alle mulige rektanglet er undersøgt.
+Vores første løsningforslag var en simpel brute force algoritme. Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Den naive løsning til dette problem er en brute-force algoritme der undersøger alle mulige rektangler i denne tabel. Hvis rektanglet er det største indtil videre og kun består af tiles der mangler at blive tegnet gemmes rektanglets position. Denne procedure gentages indtil alle mulige rektanglet er undersøgt.
 
-### SMART DYNAMIC STUFFsssss
+## Dynamic programming: Lineær tid
 
-Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet.
-
-Herefter opbygges endnu en tabel over sammenhængende søjler ved at traversere kolonnerne i tabellen nedefra og op, og beregne højden af den enkelte søjle dynamisk.
+Dernæst fandt vi frem tile en algoritme der løser problemet mere effektivt ved hjælp af dynamic programming. Ligesom brute force algoritmen opbygger den en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Herefter opbygges endnu en tabel over sammenhængende søjler ved at traversere kolonnerne i tabellen nedefra og op, og beregne højden af den enkelte søjle dynamisk (figure 8).
 
 [FIGURE 8]
 
-Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det størst mulige rektangel der indeholder denne celle af tabellen beregnes ved hjælp af data fra søjle tabellen. Undervejs i skanningen gemmes positionen af det største rektangel. Hermed en gennemgang af de første tre skridt.
+Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det størst mulige rektangel der indeholder denne celle af tabellen beregnes ved hjælp af data fra søjle tabellen (figure 9). Undervejs i skanningen gemmes positionen af det største rektangel. Hermed en gennemgang af de første tre skridt.
 
 - Cursoren er ved celle (1,1). Værdien for dette felt i søjle-tabellen er 3, og er nu højden af vores rektangel. Bredden af vores rektangel er 1, eftersom vi har undersøgt 1 felt uden at løbe ind i et felt med værdien 0 i søjle-tabellen. Arealet af det største rektangel der indeholder dette punkt er 1 * 3 = 3, og positionen af rektanglet gemmes da det er det største indtil videre.
 - Cursoren er ved celle (2,1). Værdien for dette felt i søjle-tabellen er 2, og er nu højden af vores rektangel. Bredden af vores rektangel er 2, eftersom vi har undersøgt 1 felt uden at løbe ind i et felt med værdien 0 i søjle-tabellen. Arealet af det største rektangel der indeholder dette punkt er 2 * 2 = 4, og positionen af rektanglet gemmes da det er det største indtil videre.
@@ -116,11 +116,48 @@ Afsluttende tilføjes det største rektangel til listen af rektangler, og de til
 
 Som følge af at vores tiles er 256 * 256 pixels store, må det formodes at algoritmen typisk køres med N der ~12*8 = 96 eller mindre, forudsat at programmet køres i en opløsning på (256*12) * (256*8) ~= 2880 * 1800 pixels (MacBook Pro 15" Retina skærm) eller mindre.
 
-Den valgte algoritme kører i lineær tid O(N) hvor N er antallet af celler, og blev derfor valgt til fordel for den før-nævnte brute-force algoritme som vi formoder ville have resulteret i langt længere køretider. Vi ville gerne have beregnet køretiden for brute-force algoritmen, og sammenlignet de to køretider, men dette viste sig at være meget kompliceret at beregne køretiden for brute-force algoritmen korrekt.
+Den valgte algoritme kører i lineær tid O(N) hvor N er antallet af tiles, og blev derfor valgt til fordel for den før-nævnte brute-force algoritme som vi formoder ville have resulteret i langt længere køretider. Vi ville gerne have beregnet køretiden for brute-force algoritmen, og sammenlignet de to køretider, men dette viste sig at være meget kompliceret at beregne køretiden for brute-force algoritmen korrekt.
 
-Et logisk argument for at den dynamiske algoritme er væsentligt hurtigere er at den efter et lineært gennemløb af cellerne kun undersøger et antal rektangler der er lineært proportionelt med N.
+Et logisk argument for at den dynamiske algoritme er væsentligt hurtigere er at den efter et lineært gennemløb af cellerne kun undersøger N forskellige rektangler, hvilket skal ses i kontrast til at undersøge alle mulige rektangler. Ydermere behøver algoritmen ikke tjekke om rektanglerne udelukkende består af tiles der mangler at blive tegnet, da dette på forhånd er garanteret.
+
+## Case analyse: Konstant tid
+
+Efter at have implementeret algoritmen der løser opgaven i alle tænkelige cases, gik vi i gang med at analysere hvilke cases der typisk opstår ofte når programmet køres i praksis, og hvilke der sjældent eller aldrig opstår (figure 11).
+
+[FIGURE 11]
+
+Som det kan ses på figuren har vi inddelt cases i dem der er typiske og ofte sker, dem der atypiske og opstår sjældent, og dem der aldrig opstår fordi de er umulige. Korte forklaringer af udvalgte cases:
+
+- Typisk, øverst tv.: Brugeren har skiftet zoom-niveau, og alle tiles skal tegnes.
+- Typisk, øverst th.: Brugeren har bevæget udsnittet mod nord, og en række af tiles skal tegnes.
+- Atypisk, øverst th.: Brugeren har bevæget udsnittet mod nordvest, og en vinkel af tiles skal tegnes. Dette sker relativt sjældent, da det kræver at udsnittet bryder en utegnet række og kolonne samtidig.
+- Atypisk, nederst tv.: Brugeren har bevæget udsnittet mod øst så hurtigt at udsnittet har brudt to utegnede kolonner samtidigt. Vi har ikke observeret dette case, men det er en mulighed.
+- Umulige cases: Disse cases er umulige fordi der er huller i dem, hvilket ikke kan lade sig gøre hvis brugeren bevæger udsnittet rundt i en kontinuerlig bane.
+
+Følgende algoritme reducerer løser problemet i konstant tid i typiske cases, og falder tilbage på en mere tidskrævende algoritme i tilfælde af at der er tale om en atypisk case (figure 12):
+
+- Listen af tiles filtreres, og der oprettes en ny liste af tiles som endnu ikke er blevet tegnet.
+- Fordi tiles er sorteret på den måde de er i den oprindelige liste, kan man lave et rektangel der går fra den første til den sidste tile fra den nye liste.
+- Hvis antallet af tiles som rektanglet dækker over er det samme som der er utegnede tiles er problemet løst i konstant tid (figure 12 til venstre). Hvis dette ikke er tilfældet er den pågældende case atypisk (figure 12 til højre), og der faldes tilbage til den mere tidskrævende algoritme.
+
+[FIGURE 12]
+
+Der er værd at nævne at nogle atypiske cases også løses i konstant tid af denne algoritme (f.eks. atypisk case nederst til venstre på figure 11). Ligeledes er det værd at nævne at algoritmen giver det forkerte svar hvis en af de "umulige" cases opstår, og at dette ville resultere i en fejl i programmet.
+
+Altså endte vi i sidste ende med en algoritme der er optimeret til de specifikke forhold der gælder for vores program, og som langt det meste af tiden tager konstant tid. Det er ikke muligt at beregne en gennemsnitskøretid for algoritmen eftersom vi ikke kan forudse hvordan brugeren interagerer med kortet (hvilket afgør hvor mange atypiske cases der opstår), og det eneste der kan garanteres er derfor at køretiden i værste fald er lineær.
 
 # Tegning af tiles
 
-## Skalering af punkter fra model til rektangel
+Når listen af rektangler er fundet, skal indholdet af hver rektangel tegnes. Følgende procedure gentages for hvert af rektanglerne (figure 13):
 
+- Der beregnes en boks som repræsenterer rektanglet på tiles planet.
+- Rektanglets boks kopieres og skaleres således at den repræsenterer rektanglet på model planet. Modellen forespørges efter vejstykker der ligger indenfor denne boks og returnerer dem.
+- Vejstykkernes koordinater skaleres til map planet, forskydes i forhold til rektanglets position, og gemmes som linjer der er klar til at blive tegnet.
+- Linjerne tegnes til en buffer.
+- Bufferen opdeles i tiles der gemmes i et lager.
+
+[FIGURE 13]
+
+# Visning af tiles
+
+Endelig, når det er sikret at alle tiles der skal vises er tegnet, hentes de relevante tiles fra lageret og vises på skærmen.

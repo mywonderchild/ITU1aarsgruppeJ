@@ -322,7 +322,7 @@ public class Tiler {
 	public void renderRectangle(int[][] rectangle) {
 
 		Box rectangleBox = getRectangleBox(rectangle);
-		Box queryBox = getQueryBox(rectangleBox.copy());
+		Box queryBox = rectangleBox.copy().translate(mapBox, modelBox);
 
 		// Get edges from QT's
 		ArrayList<Edge> edges = new ArrayList<>();
@@ -382,13 +382,6 @@ public class Tiler {
 			start.y + rectangle[1][1] * TILESIZE
 		);
 		return new Box(start, stop);
-	}
-
-	public Box getQueryBox(Box rectangleBox) {
-		rectangleBox.translate(mapBox, modelBox);
-		rectangleBox.start.add(modelBox.start);
-		rectangleBox.stop.add(modelBox.start);
-		return rectangleBox;
 	}
 
 	public Vector translateToRectangle(Vector vector, Box rectangleBox) {

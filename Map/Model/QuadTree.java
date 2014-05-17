@@ -83,7 +83,7 @@ public class QuadTree
 	}
 
     public Edge findClosestEdge(Vector point, boolean withName) {
-        double size = 10;
+        double size = 1;
 
         Box query = new Box(
         	new Vector(point.x - size, point.y - size),
@@ -109,17 +109,8 @@ public class QuadTree
         	query.scale(2); // double query size
         }
 
-        // When any edges are found, we must ensure all
-        // nearby edges get a chance. Because edges are
-        // placed in the quadtree based on center location,
-        // we must expand the search area by half the length
-        // of the longest edge in the quadtree.
-
         Edge closest = null;
         double closestDist = Double.POSITIVE_INFINITY;
-    	
-    	query.grow(maxLen/2); // grow query with ½ longest edge
-        edges = queryRange(query);
 
         for (Edge edge : edges) {
         	if(withName && edge.NAME == null) continue; // no name, no game
@@ -153,7 +144,7 @@ public class QuadTree
     }
 
     public Node findClosestNode(Vector point) {
-        double size = 10;
+        double size = 1;
 
         Box query = new Box(
         	new Vector(point.x - size, point.y - size),
@@ -167,17 +158,8 @@ public class QuadTree
         	query.scale(2); // double query size
         }
 
-        // When any edges are found, we must ensure all
-        // nearby edges get a chance. Because edges are
-        // placed in the quadtree based on center location,
-        // we must expand the search area by half the length
-        // of the longest edge in the quadtree.
-
         Node closest = null;
         double closestDist = Double.POSITIVE_INFINITY;
-    	
-    	query.grow(maxLen/2); // grow query with ½ longest edge
-        edges = queryRange(query);
 
         for (Edge edge : edges) {
         	double startDist = point.dist(edge.START.VECTOR);

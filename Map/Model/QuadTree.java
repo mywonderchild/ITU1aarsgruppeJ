@@ -59,17 +59,6 @@ public class QuadTree
 			new QuadTree(new Box(new Vector(box.start.x, center.y), new Vector(center.x, box.stop.y))), // South-west
 			new QuadTree(new Box(center, box.stop)) // South-east
 		};
-
-        boolean insertFlag = false;
-		for(Edge edge : edges)
-			for (QuadTree child : children)
-				if(child.insert(edge)) insertFlag = true;
-
-        // Must never happen:
-        if(!insertFlag) throw new RuntimeException(this.toString() + " has reached its maximum capacity, "
-            + "but failed to insert the edge into any of its children.");
-
-		edges = null;
 	}
 
 	public Collection<Edge> queryRange(Box query) {
@@ -80,17 +69,17 @@ public class QuadTree
 
 	private void queryRange(Box query, HashSet<Edge> result) {
 		if(!box.overlapping(query)) return;
+        for (int i = 0; i < n; i++) {
+            if(result.contains(edges[i])) continue; // no reason to do expensive overlap method then
+            if (query.overlapping(edges[i].START.VECTOR, edges[i].END.VECTOR))
+                result.add(edges[i]);
+        }
+		
+        if(children == null) return;
 
-		if (children == null) {
-			for (int i = 0; i < n; i++) {
-                if(result.contains(edges[i])) continue; // no reason to do expensive overlap method then
-				if (query.overlapping(edges[i].START.VECTOR, edges[i].END.VECTOR))
-					result.add(edges[i]);
-            }
-		} else {
-			for (QuadTree child : children)
-				child.queryRange(query, result);
-		}
+        for (QuadTree child : children) {
+                child.queryRange(query, result);
+        }
 	}
 
     public Edge findClosestEdge(Vector point, boolean withName) {

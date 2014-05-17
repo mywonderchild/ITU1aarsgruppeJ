@@ -158,7 +158,7 @@ public class Tiler {
 			Tile[] tiles = getTiles(section);
 			
 			for (int[][] rectangle : getRectangles(tiles)) {
-				Thread thread = new RenderThread(rectangle);
+				Thread thread = new RenderThread(rectangle, this);
 				thread.setDaemon(true);
 				thread.start();
 			}
@@ -369,26 +369,29 @@ public class Tiler {
 		
 		int id = threadID;
 		int[][] rectangle;
+		Tiler tiler;
 
-		public RenderThread(int[][] rectangle) {
+		public RenderThread(int[][] rectangle, Tiler tiler) {
 			this.rectangle = rectangle;
+			this.tiler = tiler;
 		}
 
 		@Override
 		public void run() {
-			Box rectangleBox = getRectangleBox(rectangle);
-			Box queryBox = rectangleBox.copy().translate(mapBox, modelBox);
 
-			// Get edges from QT's
-			ArrayList<Edge> edges = new ArrayList<>();
-			int[] visible = Groups.getVisibleGroups(zoom);
-			for(int i = visible.length-1; i >= 0; i--)
-				edges.addAll(groups[visible[i]].queryRange(queryBox));
+			synchronized(tiler) {
+				Box rectangleBox = getRectangleBox(rectangle);
+				Box queryBox = rectangleBox.copy().translate(mapBox, modelBox);
+
+				// Get edges from QT's
+				ArrayList<Edge> edges = new ArrayList<>();
+				int[] visible = Groups.getVisibleGroups(zoom);
+				for(int i = visible.length-1; i >= 0; i--)
+					edges.addAll(groups[visible[i]].queryRange(queryBox));
 
 
-			// Make lines
-			ArrayList<Line> lines = new ArrayList<>();
-			synchronized(linePool) {
+				// Make lines
+				ArrayList<Line> lines = new ArrayList<>();
 				for (int i = 0; i < edges.size(); i++) {
 					Edge edge = edges.get(i);
 					Vector[] vectors = edge.getVectors();
@@ -401,10 +404,8 @@ public class Tiler {
 						Groups.getWidth(edge, zoom)
 					));
 				}
-			}
 
-			// Render image to buffer
-			synchronized(buffer) {
+				// Render image to buffer
 				bufferGraphics.setColor(Color.WHITE);
 				bufferGraphics.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 				Painter.paintLines(bufferGraphics, lines);
@@ -429,8 +430,8 @@ public class Tiler {
 						tile.isRendering = false;
 		 			}
 				}
+				synchronized(canvas) { canvas.repaint(); }
 			}
-			synchronized(canvas) { canvas.repaint(); }
 		}
 
 		private boolean isValid() {

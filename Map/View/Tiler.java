@@ -424,6 +424,7 @@ public class Tiler {
 		 			}
 				}
 			}
+			synchronized(canvas) { canvas.repaint(); }
 		}
 
 		private boolean isValid() {

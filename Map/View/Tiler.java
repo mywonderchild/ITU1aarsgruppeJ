@@ -358,7 +358,7 @@ public class Tiler {
 		@Override
 		public void run() {
 
-			synchronized(tiler) {
+			//synchronized(tiler) {
 				Box rectangleBox = getRectangleBox(rectangle);
 				Box queryBox = rectangleBox.copy().translate(mapBox, modelBox);
 
@@ -383,6 +383,8 @@ public class Tiler {
 						Groups.getWidth(edge, zoom)
 					));
 				}
+
+				if (!isValid()) return;
 
 				// Render image to buffer
 				bufferGraphics.setColor(Color.WHITE);
@@ -410,8 +412,8 @@ public class Tiler {
 		 			}
 				}
 				snapshot = null;
-				synchronized(canvas) { canvas.repaint(); }
-			}
+				canvas.repaint();
+			//}
 		}
 
 		private boolean isValid() {

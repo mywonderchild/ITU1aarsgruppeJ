@@ -385,19 +385,22 @@ public class Tiler {
 			for(int i = visible.length-1; i >= 0; i--)
 				edges.addAll(groups[visible[i]].queryRange(queryBox));
 
+
 			// Make lines
 			ArrayList<Line> lines = new ArrayList<>();
-			for (int i = 0; i < edges.size(); i++) {
-				Edge edge = edges.get(i);
-				Vector[] vectors = edge.getVectors();
-				for (Vector vector : vectors)
-					vector = translateToRectangle(vector, rectangleBox);
-				if (i >= linePool.size()) linePool.add(new Line());
-				lines.add(linePool.get(i).set(
-					vectors[0], vectors[1],
-					Groups.getColor(edge),
-					Groups.getWidth(edge, zoom)
-				));
+			synchronized(linePool) {
+				for (int i = 0; i < edges.size(); i++) {
+					Edge edge = edges.get(i);
+					Vector[] vectors = edge.getVectors();
+					for (Vector vector : vectors)
+						vector = translateToRectangle(vector, rectangleBox);
+					if (i >= linePool.size()) linePool.add(new Line());
+					lines.add(linePool.get(i).set(
+						vectors[0], vectors[1],
+						Groups.getColor(edge),
+						Groups.getWidth(edge, zoom)
+					));
+				}
 			}
 
 			// Render image to buffer

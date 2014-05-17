@@ -1,7 +1,7 @@
 \section{Visning af kort}
 \label{sec:visningAfKort}
 
-Når brugeren navigerer kortet og bliver på samme zoom-niveau vil der være dele af kortet som allerede er tegnet, der skal tegnes til skærmen igen. Der er et overlap mellem det gamle og det nye udsnit af kortet (figur~\ref{figur:visningAfKort1}).
+Når brugeren navigerer kortet og bliver på samme zoom-niveau vil der være dele af kortet som allerede er tegnet, der skal tegnes igen. Der er et overlap mellem det gamle og det nye udsnit af kortet (figur~\ref{figur:visningAfKort1}).
 
 \begin{figure}[h]
 	\centering
@@ -11,17 +11,14 @@ Når brugeren navigerer kortet og bliver på samme zoom-niveau vil der være del
 	\label{figur:visningAfKort1}
 \end{figure}
 
-Til at starte med tegnede vi det hele igen, inklusiv overlap, men det viste sig ikke at være hurtigt nok, og responstiden blev irriterende lang. Det blev derfor besluttet at vi havde brug for en mere effektiv løsning med de følgende egenskaber:
+Til at starte med tegnede vi hele udsnittet, inklusiv overlap, men det viste sig ikke at være hurtigt nok, og responstiden blev problematisk. Det blev derfor besluttet at vi havde brug for en mere effektiv løsning, der kun tegner den del af et nyt udsnit der ikke overlapper med det gamle udsnit.
 
-\begin{itemize}
-	\item Tegning af de udsnit af kortet der ikke er blevet tegnet
-	\item Genbrug af de udsnit af kortet der allerede er blevet tegnet.
-\end{itemize}
+Dette afsnit er skrevet på et tidspunkt hvor vores implementering af quadtræer ikke var optimal. En af ulemperne ved denne implementation var, at den returnerede en margin af vejstykker uden om den rektangel der var efterspurgt. Denne margin udggjorde i mange tilfælde helt op til 70-80\% af de returnerede vejstykker. Analyserne i dette afsnit tager udgangspunkt i implementeringen før optimeringen, og der er derfor lagt relativt stor vægt på at ovennævnte ulempe eksisterede. Analyserne er dog fortsat relevante, da der altid vil være vejstykker der ``stikker ud'' af det forespurgte rektangel, men gevinsten er langt mindre end den var før optimeringen.
 
-\subsection{Første løsning}
-\label{subsec:foersteLoesning}
+\subsection{Cache og forskydning}
+\label{subsec:cacheOgForskydning}
 
-Den første løsning der blev overvejet var at gemme et billede af det gamle udsnit og forskyde det således at det lå rigtigt i forhold til det nye udsnit (figur~\ref{figur:visningAfKort2}). Efterfølgende tegnes den del af udsnittet som ikke er inkluderet i overlappet.
+Den første løsning der blev overvejet var at gemme et billede af det gamle udsnit til en cache og forskyde det således at det lå rigtigt i forhold til det nye udsnit (figur~\ref{figur:visningAfKort2}). Efterfølgende tegnes den del af udsnittet som ikke er inkluderet i overlappet.
 
 \begin{figure}[h]
 	\centering
@@ -31,26 +28,26 @@ Den første løsning der blev overvejet var at gemme et billede af det gamle uds
 	\label{figur:visningAfKort2}
 \end{figure}
 
-Denne løsning var meget simpel, og vi formoder den havde været nem at implementere. Den havde dog en række ulemper:
+Denne løsning var meget simpel, og vi formoder den havde været nem at implementere. Den havde dog en række klare ulemper, hvilket førte til at vi ikke implementerede den:
 
 \begin{itemize}
 	\item Hvis brugeren navigerer tilbage til et udsnit de allerede har set skal dette udsnit tegnes igen.
-	\item Der skal gemmes billeddata til en buffer hver gang udsnittet ændrer sig, således at denne data kan gentegnes som en del af det næste udsnit.
-	\item De udsnit der skal tegnes er tynde, hvilket skaber stor ineffektivitet som følge af den måde som vejstykker hentes fra quadtræer og tegnes (figur~\ref{figur:visningAfKort3}).
+	\item Der skal gemmes billeddata til en cache hver gang udsnittet ændrer sig, således at denne data kan gentegnes som en del af det næste udsnit.
+	\item De udsnit der skal tegnes er tynde, hvilket skaber stor ineffektivitet som følge af den måde som vejstykker hentes fra quadtræer (figur~\ref{figur:visningAfKort3}).
 \end{itemize}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{visningAfKort3}
 	\captionsetup{width=0.8\textwidth}
-	\caption{Stort spild ved hentning og tegning af vejstykker.}
+	\caption{Stort spild ved hentning af vejstykker fra quadtræer.}
 	\label{figur:visningAfKort3}
 \end{figure}
 
 \subsection{Anden løsning}
 \label{subsec:andenLoesning}
 
-Den anden løsning vi overvejede, og den vi endte med at implementere, var inspireret af online kort-programmer som for eksempel Google Maps og OSM. Det centrale koncept i denne løsning er at dele kortet op i en masse små udsnit (tiles). Når der er zoomet langt ud udgøres kortet af få tiles, og når der er zoomet langt ind udgøres kortet af mange tiles (figur~\ref{figur:visningAfKort4}). Når der skal tegnes et udsnit tegnes de tiles der er indenfor udsnittet.
+Den anden løsning vi overvejede, og den vi endte med at implementere, var inspireret af online kort-programmer som for eksempel Google Maps og OSM. Det centrale koncept i denne løsning er at dele kortet op i en masse små rektangler bestående af bitmap data (tiles). Når der er zoomet langt ud udgøres kortet af få tiles, og når der er zoomet langt ind udgøres kortet af mange tiles (figur~\ref{figur:visningAfKort4}). Når der skal tegnes et udsnit tegnes de tiles der er indenfor udsnittet.
 
 \begin{figure}[h]
 	\centering
@@ -64,19 +61,19 @@ Denne løsning løser helt eller delvist problemerne ved den ovenstående løsni
 
 \begin{itemize}
 	\item Da de tegnede data er strukturerede, og det er dermed muligt at gemme dem og vise dem igen når det er relevant.
-	\item Der skal kun gemmes billeddata når der bliver tegnet nye tiles.
+	\item Der skal kun gemmes billeddata til et lager af tiles når der bliver tegnet nye tiles.
 	\item De udsnit der skal tegnes er firkantede og har en vis størrelse, hvilket gør problemet med overflødig data mindre.
 \end{itemize}
 
 \subsection{De tre planer}
 \label{subsec:deTrePlaner}
 
-Når løsningen med tiles anvendes er der tre planer der skal tages højde for:
+Når løsningen med tiles anvendes er der tre rektangulære planer der skal tages højde for:
 
 \begin{itemize}
 	\item \textbf{Model}: Er 1000 enheder langt på den længste led. Ændrer aldrig størrelse.
 	\item \textbf{Tiles}: Er dimensioneret efter et bitmap der ville kunne indeholde tiles for hele det aktuelle zoom-niveau. I praksis bliver sådant et bitmap aldrig oprettet, blot tiles som repræsenterer fragmenter af dette bitmap. Ændrer størrelse afhængigt af zoom-niveau.
-	\item \textbf{Skærm}: Størrelsen er dimensionerne på det vindue som kortet vises i på skærmen. Ændrer størrelse når brugeren ændrer størrelsen på vinduet.
+	\item \textbf{Skærm}: Har samme dimensioner som det vindue som kortet vises i på skærmen. Ændrer størrelse når brugeren ændrer størrelsen på vinduet.
 \end{itemize}
 
 \subsection{Udsnit}
@@ -94,12 +91,12 @@ For at holde styr på hvilket udsnit af kortet brugeren kigger på opdateres to 
 	\end{itemize}
 \end{itemize}
 
-Ved hjælp af disse to variable kan det beregnes hvilket udsnit af kortet brugeren har efterspurgt. Vi valgte denne løsning som et alternativ til absolutte koordinater for en boks for at opnå øget fleksibilitet, og fordi denne løsning virkede mere intuitiv for os.
+Ved hjælp af disse to variable kan det beregnes hvilket udsnit af kortet der er aktuelt. Vi valgte denne løsning som et alternativ til absolutte koordinater for en boks for at opnå øget fleksibilitet, og fordi denne løsning virkede mere intuitiv for os.
 
 \subsubsection{Når zoom ændrer sig}
 \label{subsec:naarZoomAendrerSig}
 
-Når zoom ændrer sig skal størrelsen af tiles opdateres. 
+Når zoom ændrer sig skal størrelsen af tiles opdateres.
 
 \subsubsection{Hvilke tile skal vises}
 \label{subsec:hvilkeTilesSkalVises}

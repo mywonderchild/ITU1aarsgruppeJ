@@ -36,7 +36,7 @@ public class Tiler {
 	private HashMap<Long, Tile> tileHash = new HashMap<>();
 	public int tilesX, tilesY;
 	public double zoom, resetZoom, minZoom = 0.005, maxZoom = 1.5, zoomOrigin;
-	public Vector center, resetCenter;
+	public Vector center, resetCenter, viewDimensions;
 	public QuadTree all;
 	public Path path;
 	private QuadTree[] groups;
@@ -65,6 +65,8 @@ public class Tiler {
 			.getDefaultScreenDevice()
 			.getDefaultConfiguration();
 
+		resize(viewBox);
+
 		setZoom(zoom, false);
 	}
 
@@ -78,6 +80,18 @@ public class Tiler {
 			this.x = x;
 			this.y = y;
 		}
+	}
+
+	public void resize(Box viewBox) {
+		this.viewBox = viewBox;
+		viewDimensions = viewBox.dimensions();
+		buffer = gc.createCompatibleImage(
+			(int)viewDimensions.x + TILESIZE * 2,
+			(int)viewDimensions.y + TILESIZE * 2,
+			Transparency.OPAQUE
+		);
+		bufferGraphics = buffer.createGraphics();
+		bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	}
 
 	public void setZoom(double zoom, boolean fake) {
@@ -101,14 +115,6 @@ public class Tiler {
 
 		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
 		this.zoom = zoomBounded;
-
-		buffer = gc.createCompatibleImage(
-			(int)viewDimensions.x + TILESIZE * 2,
-			(int)viewDimensions.y + TILESIZE * 2,
-			Transparency.OPAQUE
-		);
-		bufferGraphics = buffer.createGraphics();
-		bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		Vector mapDimensions = viewDimensions
 			.div(viewBox.ratio())
@@ -149,7 +155,7 @@ public class Tiler {
 		Tile[] tiles = getTiles(section);
 		
 		for (int[][] rectangle : getRectangles(tiles)) {
-			Thread thread = new RenderThread(rectangle, this);
+			Thread thread = new RenderThread(rectangle);
 			thread.setDaemon(true);
 			thread.start();
 		}
@@ -348,27 +354,24 @@ public class Tiler {
 		
 		int id = threadID;
 		int[][] rectangle;
-		Tiler tiler;
 
-		public RenderThread(int[][] rectangle, Tiler tiler) {
+		public RenderThread(int[][] rectangle) {
 			this.rectangle = rectangle;
-			this.tiler = tiler;
 		}
 
 		@Override
 		public void run() {
 
-			//synchronized(tiler) {
-				Box rectangleBox = getRectangleBox(rectangle);
-				Box queryBox = rectangleBox.copy().translate(mapBox, modelBox);
+			Box rectangleBox = getRectangleBox(rectangle);
+			Box queryBox = rectangleBox.copy().translate(mapBox, modelBox);
 
-				// Get edges from QT's
-				ArrayList<Edge> edges = new ArrayList<>();
-				int[] visible = Groups.getVisibleGroups(zoom);
-				for(int i = visible.length-1; i >= 0; i--)
-					edges.addAll(groups[visible[i]].queryRange(queryBox));
+			// Get edges from QT's
+			ArrayList<Edge> edges = new ArrayList<>();
+			int[] visible = Groups.getVisibleGroups(zoom);
+			for(int i = visible.length-1; i >= 0; i--)
+				edges.addAll(groups[visible[i]].queryRange(queryBox));
 
-
+			synchronized (linePool) {
 				// Make lines
 				ArrayList<Line> lines = new ArrayList<>();
 				for (int i = 0; i < edges.size(); i++) {
@@ -411,9 +414,9 @@ public class Tiler {
 						tile.isRendering = false;
 		 			}
 				}
-				snapshot = null;
-				canvas.repaint();
-			//}
+			}
+			snapshot = null;
+			canvas.repaint();
 		}
 
 		private boolean isValid() {

@@ -77,7 +77,6 @@ public class Tiler {
 		public Tile(int x, int y) {
 			this.x = x;
 			this.y = y;
-			image = gc.createCompatibleImage(TILESIZE, TILESIZE, Transparency.OPAQUE);
 		}
 	}
 
@@ -166,14 +165,15 @@ public class Tiler {
 
 			// Draw tiles
 			for (Tile tile : tiles) {
-				transformer.setToIdentity();
-				transformer.translate(
-					tile.x * TILESIZE - (int)section.start.x,
-					tile.y * TILESIZE - (int)section.start.y
-				);
-				graphics.drawRenderedImage(tile.image, transformer);
+				if (tile.image != null) {
+					transformer.setToIdentity();
+					transformer.translate(
+						tile.x * TILESIZE - (int)section.start.x,
+						tile.y * TILESIZE - (int)section.start.y
+					);
+					graphics.drawRenderedImage(tile.image, transformer);
+				}
 			}
-
 			renderPath(graphics);
 		}
 	}
@@ -250,7 +250,7 @@ public class Tiler {
 		ArrayList<int[][]> rectangles = new ArrayList<>();
 
 		ArrayList<Tile> list = new ArrayList<>();
-		for (Tile tile : tiles) if (!tile.isRendering) {
+		for (Tile tile : tiles) if (tile.image == null && !tile.isRendering) {
 			tile.isRendering = true;
 			list.add(tile);
 		}
@@ -412,15 +412,18 @@ public class Tiler {
 				int x, y;
 				for (int i = 0; i < rectangle[1][1]; i++) {
 					for (int j = 0; j < rectangle[1][0]; j++) {
+						if (!isValid()) return;
 						x = rectangle[0][0] + j;
 						y = rectangle[0][1] + i;
 						Tile tile = tileHash.get(getTileKey(x, y));
+						tile.image = gc.createCompatibleImage(TILESIZE, TILESIZE, Transparency.OPAQUE);
 						buffer.getRGB(
 							j * TILESIZE, i * TILESIZE,
 							TILESIZE, TILESIZE,
 							((DataBufferInt) tile.image.getRaster().getDataBuffer()).getData(),
 							0, TILESIZE
 						);
+						tile.isRendering = false;
 		 			}
 				}
 			}

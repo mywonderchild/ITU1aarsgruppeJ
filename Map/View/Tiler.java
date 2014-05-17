@@ -117,6 +117,7 @@ public class Tiler {
 					setZoom(zoomBounded, false);
 				}
 			}, 200);
+			canvas.repaint();
 		} else {
 			this.fake = false;
 
@@ -138,8 +139,6 @@ public class Tiler {
 			tilesY = (int)Math.ceil(mapDimensions.y / TILESIZE);
 			tileHash.clear();
 		}
-
-		canvas.repaint();
 	}
 
 	public void reset() {

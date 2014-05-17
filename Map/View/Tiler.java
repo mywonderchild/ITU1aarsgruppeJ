@@ -47,6 +47,7 @@ public class Tiler {
 	private boolean fake;
 	private AffineTransform transformer = new AffineTransform();
 	private GraphicsConfiguration gc;
+	private int threadID = 0;
 
 	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader, Canvas canvas) {
 
@@ -400,5 +401,19 @@ public class Tiler {
 		return vector
 			.translate(modelBox, mapBox)
 			.sub(section.start);
+	}
+
+	private class RenderThread implements Thread {
+		int id = ++threadID;
+
+		public RenderThread() {
+
+		}
+
+		@Override
+		public void run() {
+			if(id != threadID) return;
+			yield();
+		}
 	}
 }

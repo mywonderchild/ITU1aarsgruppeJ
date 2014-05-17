@@ -49,6 +49,35 @@ public class Box {
 		return true;
 	}
 
+	public boolean overlapping(Vector start, Vector end) {
+		Vector ne = this.start.copy(); ne.x = this.stop.x;
+		Vector sw = this.start.copy(); ne.y = this.stop.y;
+
+		return start.isInside(this) || end.isInside(this) ||
+			lineoverlapping(start, end, ne, this.start) ||
+			lineoverlapping(start, end, ne, this.stop) ||
+			lineoverlapping(start, end, sw, this.stop) ||
+			lineoverlapping(start, end, sw, this.start);
+	}
+
+	private static boolean lineoverlapping(Vector start1, Vector end1, Vector start2, Vector end2) {
+		double q = (start1.y - start2.y) * (end2.x - start2.x) - (start1.x - start2.x) * (end2.y - start2.y);
+		double d = (end1.x - start1.x) * (end2.y - start2.y) - (end1.y - start1.y) * (end2.x - start2.x);
+	
+		if(d == 0) return false;
+
+		double r = q / d;
+
+		q = (start1.y - start2.y) * (end1.x - start1.x) - (start1.x - start2.x) * (end1.y - start1.y);
+		double s = q / d;
+
+		if(r < 0 || r > 1 || s < 0 || s > 1) {
+			return false;
+		}
+
+		return true;
+	}
+
 	// Returns the center of the box
 	public Vector getCenter() {
 		return start.copy().add(stop).div(2);

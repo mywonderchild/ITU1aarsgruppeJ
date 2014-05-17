@@ -78,8 +78,8 @@ public class Vector {
 
 	// Determine if vector is inside box
 	public boolean isInside(Box box) {
-		if (x >= box.start.x && x < box.stop.x)
-			if (y >= box.start.y && y < box.stop.y)
+		if (x >= box.start.x && x <= box.stop.x)
+			if (y >= box.start.y && y <= box.stop.y)
 				return true;
 		return false;
 	}

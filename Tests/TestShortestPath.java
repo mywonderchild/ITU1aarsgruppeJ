@@ -29,14 +29,14 @@ public class TestShortestPath {
 		}
 
 		Edge[] edges = new Edge[] {
-			new Edge(nodes[0], nodes[2], 6, (byte)-1, "", -1, -1),
-			new Edge(nodes[0], nodes[3], 3, (byte)-1, "", -1, -1),
-			new Edge(nodes[1], nodes[0], 3, (byte)-1, "", -1, -1),
-			new Edge(nodes[2], nodes[3], 2, (byte)-1, "", -1, -1),
-			new Edge(nodes[3], nodes[1], 1, (byte)-1, "", -1, -1),
-			new Edge(nodes[3], nodes[2], 1, (byte)-1, "", -1, -1),
-			new Edge(nodes[4], nodes[1], 4, (byte)-1, "", -1, -1),
-			new Edge(nodes[4], nodes[3], 2, (byte)-1, "", -1, -1),
+			new Edge(-1, nodes[0], nodes[2], 6, (byte)-1, "", -1, -1),
+			new Edge(-1, nodes[0], nodes[3], 3, (byte)-1, "", -1, -1),
+			new Edge(-1, nodes[1], nodes[0], 3, (byte)-1, "", -1, -1),
+			new Edge(-1, nodes[2], nodes[3], 2, (byte)-1, "", -1, -1),
+			new Edge(-1, nodes[3], nodes[1], 1, (byte)-1, "", -1, -1),
+			new Edge(-1, nodes[3], nodes[2], 1, (byte)-1, "", -1, -1),
+			new Edge(-1, nodes[4], nodes[1], 4, (byte)-1, "", -1, -1),
+			new Edge(-1, nodes[4], nodes[3], 2, (byte)-1, "", -1, -1),
 		};
 
 		g = new Graph(nodes.length);

@@ -23,6 +23,7 @@ public class Loader {
 
 	private String nodePath, edgePath, cityPath;
 	private Vector max;
+	private int edgeID = 0;
 
 	public ArrayList<Node> nodes;
 	public QuadTree all;
@@ -134,14 +135,14 @@ public class Loader {
 		String name = readString();
 		int zip = readInt();
 		int speed = readInt();
-		Edge edge = new Edge(start, end, length, type, name, zip, speed);
+		Edge edge = new Edge(edgeID++, start, end, length, type, name, zip, speed);
 
 		groups[Groups.getGroup(edge.TYPE)].insert(edge);
 		
 		if (type == 81) return;
 
 		all.insert(edge);
-		Edge invertedEdge = new Edge(end, start, length, type, name, zip, speed);
+		Edge invertedEdge = new Edge(-1, end, start, length, type, name, zip, speed);
 		graph.addEdge(edge);
 		graph.addEdge(invertedEdge);
 		if(name != null) {

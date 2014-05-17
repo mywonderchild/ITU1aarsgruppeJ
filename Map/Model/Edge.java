@@ -7,6 +7,7 @@ import Map.Vector;
 import Map.Model.Groups;
 
 public class Edge {
+	public final int ID;
 	public final Node START, END;
 	public final double LENGTH;
 	public final byte TYPE;
@@ -15,9 +16,9 @@ public class Edge {
 	public final int SPEED;
 
 	public final double TIME;
-	public final Vector CENTER;
 
-	public Edge(Node start, Node end, double length, byte type, String name, int zip, int speed) {
+	public Edge(int id, Node start, Node end, double length, byte type, String name, int zip, int speed) {
+		ID = id;
 		START = start;
 		END = end;
 		LENGTH = length;
@@ -27,17 +28,14 @@ public class Edge {
 		SPEED = speed;
 
 		TIME = LENGTH/1000 / SPEED * 1.15; // 15% extra, as Krak does.
-		CENTER = START.VECTOR
-			.copy()
-			.add(END.VECTOR)
-			.div(2);
 	}
 
 	public Vector[] getVectors() {
 		return new Vector[] {START.VECTOR.copy(), END.VECTOR.copy()};
 	}
 
-	public Vector getCenter() {
-		return CENTER;
+	@Override
+	public int hashCode() {
+		return ID;
 	}
 }

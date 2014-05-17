@@ -1,6 +1,8 @@
 package Map.Model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.lang.RuntimeException;
 
 import Map.Box;
@@ -23,8 +25,7 @@ public class QuadTree
 	}
 
 	public boolean insert(Edge edge) {
-
-		if (!edge.getCenter().isInside(box))
+		if(!box.overlapping(edge.START.VECTOR, edge.END.VECTOR))
 			return false; // Element does not belong here!
 
 		if(n < NODE_CAPACITY) {
@@ -38,16 +39,19 @@ public class QuadTree
 		}
 
 		if (children == null) subdivide(); // Subdivide if not already.
-		for (QuadTree child : children) // Try to insert edge in children
-			if (child.insert(edge)) return true;
 
-		// Must never happen:
-		throw new RuntimeException(this.toString() + " has reached its maximum capacity, "
-			+ "but failed to insert the edge into any of its children.");
+        boolean insertFlag = false;
+		for (QuadTree child : children) // Try to insert edge in children
+			if (child.insert(edge)) insertFlag = true;
+
+        // Must never happen:
+        if(!insertFlag) throw new RuntimeException(this.toString() + " has reached its maximum capacity, "
+            + "but failed to insert the edge into any of its children.");
+		
+        return true;   
 	}
 
 	public void subdivide() {
-
 		Vector center = box.getCenter();
 		children = new QuadTree[]{
 			new QuadTree(new Box(box.start, center)), // North-west
@@ -56,27 +60,33 @@ public class QuadTree
 			new QuadTree(new Box(center, box.stop)) // South-east
 		};
 
+        boolean insertFlag = false;
 		for(Edge edge : edges)
 			for (QuadTree child : children)
-				if (child.insert(edge))
-					break;
+				if(child.insert(edge)) insertFlag = true;
+
+        // Must never happen:
+        if(!insertFlag) throw new RuntimeException(this.toString() + " has reached its maximum capacity, "
+            + "but failed to insert the edge into any of its children.");
+
 		edges = null;
 	}
 
-	public ArrayList<Edge> queryRange(Box query) {
-		ArrayList<Edge> result = new ArrayList<>();
-		queryRange(query.copy().grow(maxLen), result);
+	public Collection<Edge> queryRange(Box query) {
+        HashSet<Edge> result = new HashSet<Edge>();
+		queryRange(query.copy().grow(0), result);
 		return result;
 	}
 
-	public void queryRange(Box query, ArrayList<Edge> result) {
-
+	private void queryRange(Box query, HashSet<Edge> result) {
 		if(!box.overlapping(query)) return;
 
 		if (children == null) {
-			for (int i = 0; i < n; i++)
-				if (edges[i].getCenter().isInside(query))
+			for (int i = 0; i < n; i++) {
+                if(result.contains(edges[i])) continue; // no reason to do expensive overlap method then
+				if (query.overlapping(edges[i].START.VECTOR, edges[i].END.VECTOR))
 					result.add(edges[i]);
+            }
 		} else {
 			for (QuadTree child : children)
 				child.queryRange(query, result);
@@ -91,7 +101,7 @@ public class QuadTree
         	new Vector(point.x + size, point.y + size)
         );
 
-        ArrayList<Edge> edges = null;
+        Collection<Edge> edges = null;
         // Find some edge(s):
         while(edges == null) {
         	edges = queryRange(query);
@@ -161,7 +171,7 @@ public class QuadTree
         	new Vector(point.x + size, point.y + size)
         );
 
-        ArrayList<Edge> edges = null;
+        Collection<Edge> edges = null;
         // Find some edge(s):
         while(edges == null) {
         	edges = queryRange(query);

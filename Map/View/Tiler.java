@@ -72,10 +72,12 @@ public class Tiler {
 
 		public final int x, y;
 		public BufferedImage image;
+		public boolean isRendering = false;
 
 		public Tile(int x, int y) {
 			this.x = x;
 			this.y = y;
+			image = gc.createCompatibleImage(TILESIZE, TILESIZE, Transparency.OPAQUE);
 		}
 	}
 
@@ -358,7 +360,6 @@ public class Tiler {
 				x = rectangle[0][0] + j;
 				y = rectangle[0][1] + i;
 				Tile tile = tileHash.get(getTileKey(x, y));
-				tile.image = gc.createCompatibleImage(TILESIZE, TILESIZE, Transparency.OPAQUE);
 				buffer.getRGB(
 					j * TILESIZE, i * TILESIZE,
 					TILESIZE, TILESIZE,

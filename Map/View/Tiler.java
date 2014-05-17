@@ -82,63 +82,46 @@ public class Tiler {
 
 	public void setZoom(double zoom, boolean fake) {
 
-		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
-		double oldZoom = this.zoom;
-		this.zoom = zoomBounded;
+		threadID++;
 		Vector viewDimensions = viewBox.dimensions();
 
-		threadID++;
-
-		if (fake) {
-
-			// Save a snapshot of origin zoom level if one doesn't exist
-			if (snapshot == null) {
-				zoomOrigin = oldZoom;
-				snapshot = gc.createCompatibleImage(
-					(int)viewDimensions.x,
-					(int)viewDimensions.y,
-					Transparency.OPAQUE
-				);
-				Graphics2D graphics = (Graphics2D)snapshot.getGraphics();
-				graphics.setColor(Color.WHITE);
-				graphics.fillRect(0, 0, snapshot.getWidth(), snapshot.getHeight());
-				render(graphics);
-				graphics.dispose();
-			}
-
-			this.fake = true;
-
-			if (timer != null) timer.cancel();
-			timer = new Timer(true);
-			timer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					snapshot = null;
-					setZoom(zoomBounded, false);
-				}
-			}, 200);
-			canvas.repaint();
-		} else {
-			this.fake = false;
-
-			buffer = gc.createCompatibleImage(
-				(int)viewDimensions.x + TILESIZE * 2,
-				(int)viewDimensions.y + TILESIZE * 2,
+		if (snapshot == null) {
+			zoomOrigin = this.zoom;
+			snapshot = gc.createCompatibleImage(
+				(int)viewDimensions.x,
+				(int)viewDimensions.y,
 				Transparency.OPAQUE
 			);
-			bufferGraphics = buffer.createGraphics();
-			bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			Graphics2D graphics = (Graphics2D)snapshot.getGraphics();
+			graphics.setColor(Color.WHITE);
+			graphics.fillRect(0, 0, snapshot.getWidth(), snapshot.getHeight());
+			render(graphics);
+			graphics.dispose();
+		} 
 
-			Vector mapDimensions = viewDimensions
-				.div(viewBox.ratio())
-				.div(this.zoom)
-				.mult(modelBox.ratio());
-			mapBox = new Box(new Vector(0, 0), mapDimensions);
+		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
+		this.zoom = zoomBounded;
 
-			tilesX = (int)Math.ceil(mapDimensions.x / TILESIZE);
-			tilesY = (int)Math.ceil(mapDimensions.y / TILESIZE);
-			tileHash.clear();
-		}
+		buffer = gc.createCompatibleImage(
+			(int)viewDimensions.x + TILESIZE * 2,
+			(int)viewDimensions.y + TILESIZE * 2,
+			Transparency.OPAQUE
+		);
+		bufferGraphics = buffer.createGraphics();
+		bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		Vector mapDimensions = viewDimensions
+			.div(viewBox.ratio())
+			.div(this.zoom)
+			.mult(modelBox.ratio());
+		mapBox = new Box(new Vector(0, 0), mapDimensions);
+
+		tilesX = (int)Math.ceil(mapDimensions.x / TILESIZE);
+		tilesY = (int)Math.ceil(mapDimensions.y / TILESIZE);
+
+		tileHash.clear();
+
+		canvas.repaint();	
 	}
 
 	public void reset() {
@@ -148,44 +131,41 @@ public class Tiler {
 
 	public void render(Graphics2D graphics) {
 
-		if (fake) {
-			fakeRender(graphics);
-		} else {
-
-			// Render the tiles in the visible section
-			section = getSection();
-			Tile[] tiles = getTiles(section);
-			
-			for (int[][] rectangle : getRectangles(tiles)) {
-				Thread thread = new RenderThread(rectangle, this);
-				thread.setDaemon(true);
-				thread.start();
-			}
-
-			// Draw tiles
-			for (Tile tile : tiles) {
-				if (tile.image != null) {
-					transformer.setToIdentity();
-					transformer.translate(
-						tile.x * TILESIZE - (int)section.start.x,
-						tile.y * TILESIZE - (int)section.start.y
-					);
-					graphics.drawRenderedImage(tile.image, transformer);
-				}
-			}
-			renderPath(graphics);
+		// Do the fake render using snapshot no matter what
+		if (snapshot != null) {
+			transformer.setToIdentity();
+			double scale = zoomOrigin / zoom;
+			transformer.translate(
+				(int)(snapshot.getWidth() * (1 - scale) / 2),
+				(int)(snapshot.getHeight() * (1 - scale) / 2)
+			);
+			transformer.scale(scale, scale);
+			graphics.drawRenderedImage(snapshot, transformer);
 		}
-	}
 
-	public void fakeRender(Graphics2D graphics) {
-		transformer.setToIdentity();
-		double scale = zoomOrigin / zoom;
-		transformer.translate(
-			(int)(snapshot.getWidth() * (1 - scale) / 2),
-			(int)(snapshot.getHeight() * (1 - scale) / 2)
-		);
-		transformer.scale(scale, scale);
-		graphics.drawRenderedImage(snapshot, transformer);
+		// Render the tiles in the visible section
+		if (mapBox == null) return;
+		section = getSection();
+		Tile[] tiles = getTiles(section);
+		
+		for (int[][] rectangle : getRectangles(tiles)) {
+			Thread thread = new RenderThread(rectangle, this);
+			thread.setDaemon(true);
+			thread.start();
+		}
+
+		// Draw tiles
+		for (Tile tile : tiles) {
+			if (tile.image != null) {
+				transformer.setToIdentity();
+				transformer.translate(
+					tile.x * TILESIZE - (int)section.start.x,
+					tile.y * TILESIZE - (int)section.start.y
+				);
+				graphics.drawRenderedImage(tile.image, transformer);
+			}
+		}
+		renderPath(graphics);
 	}
 
 	public void renderPath(Graphics2D graphics) {
@@ -429,6 +409,7 @@ public class Tiler {
 						tile.isRendering = false;
 		 			}
 				}
+				snapshot = null;
 				synchronized(canvas) { canvas.repaint(); }
 			}
 		}

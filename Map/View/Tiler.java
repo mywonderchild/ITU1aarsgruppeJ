@@ -88,6 +88,8 @@ public class Tiler {
 		this.zoom = zoomBounded;
 		Vector viewDimensions = viewBox.dimensions();
 
+		threadID++;
+
 		if (fake) {
 
 			// Save a snapshot of origin zoom level if one doesn't exist
@@ -155,8 +157,12 @@ public class Tiler {
 			// Render the tiles in the visible section
 			section = getSection();
 			Tile[] tiles = getTiles(section);
-			for (int[][] rectangle : getRectangles(tiles))
-				renderRectangle(rectangle);
+			
+			for (int[][] rectangle : getRectangles(tiles)) {
+				Thread thread = new RenderThread(rectangle);
+				thread.setDaemon(true);
+				thread.start();
+			}
 
 			// Draw tiles
 			for (Tile tile : tiles) {
@@ -244,7 +250,10 @@ public class Tiler {
 		ArrayList<int[][]> rectangles = new ArrayList<>();
 
 		ArrayList<Tile> list = new ArrayList<>();
-		for (Tile tile : tiles) if (tile.image == null) list.add(tile);
+		for (Tile tile : tiles) if (!tile.isRendering) {
+			tile.isRendering = true;
+			list.add(tile);
+		}
 		if (list.size() == 0) return rectangles;
 
 		// Terminate if usual case
@@ -322,54 +331,6 @@ public class Tiler {
 		return rectangles;
 	}
 
-	public void renderRectangle(int[][] rectangle) {
-
-		Box rectangleBox = getRectangleBox(rectangle);
-		Box queryBox = rectangleBox.copy().translate(mapBox, modelBox);
-
-		// Get edges from QT's
-		ArrayList<Edge> edges = new ArrayList<>();
-		int[] visible = Groups.getVisibleGroups(zoom);
-		for(int i = visible.length-1; i >= 0; i--)
-			edges.addAll(groups[visible[i]].queryRange(queryBox));
-
-		// Make lines
-		ArrayList<Line> lines = new ArrayList<>();
-		for (int i = 0; i < edges.size(); i++) {
-			Edge edge = edges.get(i);
-			Vector[] vectors = edge.getVectors();
-			for (Vector vector : vectors)
-				vector = translateToRectangle(vector, rectangleBox);
-			if (i >= linePool.size()) linePool.add(new Line());
-			lines.add(linePool.get(i).set(
-				vectors[0], vectors[1],
-				Groups.getColor(edge),
-				Groups.getWidth(edge, zoom)
-			));
-		}
-
-		// Render image to buffer
-		bufferGraphics.setColor(Color.WHITE);
-		bufferGraphics.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
-		Painter.paintLines(bufferGraphics, lines);
-
-		// Save buffer fragments to tiles
-		int x, y;
-		for (int i = 0; i < rectangle[1][1]; i++) {
-			for (int j = 0; j < rectangle[1][0]; j++) {
-				x = rectangle[0][0] + j;
-				y = rectangle[0][1] + i;
-				Tile tile = tileHash.get(getTileKey(x, y));
-				buffer.getRGB(
-					j * TILESIZE, i * TILESIZE,
-					TILESIZE, TILESIZE,
-					((DataBufferInt) tile.image.getRaster().getDataBuffer()).getData(),
-					0, TILESIZE
-				);
- 			}
-		}
-	}
-
 	private long getTileKey(int x, int y) {
 		return (long)x << 32 | y;
 	}
@@ -404,17 +365,69 @@ public class Tiler {
 			.sub(section.start);
 	}
 
-	private class RenderThread implements Thread {
-		int id = ++threadID;
+	private class RenderThread extends Thread {
+		
+		int id = threadID;
+		int[][] rectangle;
 
-		public RenderThread() {
-
+		public RenderThread(int[][] rectangle) {
+			this.rectangle = rectangle;
 		}
 
 		@Override
 		public void run() {
-			if(id != threadID) return;
-			yield();
+			Box rectangleBox = getRectangleBox(rectangle);
+			Box queryBox = rectangleBox.copy().translate(mapBox, modelBox);
+
+			// Get edges from QT's
+			ArrayList<Edge> edges = new ArrayList<>();
+			int[] visible = Groups.getVisibleGroups(zoom);
+			for(int i = visible.length-1; i >= 0; i--)
+				edges.addAll(groups[visible[i]].queryRange(queryBox));
+
+			// Make lines
+			ArrayList<Line> lines = new ArrayList<>();
+			for (int i = 0; i < edges.size(); i++) {
+				Edge edge = edges.get(i);
+				Vector[] vectors = edge.getVectors();
+				for (Vector vector : vectors)
+					vector = translateToRectangle(vector, rectangleBox);
+				if (i >= linePool.size()) linePool.add(new Line());
+				lines.add(linePool.get(i).set(
+					vectors[0], vectors[1],
+					Groups.getColor(edge),
+					Groups.getWidth(edge, zoom)
+				));
+			}
+
+			// Render image to buffer
+			synchronized(buffer) {
+				bufferGraphics.setColor(Color.WHITE);
+				bufferGraphics.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
+				Painter.paintLines(bufferGraphics, lines);
+
+				if (!isValid()) return;
+
+				// Save buffer fragments to tiles
+				int x, y;
+				for (int i = 0; i < rectangle[1][1]; i++) {
+					for (int j = 0; j < rectangle[1][0]; j++) {
+						x = rectangle[0][0] + j;
+						y = rectangle[0][1] + i;
+						Tile tile = tileHash.get(getTileKey(x, y));
+						buffer.getRGB(
+							j * TILESIZE, i * TILESIZE,
+							TILESIZE, TILESIZE,
+							((DataBufferInt) tile.image.getRaster().getDataBuffer()).getData(),
+							0, TILESIZE
+						);
+		 			}
+				}
+			}
+		}
+
+		private boolean isValid() {
+			return id == threadID;
 		}
 	}
 }

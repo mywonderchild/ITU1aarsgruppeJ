@@ -7,7 +7,7 @@ Flere forskellige datastrukturer syntes besidde de nævnte egenskaber: heribland
 K-d træet splittes ved median elementet og opdeler træet i to subproblemer. Der splittes igen omkring median elementet i hvert subproblem, hvortil der opstår to subproblemer per split. I en quadtree-struktur, derimod, indeholder hver \emph{quad} fire andre quads --- NØ, SØ, SV og NV. Individuelle quads kan acceptere et begrænset antal elementer, hvorefter ethvert fremtidigt forsøg på indsættelse vil blive videregivet til dennes indholdte quads rekursivt.
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.5\textwidth]{quadtree1}
+	\includegraphics[width=0.4\textwidth]{quadtree1}
 	\captionsetup{width=0.8\textwidth}
 	\caption{Eksempel på udsnit en quadtree-struktur hvori dybden af de individuelle quads fremhæves af disses nuance.}
 	\label{fig:quadtree1}
@@ -17,17 +17,12 @@ Elementforespørgsel, hvor et rektangulært område søges, foregår ligeledes r
 Det vurderes at en sorteret liste ville være for langsom til vores behov. Det var svært at sætte fingeren på en konkret forskel i ydeevnen mellem k-d træet og quadtree-strukturen. Grundet et langt større kendskab til quadtree-strukturens virkemåde, sås denne således som den mest passende løsning. Vi fandt det vigtigt at valget og udarbejde datastrukturen hurtigt, da udviklingen af resten af programmet afhang deraf.
 
 \subsection{Linjeplacering}
+Da en quadtree-struktur arbejder med et koordinatrum ved indsættelse og forespørgsel af data, er det nødvendigt at skabe en sammenhæng mellem et vejsegment og koordinatsystemet. Indledningsvist løste vi dette problem med blot at styre indsættelsen af en linje efter dens centrum. Dette forsagede dog et større problem hvor relativt lange linger ikke blev tegnet, da disses centrum sagtens kunne være uden for den besøgte quad. Vores umiddelbare løsning til dette var at tillægge enhver forespørgselsrektangel den halvde længde af den længste linje i den førstspurgte quad. Således var det garanteret, at samtlige linjer, som skar det efterspurgte rektangel, faktisk blev fundet.
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.5\textwidth]{quadtree2}
+	\includegraphics[width=0.7\textwidth]{quadtree2}
 	\captionsetup{width=0.8\textwidth}
-	\caption{CAPTION}
+	\caption{Venstre: Linjens centrum afgør hvilken quad den placeres i. Højre: Linjen placeres i enhver quad, som denne skærer.}
 	\label{fig:quadtree2}
 \end{figure}
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.5\textwidth]{quadtree3}
-	\captionsetup{width=0.8\textwidth}
-	\caption{CAPTION}
-	\label{fig:quadtree3}
-\end{figure}
+Denne implementering 

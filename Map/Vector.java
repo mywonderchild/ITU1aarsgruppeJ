@@ -78,6 +78,7 @@ public class Vector {
 
 	// Determine if vector is inside box
 	public boolean isInside(Box box) {
+		box = box.copy().properCorners();
 		if (x >= box.start.x && x <= box.stop.x)
 			if (y >= box.start.y && y <= box.stop.y)
 				return true;

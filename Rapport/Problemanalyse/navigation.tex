@@ -49,5 +49,3 @@ I et forsøg på at forøge hastigheden af navigationsudregningen, implementered
 \subsection{Ruteomkostninger}
 \label{subsec:ruteomkostninger}
 Kvaliteten af både Dijkstra og A* algoritmernes resulterende korteste vej afhænger naturligt af hvilke informationer et linjesegments længde defineres ved. Et intuitivt svar er vejens egentlige længde, hvorfor dette også blev anvendt i de indledende implementeringer. Det viste sig dog hurtigt at være en uhensigtsmæssig tilgang, da den korteste vej ikke nødvendigvis er den hurtigste. Derudover forsagede det også stor mængde kursændringer, hvilket er uønsket for både længden af rutebeskrivelsen i programmet samt for letheden af den egentlige kørsel. For at løse dette udregnedes\footnote{Kraks datasæt indeholder køretider på veje, men vi valgte at omgå disse for også at imødekomme andre datasæt. (herunder OSM).} i stedet tidsforbruget for et linjesegment.\footnote{$Tid=længde/hastighed*1.15$} Krak arbejder med en trafiktillægstid på 15\% i deres datasæt, hvilket vi har ladet vores implementering inspirere af.
-%længde = tid
-%valg af heuristik

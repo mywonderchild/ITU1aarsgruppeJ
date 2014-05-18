@@ -134,9 +134,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 			Vector dimensions = selection.dimensions();
 			Vector zoom = dimensions.div(tiler.modelBox.dimensions());
 			if (zoom.x > zoom.y)
-				tiler.setZoom(zoom.x, false);
+				tiler.setZoom(zoom.x);
 			else
-				tiler.setZoom(zoom.y, false);
+				tiler.setZoom(zoom.y);
 		}
 
 		reset();
@@ -181,7 +181,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener, MouseWh
 	public void mouseWheelMoved(MouseWheelEvent e){
 		boolean zoomIn = e.getWheelRotation() > 0;
 		double scalar = zoomIn ? 1.1 : 0.9;
-		tiler.setZoom(tiler.zoom * scalar, true);
+		tiler.setZoom(tiler.zoom * scalar);
     }
 
     @Override

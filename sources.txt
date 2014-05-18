@@ -31,5 +31,4 @@
 ./Tests/TestBox.java
 ./Tests/TestPriorityQueue.java
 ./Tests/TestShortestPath.java
-./Tests/TestTiler.java
 ./Tests/TestVector.java

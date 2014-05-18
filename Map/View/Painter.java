@@ -25,6 +25,7 @@ public class Painter {
 				(int) line.start.x, (int) line.start.y,
 				(int) line.stop.x, (int) line.stop.y
 			);
+			if (Thread.interrupted()) return;
 		}
 	}
 

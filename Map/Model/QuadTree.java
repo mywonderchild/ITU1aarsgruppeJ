@@ -16,6 +16,11 @@ public class QuadTree
 	private Edge[] edges;
 	private int n = 0;
 
+    // DEBUG
+    static private int carecount = 0;
+    static private int careless = 0;
+    static private int carefull = 0;
+
 	public QuadTree(Box box) {
 		this.box = box;
 		edges = new Edge[NODE_CAPACITY];
@@ -55,22 +60,44 @@ public class QuadTree
 
 	public Collection<Edge> queryRange(Box query) {
         HashSet<Edge> result = new HashSet<Edge>();
-		queryRange(query, result);
+		queryRange(query, result, false);
 		return result;
 	}
 
-	private void queryRange(Box query, HashSet<Edge> result) {
-		if(!box.overlapping(query)) return;
-        for (int i = 0; i < n; i++) {
-            if(result.contains(edges[i])) continue; // no reason to do expensive overlap method then
-            if (query.overlapping(edges[i].START.VECTOR, edges[i].END.VECTOR))
+    private void carebugger(boolean careless) {
+        if(careless) this.careless++;
+        else this.carefull++;
+        carecount++;
+
+        if(carecount%10000==0) {
+            System.out.printf("Bypassing query-check %.2f%% of the time\n",
+                ((double)this.careless)/((double)this.carefull)*100.0);
+            this.careless = 0;
+            this.carefull = 0;
+        }
+    }
+
+	private void queryRange(Box query, HashSet<Edge> result, boolean careless) {
+        if(!careless) careless = box.isInside(query); // careless if quad is completely inside query
+
+        carebugger(careless); // DEBUG
+
+        if(careless) {
+            for (int i = 0; i < n; i++)
                 result.add(edges[i]);
+        }
+        else {
+    		if(!box.overlapping(query)) return; // not touching quad at all
+            for (int i = 0; i < n; i++) {
+                if(result.contains(edges[i])) continue; // no reason to do expensive overlap method if already in set
+                if (query.overlapping(edges[i].START.VECTOR, edges[i].END.VECTOR))
+                    result.add(edges[i]);
+            }
         }
 		
         if(children == null) return;
-
         for (QuadTree child : children) {
-                child.queryRange(query, result);
+                child.queryRange(query, result, careless);
         }
 	}
 

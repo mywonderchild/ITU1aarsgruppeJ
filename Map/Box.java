@@ -138,6 +138,11 @@ public class Box {
 		return this;
 	}
 
+	// Checks if this box is completely inside another
+	public boolean isInside(Box box) {
+		return start.isInside(box) && stop.isInside(box);
+	}
+
 	// Copies the box and its start and stop vectors
 	public Box copy() {
 		return new Box(start.copy(), stop.copy());

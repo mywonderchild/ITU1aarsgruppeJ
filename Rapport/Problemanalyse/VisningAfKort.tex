@@ -13,7 +13,9 @@ Når brugeren navigerer kortet og bliver på samme zoom-niveau vil der være del
 
 Til at starte med tegnede vi hele udsnittet, inklusiv overlap, men det viste sig ikke at være hurtigt nok, og responstiden blev problematisk. Det blev derfor besluttet at vi havde brug for en mere effektiv løsning, der kun tegner den del af et nyt udsnit der ikke overlapper med det gamle udsnit.
 
-Dette afsnit er skrevet på et tidspunkt hvor vores implementering af quadtræer ikke var optimal. En af ulemperne ved denne implementation var, at den returnerede en margin af vejstykker uden om den rektangel der var efterspurgt. Denne margin udggjorde i mange tilfælde helt op til 70-80\% af de returnerede vejstykker. Analyserne i dette afsnit tager udgangspunkt i implementeringen før optimeringen, og der er derfor lagt relativt stor vægt på at ovennævnte ulempe eksisterede. Analyserne er dog fortsat relevante, da der altid vil være vejstykker der ``stikker ud'' af det forespurgte rektangel, men gevinsten er langt mindre end den var før optimeringen.
+Dette afsnit er skrevet på et tidspunkt hvor vores implementering af quadtræer ikke var optimal. En af ulemperne ved denne implementation var, at den returnerede en margin af vejstykker uden om den rektangel der var efterspurgt. Denne margin udggjorde i mange tilfælde helt op til 70-80\% af de returnerede vejstykker. Efter optimeringen er denne ulempe ikke eksisterende.
+
+Analyserne i dette afsnit tager udgangspunkt i implementeringen før optimeringen, og der er derfor lagt stor vægt på at ovennævnte ulempe eksisterede. Analyserne er dog fortsat relevante, men gevinsten ved at bruge de nævnte løsninger er langt mindre end den var før optimeringen.
 
 \subsection{Cache og forskydning}
 \label{subsec:cacheOgForskydning}
@@ -93,11 +95,6 @@ For at holde styr på hvilket udsnit af kortet brugeren kigger på opdateres to 
 
 Ved hjælp af disse to variable kan det beregnes hvilket udsnit af kortet der er aktuelt. Vi valgte denne løsning som et alternativ til absolutte koordinater for en boks for at opnå øget fleksibilitet, og fordi denne løsning virkede mere intuitiv for os.
 
-\subsubsection{Når zoom ændrer sig}
-\label{subsec:naarZoomAendrerSig}
-
-Når zoom ændrer sig skal størrelsen af tiles opdateres.
-
 \subsubsection{Hvilke tile skal vises}
 \label{subsec:hvilkeTilesSkalVises}
 
@@ -142,7 +139,7 @@ Som nævnt tidligere skal tiles tegnes løbende som følge af at vi ikke har en 
 	\label{figur:visningAfKort7}
 \end{figure}
 
-Efter at gruppen af tiles er blevet tegnet samlet, klippes tiles ud og gemmes individuelt i datastrukturen.
+Derudover er det væsentligt hurtigere at hente vejstykker fra quadtræerne hvis tiles grupperes til store rektangler, frem for at der hentes vejstykker for tiles enkeltvis. Grunden til dette er at vores quadtræer er optimeret således, at alle vejstykker der er i en quad og dens subquads returneres hvis den er fuldstændigt indenfor den boks der efterspørges. Det grupperede rektangel bryder med et minimalt antal quads, og er derfor langt mere effektivt, da det tager en en hel del tid at afgøre om vejstykker er inden eller uden for den efterspurgte boks.
 
 \subsubsection{Definition af algoritme}
 \label{subsec:definitionAfAlgoritme}
@@ -284,7 +281,7 @@ Object pools er et designparadigme der anvendes når man ønsker at genbruge obj
 \begin{itemize}
 	\item \textbf{Tråde}: Tråde er dyre at initialisere, og har ikke nogen unikke egenskaber der ændrer sig under programmets levetid. Det giver derfor mening at genbruge dem så vidt muligt.
 	\item \textbf{Buffers}: Bitmap buffers og de objekter der skal tegne på dem er dyre at initialisere, og det er derfor en fordel at genbruge dem.
-	\item \textbf{Linjer}: Vi har ofte brug for at have adgang til tusindvis af linjer meget hurtigt når der skal tegnes linjer til en buffer. Selvom disse objekter er meget hurtige at initialisere, giver det mening at genbruge dem fordi vi har så mange af dem.
+	\item \textbf{Linjer}: Programmet har ofte brug for at have adgang til tusindvis af linjer meget hurtigt når der skal tegnes linjer til en buffer. På trods af at linje objekter er meget hurtige at initialisere, viste det sig i praksis at være en optimering at genbruge dem. Dette formoder vi skyldes at programmet har brug for store mængder af denne type objekter, og genbruger dem mange gange.
 \end{itemize}
 
 \subsection{Fake zoom}

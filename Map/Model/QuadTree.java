@@ -1,6 +1,5 @@
 package Map.Model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.lang.RuntimeException;
@@ -17,8 +16,6 @@ public class QuadTree
 	private Edge[] edges;
 	private int n = 0;
 
-	private double maxLen = 0;
-
 	public QuadTree(Box box) {
 		this.box = box;
 		edges = new Edge[NODE_CAPACITY];
@@ -30,11 +27,6 @@ public class QuadTree
 
 		if(n < NODE_CAPACITY) {
 			edges[n++] = edge;
-
-			// Update max edge length
-			double edgeLen = edge.getVectors()[0].dist(edge.getVectors()[1]);
-			if(edgeLen > maxLen) maxLen = edgeLen;
-
 			return true;
 		}
 
@@ -63,7 +55,7 @@ public class QuadTree
 
 	public Collection<Edge> queryRange(Box query) {
         HashSet<Edge> result = new HashSet<Edge>();
-		queryRange(query.copy().grow(0), result);
+		queryRange(query, result);
 		return result;
 	}
 
@@ -158,6 +150,27 @@ public class QuadTree
         	query.scale(2); // double query size
         }
 
+        // Find longest edge in query
+        double longest = Double.NEGATIVE_INFINITY;
+        Edge longestEdge = null;
+        for(Edge edge : edges) {
+            if(edge.LENGTH > longest) {
+                longest = edge.LENGTH;
+                longestEdge = edge;
+            }
+        }
+
+        // Edge.LENGTH is not the actual length, but the scale
+        // is the same among all edges. Find the true length:
+        longest = longestEdge.START.VECTOR.dist(longestEdge.END.VECTOR);
+
+        // To make sure that the closest NODE, and not just the
+        // closest edge was found, we must add ½ the length of
+        // the longest edge to our query.
+        edges = queryRange(query.grow(longest/2));
+
+        // Now that we are sure, that the edge housing the closest
+        // node is in our collection, find it.
         Node closest = null;
         double closestDist = Double.POSITIVE_INFINITY;
 

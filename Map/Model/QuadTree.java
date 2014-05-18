@@ -64,25 +64,25 @@ public class QuadTree
 		return result;
 	}
 
-    private void carebugger(boolean careless) {
-        if(careless) this.careless++;
-        else this.carefull++;
+    private void carebugger(boolean lazy) {
+        if(lazy) careless++;
+        else carefull++;
         carecount++;
 
         if(carecount%10000==0) {
             System.out.printf("Bypassing query-check %.2f%% of the time\n",
-                ((double)this.careless)/((double)this.carefull)*100.0);
-            this.careless = 0;
-            this.carefull = 0;
+                ((double)careless)/(double)(careless+carefull)*100.0);
+            careless = 0;
+            carefull = 0;
         }
     }
 
-	private void queryRange(Box query, HashSet<Edge> result, boolean careless) {
-        if(!careless) careless = box.isInside(query); // careless if quad is completely inside query
+	private void queryRange(Box query, HashSet<Edge> result, boolean lazy) {
+        if(!lazy) lazy = box.isInside(query); // lazy if quad is completely inside query
 
-        carebugger(careless); // DEBUG
+        carebugger(lazy); // DEBUG
 
-        if(careless) {
+        if(lazy) {
             for (int i = 0; i < n; i++)
                 result.add(edges[i]);
         }
@@ -97,7 +97,7 @@ public class QuadTree
 		
         if(children == null) return;
         for (QuadTree child : children) {
-                child.queryRange(query, result, careless);
+                child.queryRange(query, result, lazy);
         }
 	}
 

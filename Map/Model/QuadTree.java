@@ -82,23 +82,21 @@ public class QuadTree
         	new Vector(point.x + size, point.y + size)
         );
 
-        Collection<Edge> edges = null;
         // Find some edge(s):
-        while(edges == null) {
+        Collection<Edge> edges = queryRange(query);
+        boolean nameFound = false;
+        while(edges.size() == 0 || nameFound == false) {
+            query.scale(2); // double query size
         	edges = queryRange(query);
         	
         	if(withName) { // check if any name is present
-        		boolean nameFound = false;
         		for(Edge edge : edges) {
-	       			if(edge.NAME != null) {
+	       			if(edge.NAME != null && edge.NAME.length() > 0) {
 	       				nameFound = true;
 	       				break;
 	       			}
 	       		}
-	       		if(!nameFound) edges = null; // no name, no game
         	}
-
-        	query.scale(2); // double query size
         }
 
         Edge closest = null;
@@ -143,11 +141,11 @@ public class QuadTree
         	new Vector(point.x + size, point.y + size)
         );
 
-        Collection<Edge> edges = null;
         // Find some edge(s):
-        while(edges == null) {
+        Collection<Edge> edges = queryRange(query);
+        while(edges.size() == 0) {
+            query.scale(2); // double query size
         	edges = queryRange(query);
-        	query.scale(2); // double query size
         }
 
         // Find longest edge in query

@@ -139,7 +139,7 @@ Som nævnt tidligere skal tiles tegnes løbende som følge af at vi ikke har en 
 	\label{figur:visningAfKort7}
 \end{figure}
 
-Derudover er det væsentligt hurtigere at hente vejstykker fra quadtræerne hvis tiles grupperes til store rektangler, frem for at der hentes vejstykker for tiles enkeltvis. Grunden til dette er at vores quadtræer er optimeret således, at alle vejstykker der er i en quad og dens subquads returneres hvis den er fuldstændigt indenfor den boks der efterspørges. Det grupperede rektangel bryder med et minimalt antal quads, og er derfor langt mere effektivt, da det tager en en hel del tid at afgøre om vejstykker er inden eller uden for den efterspurgte boks.
+Derudover er det væsentligt hurtigere at hente vejstykker fra quadtræerne hvis tiles grupperes til store rektangler, frem for at der hentes vejstykker for tiles enkeltvis. Grunden til dette er at vores quadtræer er optimeret således, at alle vejstykker der er i en quad og dens subquads returneres hvis den er fuldstændigt indenfor den boks der efterspørges. Det grupperede rektangel bryder med et minimalt antal quads, og er derfor langt mere effektivt i mange tilfælde. Den største besparelse sker når der skiftes zoom niveau og det nye udsnit indeholder et stort antal vejstykker der er distribueret over mange quads.
 
 \subsubsection{Definition af algoritme}
 \label{subsec:definitionAfAlgoritme}

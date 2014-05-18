@@ -94,6 +94,10 @@ public class Tiler {
 
 	public void setZoom(double zoom) {
 
+		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
+		if (this.zoom == minZoom && zoomBounded == minZoom) return;
+		if (this.zoom == maxZoom && zoomBounded == maxZoom) return;
+
 		while (!futures.empty()) futures.pop().cancel(true);
 		Vector viewDimensions = viewBox.dimensions();
 
@@ -111,7 +115,6 @@ public class Tiler {
 			graphics.dispose();
 		}
 
-		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
 		this.zoom = zoomBounded;
 
 		Vector mapDimensions = viewDimensions
@@ -137,6 +140,7 @@ public class Tiler {
 
 		// Do the fake render using snapshot no matter what
 		if (snapshot != null) {
+			graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 			transformer.setToIdentity();
 			double scale = zoomOrigin / zoom;
 			transformer.translate(
@@ -145,6 +149,7 @@ public class Tiler {
 			);
 			transformer.scale(scale, scale);
 			graphics.drawRenderedImage(snapshot, transformer);
+			graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 		}
 
 		// Render the tiles in the visible section

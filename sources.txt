@@ -23,7 +23,6 @@
 ./Map/saxPurger.java
 ./Map/Tests/TestBox.java
 ./Map/Tests/TestPriorityQueue.java
-./Map/Tests/TestShortestPath.java
 ./Map/Tests/TestVector.java
 ./Map/Vector.java
 ./Map/View/Canvas.java

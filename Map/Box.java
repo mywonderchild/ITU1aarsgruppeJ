@@ -61,6 +61,8 @@ public class Box {
 	}
 
 	private static boolean lineoverlapping(Vector start1, Vector end1, Vector start2, Vector end2) {
+		// source: http://stackoverflow.com/a/5514619
+		// algorithm verified by test in testBox class
 		double q = (start1.y - start2.y) * (end2.x - start2.x) - (start1.x - start2.x) * (end2.y - start2.y);
 		double d = (end1.x - start1.x) * (end2.y - start2.y) - (end1.y - start1.y) * (end2.x - start2.x);
 	

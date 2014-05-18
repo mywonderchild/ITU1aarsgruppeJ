@@ -117,4 +117,29 @@ public class TestBox {
 		assertEquals(box.start.y, -10, delta);
 		assertEquals(box.stop.y, 80, delta);
 	}
+
+	@Test
+	public void overlappingLine() {
+		Vector[][] lines = new Vector[][] {
+			{ new Vector(2,5), new Vector(2,3) }, // top
+			{ new Vector(4,3), new Vector(2,3) }, // right
+			{ new Vector(2,1), new Vector(2,3) }, // bottom
+			{ new Vector(0,3), new Vector(2,3) }, // left
+			{ new Vector(2,3), new Vector(2,3) }, // inside, but len = 0
+			{ new Vector(0,5), new Vector(1,4) },
+			{ new Vector(0,2), new Vector(4,4) },
+			{ new Vector(3,1), new Vector(1,5) }
+		};
+
+		for(Vector[] line : lines) {
+			assertTrue(box.overlapping(line[0], line[1]));
+		}
+
+
+		Vector[] wrong = new Vector[] {
+			new Vector(3,1), new Vector(4,2)
+		};
+
+		assertFalse(box.overlapping(wrong[0], wrong[1]));
+	}
 }

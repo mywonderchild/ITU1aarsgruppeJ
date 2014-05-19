@@ -3,7 +3,6 @@ package Map.Model;
 import java.awt.Color;
 
 import Map.Model.Edge;
-import Map.View.Tiler;
 
 public class Groups {
 

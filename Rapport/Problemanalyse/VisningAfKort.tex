@@ -119,12 +119,12 @@ De løsninger vi er inspireret gør to ting markant anderledes end vi gør:
 
 \begin{itemize}
 	\item De begrænser antallet af zoom niveauer. Hvis man ikke gør dette er der uendeligt mange zoom-niveauer, og dermed uendeligt mange tiles der potentielt skal lagres.
-	\item De har en vedligeholdt database over tiles. Ved at gøre dette undgår de at tegne nye tiles når et udsnit efterspørges --- I stedet hentes tiles fra den centrale database.
+	\item De har en vedligeholdt database over tiles hvor tiles løbende hentes fra. Ved at gøre dette undgår de at tegne nye tiles når et udsnit efterspørges --- I stedet hentes tiles fra den centrale database.
 \end{itemize}
 
 Vi overvejede en kort overgang at implementere en database løsning, men besluttede os for at det ville være for stor en opgave. Dette ville være en oplagt mulighed for senere optimering af programmet, og kunne både implementeres med en lokal eller en ekstern database.
 
-Eftersom vi ikke anvender en databaseløsning giver det ikke mening at reducere antallet af zoom-niveauer. Da tiles alligevel skal tegnes løbende, ville dette kun være en fordel hvis brugeren vendte tilbage til et udsnit på et zoom-niveau som vedkommende allerede havde set. Da vi ikke tænker at dette scenarie opstår særlig tit, fravalgte vi at begrænse antallet af zoom-niveauer og dermed forringe programmets funktionalitet unødvendigt.
+Eftersom vi ikke anvender en databaseløsning giver det ikke mening at reducere antallet af zoom-niveauer. Da tiles alligevel skal tegnes løbende, ville dette kun være en fordel hvis brugeren vendte tilbage til et udsnit på et zoom-niveau som vedkommende allerede havde set. Da vi ikke tænker at dette scenarie opstår særlig tit, fravalgte vi at begrænse antallet af zoom-niveauer, da det i vores øjne ville forringe programmets funktionalitet unødvendigt.
 
 \subsection{Gruppering}
 \label{subsec:gruppering}
@@ -139,30 +139,32 @@ Som nævnt tidligere skal tiles tegnes løbende som følge af at vi ikke har en 
 	\label{figur:visningAfKort7}
 \end{figure}
 
-Derudover er det væsentligt hurtigere at hente vejstykker fra quadtræerne hvis tiles grupperes til store rektangler, frem for at der hentes vejstykker for tiles enkeltvis. Grunden til dette er at vores quadtræer er optimeret således, at alle vejstykker der er i en quad og dens subquads returneres hvis den er fuldstændigt indenfor den boks der efterspørges. Det grupperede rektangel bryder med et minimalt antal quads, og er derfor langt mere effektivt i mange tilfælde. Den største besparelse sker når der skiftes zoom niveau og det nye udsnit indeholder et stort antal vejstykker der er distribueret over mange quads.
+Derudover er det væsentligt hurtigere at hente vejstykker fra quadtræerne hvis tiles grupperes i store rektangler, frem for at der hentes vejstykker for tiles enkeltvis. Grunden til dette er at vores quadtræer er optimeret således, at alle vejstykker der er i en quad, og dens subquads, returneres hvis den pågældende quad er fuldstændigt indenfor den boks der efterspørges. Det grupperede rektangel bryder med et minimalt antal quads, og er derfor langt mere effektivt i mange tilfælde. Den største besparelse sker når der skiftes zoom niveau og det nye udsnit indeholder et stort antal vejstykker der er distribueret over mange quads.
 
 \subsubsection{Definition af algoritme}
 \label{subsec:definitionAfAlgoritme}
 
-Vi fik hermed brug for en algoritme der kunne gruppere de tiles der endnu ikke var tegnet i rektangulære grupperinger. Algoritmen tager en liste af tiles der er er sorteret rækkevis, og efterfølgende kolonnevis, som input. Algoritmen finder det størst mulige rektangel, og tilføjer det til en liste over rektangler. Algoritmen gentager denne procedure indtil alle tiles er grupperet, og returnerer en liste af rektangler (figur~\ref{figur:visningAfKort5}).
+Vi havde brug for en algoritme der kunne lave rektangulære grupperinger ud af de tiles der endnu ikke er tegnet. Algoritmen tager en liste af tiles der er er sorteret rækkevis, og efterfølgende kolonnevis, som input. Algoritmen finder det størst mulige rektangel, og tilføjer det til en liste over rektangler. Algoritmen gentager denne procedure indtil alle tiles er grupperet, og returnerer en liste af rektangler (figur~\ref{figur:visningAfKort5}).
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{visningAfKort5}
 	\captionsetup{width=0.8\textwidth}
-	\caption{Numrene angiver i hvilken rækkefølge rektanglerne optræder i på listen der returneres af algoritmen.}
+	\caption{Numrene angiver i hvilken rækkefølge rektanglerne optræder i listen af rektangler som algoritmen returnerer.}
 	\label{figur:visningAfKort5}
 \end{figure}
 
 \subsubsection{Brute force: Lang tid}
 \label{subsec:bruteForce}
 
-Vores første løsningsforslag var en simpel brute force algoritme. Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Den naive løsning til dette problem er en brute-force algoritme der undersøger alle mulige rektangler i denne tabel. Hvis rektanglet er det største indtil videre og kun består af tiles der mangler at blive tegnet gemmes rektanglets position. Denne procedure gentages indtil alle mulige rektanglet er undersøgt.
+Vores første løsningsforslag var en simpel brute force algoritme. Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Den naive løsning til dette problem er en brute-force algoritme der undersøger alle mulige rektangler i denne tabel. Hvis rektanglet er det største indtil videre, og kun består af tiles der mangler at blive tegnet, gemmes rektanglets position. Denne procedure gentages indtil alle mulige rektanglet er undersøgt.
 
 \subsubsection{Dynamisk programmering: Lineær tid}
 \label{subsec:dynamiskProgrammering}
 
-Dernæst fandt vi frem tile en algoritme der løser problemet mere effektivt ved hjælp af dynamisk programmering. Ligesom brute force algoritmen opbygger den en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Herefter opbygges endnu en tabel over sammenhængende søjler ved at traversere kolonnerne i tabellen nedefra og op, og beregne højden af den enkelte søjle dynamisk (figur~\ref{figur:visningAfKort8}).
+Efter at have overvejet brute force algoritmen fandt vi frem til en algoritme der løser problemet mere effektivt ved hjælp af dynamisk programmering. 
+
+Ligesom brute force algoritmen opbygger den en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Herefter opbygges endnu en tabel over sammenhængende søjler ved at traversere kolonnerne i tabellen nedefra og op, og beregne højden af den enkelte søjle dynamisk (figur~\ref{figur:visningAfKort8}). Højden af en søjle er højden af den søjle der er nedenfor plus én.
 
 \begin{figure}[h]
 	\centering
@@ -172,11 +174,11 @@ Dernæst fandt vi frem tile en algoritme der løser problemet mere effektivt ved
 	\label{figur:visningAfKort8}
 \end{figure}
 
-Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det størst mulige rektangel der indeholder denne celle af tabellen beregnes ved hjælp af data fra søjle tabellen (figur~\ref{figur:visningAfKort9}). Undervejs i skanningen gemmes positionen af det største rektangel. Hermed en gennemgang af de første tre skridt.
+Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det størst mulige rektangel der indeholder hver enkelt celle af tabellen beregnes dynamisk ved hjælp af data fra søjle tabellen (figur~\ref{figur:visningAfKort9}). Undervejs i skanningen gemmes positionen af det største rektangel. Hermed en gennemgang af de første celler skridt:
 
 \begin{itemize}
 	\item \textbf{Cursoren er ved celle (1,1)}: Værdien for dette felt i søjle-tabellen er 3, og er nu højden af vores rektangel. Bredden af vores rektangel er 1, eftersom vi har undersøgt 1 felt uden at løbe ind i et felt med værdien 0 i søjle-tabellen. Arealet af det største rektangel der indeholder dette punkt er $1 * 3 = 3$, og positionen af rektanglet gemmes da det er det største indtil videre.
-	\item \textbf{Cursoren er ved celle (2,1)}: Værdien for dette felt i søjle-tabellen er 2, og er nu højden af vores rektangel. Bredden af vores rektangel er 2, eftersom vi har undersøgt 1 felt uden at løbe ind i et felt med værdien 0 i søjle-tabellen. Arealet af det største rektangel der indeholder dette punkt er $2 * 2 = 4$, og positionen af rektanglet gemmes da det er det største indtil videre.
+	\item \textbf{Cursoren er ved celle (2,1)}: Værdien for dette felt i søjle-tabellen er 2, og er nu højden af vores rektangel fordi det er mindre end 3. Bredden af vores rektangel er 2, eftersom vi har undersøgt 1 felt uden at løbe ind i et felt der ikke er en del af en søjle. Arealet af det største rektangel der indeholder dette punkt er $2 * 2 = 4$, og positionen af rektanglet gemmes da det er det største indtil videre.
 	\item \textbf{Cursoren er ved celle (3,1)}: Værdien for dette felt i søjle-tabellen er 0, og højden og bredden af vores rektangel nulstilles.
 \end{itemize}
 
@@ -190,16 +192,14 @@ Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det 
 
 Afsluttende tilføjes det største rektangel til listen af rektangler, og de tiles der udgør rektanglet markeres som tegnede.
 
-Som følge af at vores tiles er $256 * 256$ pixels store, må det formodes at algoritmen typisk køres med N der $12*8 = 96$ eller mindre, forudsat at programmet køres i en opløsning på $(256*12) * (256*8) \approx 2880 * 1800$ pixels (MacBook Pro 15 tommer Retina skærm) eller mindre.
-
-Den valgte algoritme kører i lineær tid $O(N)$ hvor $N$ er antallet af tiles, og blev derfor valgt til fordel for den før-nævnte brute-force algoritme som vi formoder ville have resulteret i langt længere køretider. Vi ville gerne have beregnet køretiden for brute-force algoritmen, og sammenlignet de to køretider, men dette viste sig at være meget kompliceret at beregne køretiden for brute-force algoritmen korrekt.
+Denne algoritme kører i lineær tid $O(N)$ hvor $N$ er antallet af tiles, og blev derfor valgt til fordel for brute-force algoritmen som vi formoder ville have resulteret i væsentligt længere køretider. Vi ville gerne have beregnet køretiden for brute-force algoritmen, og sammenlignet de to køretider, men det viste sig at være temmelig kompliceret at beregne køretiden korrekt.
 
 Et logisk argument for at den dynamiske algoritme er væsentligt hurtigere er at den efter et lineært gennemløb af cellerne kun undersøger N forskellige rektangler, hvilket skal ses i kontrast til at undersøge alle mulige rektangler. Ydermere behøver algoritmen ikke tjekke om rektanglerne udelukkende består af tiles der mangler at blive tegnet, da dette på forhånd er garanteret.
 
 \subsubsection{Case analyse: Konstant tid}
 \label{subsec:caseAnalyse}
 
-Efter at have implementeret algoritmen der løser opgaven i alle tænkelige cases, gik vi i gang med at analysere hvilke cases der typisk opstår ofte når programmet køres i praksis, og hvilke der sjældent eller aldrig opstår (figur~\ref{figur:visningAfKort11}).
+Efter at have implementeret ovennævnte løsning gik vi i gang med at analysere hvilke cases der opstår ofte i praksis, og hvilke der sjældent eller aldrig opstår (figur~\ref{figur:visningAfKort11}).
 
 \begin{figure}[h]
 	\centering
@@ -209,7 +209,7 @@ Efter at have implementeret algoritmen der løser opgaven i alle tænkelige case
 	\label{figur:visningAfKort11}
 \end{figure}
 
-Som det kan ses på figuren har vi inddelt cases i dem der er typiske og ofte sker, dem der atypiske og opstår sjældent, og dem der aldrig opstår fordi de er umulige. Korte forklaringer af udvalgte cases:
+Som det kan ses på figuren har vi inddelt cases i dem der er typiske og ofte opstår, dem der atypiske og sjældent opstår, og dem der aldrig opstår fordi de er umulige. Korte forklaringer af udvalgte cases:
 
 \begin{itemize}
 	\item \textbf{Typisk, øverst tv.}: Brugeren har skiftet zoom-niveau, og alle tiles skal tegnes.
@@ -219,7 +219,7 @@ Som det kan ses på figuren har vi inddelt cases i dem der er typiske og ofte sk
 	\item \textbf{Umulige cases}: Denne type cases er umulige fordi der er huller i dem, hvilket ikke kan lade sig gøre hvis brugeren bevæger udsnittet rundt i en kontinuerlig bane.
 \end{itemize}
 
-Følgende algoritme reducerer løser problemet i konstant tid i typiske cases, og falder tilbage på en mere tidskrævende algoritme i tilfælde af at der er tale om en atypisk case (figur~\ref{figur:visningAfKort12}):
+Følgende algoritme løser problemet i konstant tid i typiske cases, og falder tilbage på den mere tidskrævende algoritme i tilfælde af at der er tale om en atypisk case (figur~\ref{figur:visningAfKort12}):
 
 \begin{itemize}
 	\item Listen af tiles filtreres, og der oprettes en ny liste af tiles som endnu ikke er blevet tegnet.
@@ -235,43 +235,43 @@ Følgende algoritme reducerer løser problemet i konstant tid i typiske cases, o
 	\label{figur:visningAfKort12}
 \end{figure}
 
-Der er værd at nævne at nogle atypiske cases også løses i konstant tid af denne algoritme (f.eks. atypisk case nederst til venstre på figur~\ref{figur:visningAfKort11}). Ligeledes er det værd at nævne at algoritmen giver det forkerte svar hvis en af de ``umulige'' cases opstår, og at dette ville resultere i en fejl i programmet.
+Der er værd at nævne at nogle atypiske cases også løses i konstant tid af denne algoritme (f.eks. den af de atypiske cases der er nederst til venstre på figur~\ref{figur:visningAfKort11}). Ligeledes er det værd at nævne at algoritmen potentielt giver et forkert svar hvis en af de ``umulige'' cases opstår, og at dette ville resultere i en fejl i programmet. Vi ikke observeret at en umulig case er opstået, og vi formoder derfor at de cases vi har klassificeret som umulige ikke opstår i praksis.
 
-Altså endte vi i sidste ende med en algoritme der er optimeret til de specifikke forhold der gælder for vores program, og som langt det meste af tiden tager konstant tid. Det er ikke muligt at beregne en gennemsnitskøretid for algoritmen eftersom vi ikke kan forudse hvordan brugeren interagerer med kortet (hvilket afgør hvor mange atypiske cases der opstår), og det eneste der kan garanteres er derfor at køretiden i værste fald er lineær.
+Altså endte vi i sidste ende med en algoritme der er optimeret til de specifikke forhold der gælder for vores program, og som i en meget stor andel af kørslerne tager konstant tid. Det er ikke muligt at beregne en gennemsnitskøretid for algoritmen eftersom vi ikke kan forudse hvordan brugeren interagerer med kortet (hvilket afgør hvor mange atypiske cases der opstår), og det eneste der kan garanteres er derfor at køretiden i værste fald er lineær.
 
 \subsection{Tegning af tiles}
 \label{subsec:tegningAfTiles}
 
-Når listen af rektangler er fundet, skal indholdet af hver rektangel tegnes. Følgende procedure gentages for hvert af rektanglerne (figur~\ref{figur:visningAfKort13}):
+Når listen af rektangler er fundet skal indholdet af hver rektangel tegnes. Følgende procedure gentages for hvert af rektanglerne (figur~\ref{figur:visningAfKort13}):
 
 \begin{itemize}
 	\item Der beregnes en boks som repræsenterer rektanglet på tiles planet.
 	\item Rektanglets boks kopieres og skaleres således at den repræsenterer rektanglet på model planet.
 	\item Modellen forespørges efter vejstykker der ligger indenfor boksen på model planet.
-	\item Vejstykkernes koordinater skaleres til map planet, forskydes i forhold til rektanglets position, og gemmes som linjer der er klar til at blive tegnet.
+	\item Vejstykkernes koordinater skaleres til tiles planet, forskydes i forhold til rektanglets position på planet, og gemmes som linjer der er klar til at blive tegnet.
 	\item Linjerne tegnes til en buffer.
-	\item Bufferen opdeles i tiles der gemmes i et lager.
+	\item Fragmenter af bufferen gemmes som tiles i et lager.
 \end{itemize}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.9\textwidth]{visningAfKort13}
 	\captionsetup{width=0.8\textwidth}
-	\caption{Visualisering af proces fra vejstykker til lagring af tiles.}
+	\caption{Proces fra vejstykker til lagring af tegnede tiles.}
 	\label{figur:visningAfKort13}
 \end{figure}
 
 \subsection{Tråde}
 \label{subsec:traade}
 
-I forbindelse med tegning af tiles fandt vi det relevante at implementere tråde for at opnå følgende fordele:
+I forbindelse med tegning af tiles fandt vi det relevante at implementere trådning for at opnå følgende fordele:
 
 \begin{itemize}
 	\item Brugergrænsefladen forbliver responsiv imens nye dele af kortet tegnes på en tråd i baggrunden. Alternativet er at opgaven kører på den samme tråd som brugergrænsefladen, hvilket resulterer i at brugergrænsefladen er uresponsiv indtil tråden er færdig med at tegne.
-	\item Tråde giver mulighed for at tegne flere nye dele af kortet på samme tid ved at uddelegere opgaver til forskellige tråde som køres på forskellige kerner i computerens processor.
+	\item Tråde giver mulighed for at tegne flere nye dele af kortet på samme tid ved at uddelegere opgaver til forskellige tråde som køres på forskellige kerner i processoren.
 \end{itemize}
 
-Vi har valgt at have én tråd per kerne i forbindelse med tegning af tiles, hvilket har givet gode resultater på de maskiner vi har testet programmet på. Hver gang der skal tegnes et rektangel bliver der oprettet en ny opgave som er klar til at blive eksekveret i en tråd. Hvis der er flere opgaver end der er tråde står opgaverne i kø indtil der bliver en tråd ledig, eller eksekveres de øjeblikkeligt.
+Vi har valgt at anvende én tråd per kerne i forbindelse med tegning af tiles, hvilket har givet gode resultater på de maskiner vi har testet programmet på. Hver gang der skal tegnes et rektangel bliver der oprettet en ny opgave som er klar til at blive eksekveret i en tråd. Hvis der er flere opgaver end der er tråde står opgaverne i kø indtil der bliver en tråd ledig, ellers eksekveres de øjeblikkeligt.
 
 \subsection{Object pools}
 \label{subsec:objectPools}
@@ -279,12 +279,12 @@ Vi har valgt at have én tråd per kerne i forbindelse med tegning af tiles, hvi
 Object pools er et designparadigme der anvendes når man ønsker at genbruge objekter. Ved at bibeholde referencer til objekterne sikrer man sig at de ikke bliver smidt ud af computerens hukommelse af ``garbage collectoren''. Vi har valgt at genbruge instanser af følgende klasser i forbindelse med tegning af kortet:
 
 \begin{itemize}
-	\item \textbf{Tråde}: Tråde er dyre at initialisere, og har ikke nogen unikke egenskaber der ændrer sig under programmets levetid. Det giver derfor mening at genbruge dem så vidt muligt.
-	\item \textbf{Buffers}: Bitmap buffers og de objekter der skal tegne på dem er dyre at initialisere, og det er derfor en fordel at genbruge dem.
-	\item \textbf{Linjer}: Programmet har ofte brug for at have adgang til tusindvis af linjer meget hurtigt når der skal tegnes linjer til en buffer. På trods af at linje objekter er meget hurtige at initialisere, viste det sig i praksis at være en optimering at genbruge dem. Dette formoder vi skyldes at programmet har brug for store mængder af denne type objekter, og genbruger dem mange gange.
+	\item \textbf{Tråde}: Tråde er dyre at instantiere, og det giver derfor mening at genbruge dem så vidt muligt. Derudover er der allerede en implementering af object pooling af tråde i java, hvilket gjorde det nemt at poole tråde i forbindelse med vores program.
+	\item \textbf{Buffers}: Bitmap buffers, og de grafik-objekter der skal tegne på dem, er dyre at instantiere, og det er derfor en fordel at genbruge dem.
+	\item \textbf{Linjer}: Programmet har ofte brug for at have adgang til tusindvis af linjer når der skal tegnes linjer til en buffer. På trods af at linje objekter er meget hurtige at instantiere, viste det sig i praksis at være en optimering at genbruge dem. Dette formoder vi skyldes at programmet har brug for store mængder af denne type objekter, og genbruger dem mange gange.
 \end{itemize}
 
 \subsection{Fake zoom}
 \label{subsec:fakeZoom}
 
-Når brugeren brugeren zoomer udsnittet ind og ud smides alle de tiles der eksisterer væk, og der er hermed nødvendigt at generere et fuldt skærmbillede af tiles for det nye zoom-niveau. Dette kan tage relativt lang tid, især hvis opløsningen af brugerens vindue er stor eller der er store mængder data indenfor udsnittet. Derfor er det i denne sammenhæng ikke praktisk at vente på at de tiles der skal vises er blevet tegnet. I stedet tegner vi et skaleret øjebliksbillede af et tidligere zoom-niveau imens der tegnes tiles i baggrunden. Ofte zoomes der mange gange på meget kort tid, og denne løsning gør det muligt hele tiden at give brugeren feedback på sit input.
+Når brugeren brugeren zoomer udsnittet ind og ud smides alle de tiles der tilhører det tidligere zoom-niveau væk, og det er hermed nødvendigt at tegne et fuldt skærmbillede af nye tiles for det nye zoom-niveau. Dette kan tage relativt lang tid, især hvis opløsningen af brugerens vindue er stor, eller der er store mængder data indenfor udsnittet. Derfor er det i denne sammenhæng ikke praktisk at vente med at opdatere brugergrænsefladen til at de nye tiles er tegnet. I stedet vises et skaleret øjebliksbillede af et tidligere zoom-niveau imens tiles for det nye zoom-niveau tegnes i baggrunden. Ofte zoomes der mange gange på kort tid, og denne løsning gør det muligt hele tiden at give brugeren feedback på sit input.

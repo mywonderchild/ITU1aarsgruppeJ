@@ -8,6 +8,7 @@ import java.awt.Color;
 import Map.Box;
 import Map.Vector;
 import Map.Line;
+import Map.Controller.Tiler;
 
 public class Canvas extends JPanel {
 	

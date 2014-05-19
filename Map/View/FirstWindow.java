@@ -17,7 +17,6 @@ import Map.Controller.*;
 import Map.*;
 import Map.Model.*;
 
-
 public class FirstWindow extends JFrame {
 	public Window window;
 	public Canvas canvas;

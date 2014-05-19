@@ -1,4 +1,4 @@
-package Map;
+package Map.Data.krak;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -5,7 +5,7 @@
 ./Map/Controller/KeyboardHandler.java
 ./Map/Controller/MouseHandler.java
 ./Map/Controller/Path.java
-./Map/KrakPurger.java
+./Map/Data/krak/KrakPurger.java
 ./Map/Line.java
 ./Map/Main.java
 ./Map/Model/AStar.java
@@ -21,6 +21,9 @@
 ./Map/saxEventHandler.java
 ./Map/saxFilter.java
 ./Map/saxPurger.java
+./Map/Tests/TestBox.java
+./Map/Tests/TestPriorityQueue.java
+./Map/Tests/TestVector.java
 ./Map/Vector.java
 ./Map/View/Canvas.java
 ./Map/View/DropTextField.java
@@ -28,8 +31,3 @@
 ./Map/View/Painter.java
 ./Map/View/Tiler.java
 ./Map/View/Window.java
-./Tests/TestBox.java
-./Tests/TestPriorityQueue.java
-./Tests/TestShortestPath.java
-./Tests/TestTiler.java
-./Tests/TestVector.java

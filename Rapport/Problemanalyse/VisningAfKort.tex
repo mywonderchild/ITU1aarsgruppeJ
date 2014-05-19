@@ -13,7 +13,9 @@ Når brugeren navigerer kortet og bliver på samme zoom-niveau vil der være del
 
 Til at starte med tegnede vi hele udsnittet, inklusiv overlap, men det viste sig ikke at være hurtigt nok, og responstiden blev problematisk. Det blev derfor besluttet at vi havde brug for en mere effektiv løsning, der kun tegner den del af et nyt udsnit der ikke overlapper med det gamle udsnit.
 
-Dette afsnit er skrevet på et tidspunkt hvor vores implementering af quadtræer ikke var optimal. En af ulemperne ved denne implementation var, at den returnerede en margin af vejstykker uden om den rektangel der var efterspurgt. Denne margin udggjorde i mange tilfælde helt op til 70-80\% af de returnerede vejstykker. Analyserne i dette afsnit tager udgangspunkt i implementeringen før optimeringen, og der er derfor lagt relativt stor vægt på at ovennævnte ulempe eksisterede. Analyserne er dog fortsat relevante, da der altid vil være vejstykker der ``stikker ud'' af det forespurgte rektangel, men gevinsten er langt mindre end den var før optimeringen.
+Dette afsnit er skrevet på et tidspunkt hvor vores implementering af quadtræer ikke var optimal. En af ulemperne ved denne implementation var, at den returnerede en margin af vejstykker uden om den rektangel der var efterspurgt. Denne margin udggjorde i mange tilfælde helt op til 70-80\% af de returnerede vejstykker. Efter optimeringen er denne ulempe ikke eksisterende.
+
+Analyserne i dette afsnit tager udgangspunkt i implementeringen før optimeringen, og der er derfor lagt stor vægt på at ovennævnte ulempe eksisterede. Analyserne er dog fortsat relevante, men gevinsten ved at bruge de nævnte løsninger er langt mindre end den var før optimeringen.
 
 \subsection{Cache og forskydning}
 \label{subsec:cacheOgForskydning}
@@ -93,11 +95,6 @@ For at holde styr på hvilket udsnit af kortet brugeren kigger på opdateres to 
 
 Ved hjælp af disse to variable kan det beregnes hvilket udsnit af kortet der er aktuelt. Vi valgte denne løsning som et alternativ til absolutte koordinater for en boks for at opnå øget fleksibilitet, og fordi denne løsning virkede mere intuitiv for os.
 
-\subsubsection{Når zoom ændrer sig}
-\label{subsec:naarZoomAendrerSig}
-
-Når zoom ændrer sig skal størrelsen af tiles opdateres.
-
 \subsubsection{Hvilke tile skal vises}
 \label{subsec:hvilkeTilesSkalVises}
 
@@ -142,7 +139,7 @@ Som nævnt tidligere skal tiles tegnes løbende som følge af at vi ikke har en 
 	\label{figur:visningAfKort7}
 \end{figure}
 
-Efter at gruppen af tiles er blevet tegnet samlet, klippes tiles ud og gemmes individuelt i datastrukturen.
+Derudover er det væsentligt hurtigere at hente vejstykker fra quadtræerne hvis tiles grupperes til store rektangler, frem for at der hentes vejstykker for tiles enkeltvis. Grunden til dette er at vores quadtræer er optimeret således, at alle vejstykker der er i en quad og dens subquads returneres hvis den er fuldstændigt indenfor den boks der efterspørges. Det grupperede rektangel bryder med et minimalt antal quads, og er derfor langt mere effektivt i mange tilfælde. Den største besparelse sker når der skiftes zoom niveau og det nye udsnit indeholder et stort antal vejstykker der er distribueret over mange quads.
 
 \subsubsection{Definition af algoritme}
 \label{subsec:definitionAfAlgoritme}
@@ -219,7 +216,7 @@ Som det kan ses på figuren har vi inddelt cases i dem der er typiske og ofte sk
 	\item \textbf{Typisk, øverst th.}: Brugeren har bevæget udsnittet mod nord, og en række af tiles skal tegnes.
 	\item \textbf{Atypisk, øverst th.}: Brugeren har bevæget udsnittet mod nordvest, og en vinkel af tiles skal tegnes. Dette sker relativt sjældent, da det kræver at udsnittet bryder en utegnet række og kolonne samtidig.
 	\item \textbf{Atypisk, nederst tv.}: Brugeren har bevæget udsnittet mod øst så hurtigt at udsnittet har brudt to utegnede kolonner samtidigt. Vi har ikke observeret dette case, men det er en mulighed.
-	\item \textbf{Umulige cases}: Disse cases er umulige fordi der er huller i dem, hvilket ikke kan lade sig gøre hvis brugeren bevæger udsnittet rundt i en kontinuerlig bane.
+	\item \textbf{Umulige cases}: Denne type cases er umulige fordi der er huller i dem, hvilket ikke kan lade sig gøre hvis brugeren bevæger udsnittet rundt i en kontinuerlig bane.
 \end{itemize}
 
 Følgende algoritme reducerer løser problemet i konstant tid i typiske cases, og falder tilbage på en mere tidskrævende algoritme i tilfælde af at der er tale om en atypisk case (figur~\ref{figur:visningAfKort12}):
@@ -249,7 +246,8 @@ Når listen af rektangler er fundet, skal indholdet af hver rektangel tegnes. F�
 
 \begin{itemize}
 	\item Der beregnes en boks som repræsenterer rektanglet på tiles planet.
-	\item Rektanglets boks kopieres og skaleres således at den repræsenterer rektanglet på model planet. Modellen forespørges efter vejstykker der ligger indenfor denne boks og returnerer dem.
+	\item Rektanglets boks kopieres og skaleres således at den repræsenterer rektanglet på model planet.
+	\item Modellen forespørges efter vejstykker der ligger indenfor boksen på model planet.
 	\item Vejstykkernes koordinater skaleres til map planet, forskydes i forhold til rektanglets position, og gemmes som linjer der er klar til at blive tegnet.
 	\item Linjerne tegnes til en buffer.
 	\item Bufferen opdeles i tiles der gemmes i et lager.
@@ -263,7 +261,30 @@ Når listen af rektangler er fundet, skal indholdet af hver rektangel tegnes. F�
 	\label{figur:visningAfKort13}
 \end{figure}
 
-\subsection{Visning af tiles}
-\label{subsec:visningAfTiles}
+\subsection{Tråde}
+\label{subsec:traade}
 
-Endelig, når det er sikret at alle tiles der skal vises er tegnet, hentes de relevante tiles fra lageret og vises på skærmen.
+I forbindelse med tegning af tiles fandt vi det relevante at implementere tråde for at opnå følgende fordele:
+
+\begin{itemize}
+	\item Brugergrænsefladen forbliver responsiv imens nye dele af kortet tegnes på en tråd i baggrunden. Alternativet er at opgaven kører på den samme tråd som brugergrænsefladen, hvilket resulterer i at brugergrænsefladen er uresponsiv indtil tråden er færdig med at tegne.
+	\item Tråde giver mulighed for at tegne flere nye dele af kortet på samme tid ved at uddelegere opgaver til forskellige tråde som køres på forskellige kerner i computerens processor.
+\end{itemize}
+
+Vi har valgt at have én tråd per kerne i forbindelse med tegning af tiles, hvilket har givet gode resultater på de maskiner vi har testet programmet på. Hver gang der skal tegnes et rektangel bliver der oprettet en ny opgave som er klar til at blive eksekveret i en tråd. Hvis der er flere opgaver end der er tråde står opgaverne i kø indtil der bliver en tråd ledig, eller eksekveres de øjeblikkeligt.
+
+\subsection{Object pools}
+\label{subsec:objectPools}
+
+Object pools er et designparadigme der anvendes når man ønsker at genbruge objekter. Ved at bibeholde referencer til objekterne sikrer man sig at de ikke bliver smidt ud af computerens hukommelse af ``garbage collectoren''. Vi har valgt at genbruge instanser af følgende klasser i forbindelse med tegning af kortet:
+
+\begin{itemize}
+	\item \textbf{Tråde}: Tråde er dyre at initialisere, og har ikke nogen unikke egenskaber der ændrer sig under programmets levetid. Det giver derfor mening at genbruge dem så vidt muligt.
+	\item \textbf{Buffers}: Bitmap buffers og de objekter der skal tegne på dem er dyre at initialisere, og det er derfor en fordel at genbruge dem.
+	\item \textbf{Linjer}: Programmet har ofte brug for at have adgang til tusindvis af linjer meget hurtigt når der skal tegnes linjer til en buffer. På trods af at linje objekter er meget hurtige at initialisere, viste det sig i praksis at være en optimering at genbruge dem. Dette formoder vi skyldes at programmet har brug for store mængder af denne type objekter, og genbruger dem mange gange.
+\end{itemize}
+
+\subsection{Fake zoom}
+\label{subsec:fakeZoom}
+
+Når brugeren brugeren zoomer udsnittet ind og ud smides alle de tiles der eksisterer væk, og der er hermed nødvendigt at generere et fuldt skærmbillede af tiles for det nye zoom-niveau. Dette kan tage relativt lang tid, især hvis opløsningen af brugerens vindue er stor eller der er store mængder data indenfor udsnittet. Derfor er det i denne sammenhæng ikke praktisk at vente på at de tiles der skal vises er blevet tegnet. I stedet tegner vi et skaleret øjebliksbillede af et tidligere zoom-niveau imens der tegnes tiles i baggrunden. Ofte zoomes der mange gange på meget kort tid, og denne løsning gør det muligt hele tiden at give brugeren feedback på sit input.

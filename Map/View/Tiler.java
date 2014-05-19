@@ -8,15 +8,17 @@ import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBufferInt;
-import java.awt.image.WritableRaster;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
-import java.lang.Iterable;
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.HashMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import Map.Box;
 import Map.Vector;
@@ -40,14 +42,13 @@ public class Tiler {
 	public QuadTree all;
 	public Path path;
 	private QuadTree[] groups;
-	private ArrayList<Line> linePool = new ArrayList<Line>();
-	private BufferedImage buffer, snapshot;
-	private Graphics2D bufferGraphics;
-	private Timer timer;
-	private boolean fake;
+	private Stack<Line> linePool = new Stack<>();
+	private Stack<SimpleEntry<BufferedImage, Graphics2D>> bufferPool = new Stack<>();
+	private BufferedImage snapshot;
 	private AffineTransform transformer = new AffineTransform();
 	private GraphicsConfiguration gc;
-	private int threadID = 0;
+	private ExecutorService executor;
+	private Stack<Future> futures = new Stack<>();
 
 	public Tiler(double zoom, Vector center, Box viewBox, Box modelBox, Loader loader, Canvas canvas) {
 
@@ -60,6 +61,9 @@ public class Tiler {
 		resetCenter = center.copy();
 		resetZoom = zoom;
 
+		int processors = Runtime.getRuntime().availableProcessors();
+		executor = Executors.newFixedThreadPool(processors);
+
 		gc = GraphicsEnvironment
 			.getLocalGraphicsEnvironment()
 			.getDefaultScreenDevice()
@@ -67,7 +71,7 @@ public class Tiler {
 
 		resize(viewBox);
 
-		setZoom(zoom, false);
+		setZoom(zoom);
 	}
 
 	private class Tile {
@@ -85,18 +89,16 @@ public class Tiler {
 	public void resize(Box viewBox) {
 		this.viewBox = viewBox;
 		viewDimensions = viewBox.dimensions();
-		buffer = gc.createCompatibleImage(
-			(int)viewDimensions.x + TILESIZE * 2,
-			(int)viewDimensions.y + TILESIZE * 2,
-			Transparency.OPAQUE
-		);
-		bufferGraphics = buffer.createGraphics();
-		bufferGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		while (!bufferPool.empty()) bufferPool.pop().getValue().dispose();
 	}
 
-	public void setZoom(double zoom, boolean fake) {
+	public void setZoom(double zoom) {
 
-		threadID++;
+		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
+		if (this.zoom == minZoom && zoomBounded == minZoom) return;
+		if (this.zoom == maxZoom && zoomBounded == maxZoom) return;
+
+		while (!futures.empty()) futures.pop().cancel(true);
 		Vector viewDimensions = viewBox.dimensions();
 
 		if (snapshot == null) {
@@ -111,9 +113,8 @@ public class Tiler {
 			graphics.fillRect(0, 0, snapshot.getWidth(), snapshot.getHeight());
 			render(graphics);
 			graphics.dispose();
-		} 
+		}
 
-		final double zoomBounded = Math.min(Math.max(zoom, minZoom), maxZoom);
 		this.zoom = zoomBounded;
 
 		Vector mapDimensions = viewDimensions
@@ -132,13 +133,14 @@ public class Tiler {
 
 	public void reset() {
 		this.center = resetCenter;
-		setZoom(resetZoom, false);
+		setZoom(resetZoom);
 	}
 
 	public void render(Graphics2D graphics) {
 
 		// Do the fake render using snapshot no matter what
 		if (snapshot != null) {
+			graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 			transformer.setToIdentity();
 			double scale = zoomOrigin / zoom;
 			transformer.translate(
@@ -147,6 +149,7 @@ public class Tiler {
 			);
 			transformer.scale(scale, scale);
 			graphics.drawRenderedImage(snapshot, transformer);
+			graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 		}
 
 		// Render the tiles in the visible section
@@ -154,15 +157,12 @@ public class Tiler {
 		section = getSection();
 		Tile[] tiles = getTiles(section);
 		
-		for (int[][] rectangle : getRectangles(tiles)) {
-			Thread thread = new RenderThread(rectangle);
-			thread.setDaemon(true);
-			thread.start();
-		}
+		for (int[][] rectangle : getRectangles(tiles)) 
+			futures.push(executor.submit(new Render(rectangle)));
 
 		// Draw tiles
 		for (Tile tile : tiles) {
-			if (tile.image != null) {
+			if (tile.image != null && tile.isRendering != true) {
 				transformer.setToIdentity();
 				transformer.translate(
 					tile.x * TILESIZE - (int)section.start.x,
@@ -350,17 +350,18 @@ public class Tiler {
 			.sub(section.start);
 	}
 
-	private class RenderThread extends Thread {
+	private class Render implements Callable<Boolean> {
 		
-		int id = threadID;
+		SimpleEntry<BufferedImage, Graphics2D> entry;
+		ArrayList<Line> lines;
 		int[][] rectangle;
 
-		public RenderThread(int[][] rectangle) {
+		public Render(int[][] rectangle) {
 			this.rectangle = rectangle;
 		}
 
 		@Override
-		public void run() {
+		public Boolean call() {
 
 			Box rectangleBox = getRectangleBox(rectangle);
 			Box queryBox = rectangleBox.copy().translate(mapBox, modelBox);
@@ -371,56 +372,78 @@ public class Tiler {
 			for(int i = visible.length-1; i >= 0; i--)
 				edges.addAll(groups[visible[i]].queryRange(queryBox));
 
-			synchronized (linePool) {
-				// Make lines
-				ArrayList<Line> lines = new ArrayList<>();
-				for (int i = 0; i < edges.size(); i++) {
-					Edge edge = edges.get(i);
-					Vector[] vectors = edge.getVectors();
-					for (Vector vector : vectors)
-						vector = translateToRectangle(vector, rectangleBox);
-					if (i >= linePool.size()) linePool.add(new Line());
-					lines.add(linePool.get(i).set(
-						vectors[0], vectors[1],
-						Groups.getColor(edge),
-						Groups.getWidth(edge, zoom)
-					));
-				}
+			if (Thread.interrupted()) return clean(false);
 
-				if (!isValid()) return;
-
-				// Render image to buffer
-				bufferGraphics.setColor(Color.WHITE);
-				bufferGraphics.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
-				Painter.paintLines(bufferGraphics, lines);
-
-				if (!isValid()) return;
-
-				// Save buffer fragments to tiles
-				int x, y;
-				for (int i = 0; i < rectangle[1][1]; i++) {
-					for (int j = 0; j < rectangle[1][0]; j++) {
-						if (!isValid()) return;
-						x = rectangle[0][0] + j;
-						y = rectangle[0][1] + i;
-						Tile tile = tileHash.get(getTileKey(x, y));
-						tile.image = gc.createCompatibleImage(TILESIZE, TILESIZE, Transparency.OPAQUE);
-						buffer.getRGB(
-							j * TILESIZE, i * TILESIZE,
-							TILESIZE, TILESIZE,
-							((DataBufferInt) tile.image.getRaster().getDataBuffer()).getData(),
-							0, TILESIZE
-						);
-						tile.isRendering = false;
-		 			}
-				}
+			// Make lines
+			lines = new ArrayList<>();
+			for (int i = 0; i < edges.size(); i++) {
+				Edge edge = edges.get(i);
+				Vector[] vectors = edge.getVectors();
+				for (Vector vector : vectors)
+					vector = translateToRectangle(vector, rectangleBox);
+				Line line = (!linePool.empty()) ? linePool.pop() : new Line();
+				line.set(
+					vectors[0], vectors[1],
+					Groups.getColor(edge),
+					Groups.getWidth(edge, zoom)
+				);
+				lines.add(line);
 			}
+
+			if (Thread.interrupted()) return clean(false);
+
+			// Get a buffer
+			BufferedImage buffer;
+			Graphics2D graphics;
+			if (!bufferPool.isEmpty()) {
+				entry = bufferPool.pop();
+				buffer = entry.getKey();
+				graphics = entry.getValue();
+			} else {
+				buffer = gc.createCompatibleImage(
+					(int)viewDimensions.x + TILESIZE * 2,
+					(int)viewDimensions.y + TILESIZE * 2,
+					Transparency.OPAQUE
+				);
+				graphics = buffer.createGraphics();
+				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				entry = new SimpleEntry<BufferedImage, Graphics2D>(buffer, graphics);
+			}
+
+			// Render image to buffer
+			graphics.setColor(Color.WHITE);
+			graphics.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
+			Painter.paintLines(graphics, lines);
+
+			if (Thread.interrupted()) return clean(false);
+
+			// Save buffer fragments to tiles
+			int x, y;
+			for (int i = 0; i < rectangle[1][1]; i++) {
+				for (int j = 0; j < rectangle[1][0]; j++) {
+					x = rectangle[0][0] + j;
+					y = rectangle[0][1] + i;
+					Tile tile = tileHash.get(getTileKey(x, y));
+					tile.image = gc.createCompatibleImage(TILESIZE, TILESIZE, Transparency.OPAQUE);
+					buffer.getRGB(
+						j * TILESIZE, i * TILESIZE,
+						TILESIZE, TILESIZE,
+						((DataBufferInt) tile.image.getRaster().getDataBuffer()).getData(),
+						0, TILESIZE
+					);
+					tile.isRendering = false;
+	 			}
+			}
+
 			snapshot = null;
 			canvas.repaint();
+			return clean(true);
 		}
 
-		private boolean isValid() {
-			return id == threadID;
+		private boolean clean(boolean done) {
+			if (lines != null) for (Line line : lines) linePool.push(line);
+			if (entry != null) bufferPool.push(entry);
+			return done;
 		}
 	}
 }

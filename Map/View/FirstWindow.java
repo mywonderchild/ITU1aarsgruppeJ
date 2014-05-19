@@ -87,7 +87,6 @@ public class FirstWindow extends JFrame {
 			{componentResized(null);}
 			public void componentResized(ComponentEvent e) {
 				tiler.resize(canvas.getBox());
-				tiler.setZoom(tiler.zoom, true);
 		    }
 		    public void componentHidden(ComponentEvent e) {}
 		    public void componentMoved(ComponentEvent e) {}

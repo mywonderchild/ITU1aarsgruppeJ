@@ -1,6 +1,5 @@
 package Map.Model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.lang.RuntimeException;
@@ -17,7 +16,10 @@ public class QuadTree
 	private Edge[] edges;
 	private int n = 0;
 
-	private double maxLen = 0;
+    // DEBUG
+    static private int carecount = 0;
+    static private int careless = 0;
+    static private int carefull = 0;
 
 	public QuadTree(Box box) {
 		this.box = box;
@@ -30,11 +32,6 @@ public class QuadTree
 
 		if(n < NODE_CAPACITY) {
 			edges[n++] = edge;
-
-			// Update max edge length
-			double edgeLen = edge.getVectors()[0].dist(edge.getVectors()[1]);
-			if(edgeLen > maxLen) maxLen = edgeLen;
-
 			return true;
 		}
 
@@ -63,63 +60,74 @@ public class QuadTree
 
 	public Collection<Edge> queryRange(Box query) {
         HashSet<Edge> result = new HashSet<Edge>();
-		queryRange(query.copy().grow(0), result);
+		queryRange(query, result, false);
 		return result;
 	}
 
-	private void queryRange(Box query, HashSet<Edge> result) {
-		if(!box.overlapping(query)) return;
-        for (int i = 0; i < n; i++) {
-            if(result.contains(edges[i])) continue; // no reason to do expensive overlap method then
-            if (query.overlapping(edges[i].START.VECTOR, edges[i].END.VECTOR))
+    private void carebugger(boolean lazy) {
+        if(lazy) careless++;
+        else carefull++;
+        carecount++;
+
+        if(carecount%10000==0) {
+            System.out.printf("Bypassing query-check %.2f%% of the time\n",
+                ((double)careless)/(double)(careless+carefull)*100.0);
+            careless = 0;
+            carefull = 0;
+        }
+    }
+
+	private void queryRange(Box query, HashSet<Edge> result, boolean lazy) {
+        if(!lazy) lazy = box.isInside(query); // lazy if quad is completely inside query
+
+        carebugger(lazy); // DEBUG
+
+        if(lazy) {
+            for (int i = 0; i < n; i++)
                 result.add(edges[i]);
+        }
+        else {
+    		if(!box.overlapping(query)) return; // not touching quad at all
+            for (int i = 0; i < n; i++) {
+                if(result.contains(edges[i])) continue; // no reason to do expensive overlap method if already in set
+                if (query.overlapping(edges[i].START.VECTOR, edges[i].END.VECTOR))
+                    result.add(edges[i]);
+            }
         }
 		
         if(children == null) return;
-
         for (QuadTree child : children) {
-                child.queryRange(query, result);
+                child.queryRange(query, result, lazy);
         }
 	}
 
     public Edge findClosestEdge(Vector point, boolean withName) {
-        double size = 10;
+        double size = 1;
 
         Box query = new Box(
         	new Vector(point.x - size, point.y - size),
         	new Vector(point.x + size, point.y + size)
         );
 
-        Collection<Edge> edges = null;
         // Find some edge(s):
-        while(edges == null) {
+        Collection<Edge> edges = queryRange(query);
+        boolean nameFound = false;
+        while(edges.size() == 0 || nameFound == false) {
+            query.scale(2); // double query size
         	edges = queryRange(query);
         	
         	if(withName) { // check if any name is present
-        		boolean nameFound = false;
         		for(Edge edge : edges) {
-	       			if(edge.NAME != null) {
+	       			if(edge.NAME != null && edge.NAME.length() > 0) {
 	       				nameFound = true;
 	       				break;
 	       			}
 	       		}
-	       		if(!nameFound) edges = null; // no name, no game
         	}
-
-        	query.scale(2); // double query size
         }
-
-        // When any edges are found, we must ensure all
-        // nearby edges get a chance. Because edges are
-        // placed in the quadtree based on center location,
-        // we must expand the search area by half the length
-        // of the longest edge in the quadtree.
 
         Edge closest = null;
         double closestDist = Double.POSITIVE_INFINITY;
-    	
-    	query.grow(maxLen/2); // grow query with ½ longest edge
-        edges = queryRange(query);
 
         for (Edge edge : edges) {
         	if(withName && edge.NAME == null) continue; // no name, no game
@@ -153,31 +161,43 @@ public class QuadTree
     }
 
     public Node findClosestNode(Vector point) {
-        double size = 10;
+        double size = 1;
 
         Box query = new Box(
         	new Vector(point.x - size, point.y - size),
         	new Vector(point.x + size, point.y + size)
         );
 
-        Collection<Edge> edges = null;
         // Find some edge(s):
-        while(edges == null) {
+        Collection<Edge> edges = queryRange(query);
+        while(edges.size() == 0) {
+            query.scale(2); // double query size
         	edges = queryRange(query);
-        	query.scale(2); // double query size
         }
 
-        // When any edges are found, we must ensure all
-        // nearby edges get a chance. Because edges are
-        // placed in the quadtree based on center location,
-        // we must expand the search area by half the length
-        // of the longest edge in the quadtree.
+        // Find longest edge in query
+        double longest = Double.NEGATIVE_INFINITY;
+        Edge longestEdge = null;
+        for(Edge edge : edges) {
+            if(edge.LENGTH > longest) {
+                longest = edge.LENGTH;
+                longestEdge = edge;
+            }
+        }
 
+        // Edge.LENGTH is not the actual length, but the scale
+        // is the same among all edges. Find the true length:
+        longest = longestEdge.START.VECTOR.dist(longestEdge.END.VECTOR);
+
+        // To make sure that the closest NODE, and not just the
+        // closest edge was found, we must add ½ the length of
+        // the longest edge to our query.
+        edges = queryRange(query.grow(longest/2));
+
+        // Now that we are sure, that the edge housing the closest
+        // node is in our collection, find it.
         Node closest = null;
         double closestDist = Double.POSITIVE_INFINITY;
-    	
-    	query.grow(maxLen/2); // grow query with ½ longest edge
-        edges = queryRange(query);
 
         for (Edge edge : edges) {
         	double startDist = point.dist(edge.START.VECTOR);

@@ -13,7 +13,6 @@ import Map.View.Window;
 import Map.View.Tiler;
 import Map.Model.Loader;
 import Map.Model.Edge;
-import Map.Model.ShortestPath;
 
 public class AddressButtonListener implements ActionListener {
 	private final JTextField tf1, tf2;

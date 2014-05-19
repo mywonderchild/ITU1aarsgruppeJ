@@ -18,7 +18,6 @@ import Map.Box;
 import Map.Controller.Path;
 import Map.Model.Loader;
 import Map.Model.Graph;
-import Map.Model.ShortestPath;
 import Map.Model.Edge;
 import Map.Model.Node;
 

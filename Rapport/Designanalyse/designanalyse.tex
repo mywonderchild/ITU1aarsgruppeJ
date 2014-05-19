@@ -1,9 +1,5 @@
 I dette afsnit fordybes der i de designvalg der er blevet foretaget til brugergrænsefladen, samt hvilke overvejelser der lå bag de valg.
 
-Hvordan kommer designet til udtryk hos en bruger? Og hvad betyder det for brugeren?
-
-Analysis, arguments, and decisions regarding the design of the user interface.
-
 \section{Krav}
 
 Følgende krav er opstillet til programmets usability:
@@ -76,7 +72,7 @@ Vi havde to løsningsforslag til at vise nærmeste vejnavn.
    \item Vise vejnavn i en statusbar.
 \end{enumerate}
 
-Den første løsning kan forstyre brugeren, da vejnavnene konstant vil være i vejen over kortet ved musemarkøren. I statusbaren er det ikke lige så i øjenfaldende og det anses som en fordel. 
+Den første løsning kan forstyrre brugeren, da vejnavnene konstant vil være i vejen over kortet ved musemarkøren. I statusbaren er det ikke lige så i øjenfaldende og det anses som en fordel. 
 
 Brugerens oplevelse af programmet er prioriteret højt. Vi valgte derfor at implementere løsning 2.
 
@@ -91,26 +87,34 @@ For at skifte mellem datasæt må brugeren lukke programmet ned, og genåbne det
 
 \subsubsection{Rute planlægning}
 
-Brugeren skal have planlagt en rute på en hensigtsmæssig
-
-Brugeren kan få planlagt en rute ved følgende to måder:
+Brugeren kan få planlagt en rute på følgende to måder:
 
 \begin{itemize}
 	\item Klikke to steder på kortet.
 	\item  Indtastning af fra og til destination.
 \end{itemize}
 
-Præcision af at klikke på kortet? Hvad hvis der er zoomet for meget ud?
-Implementering af hus nr. for større præcision. 
+At klikke to steder på kortet er en indlysende måde at få lavet en rutevejledning. Præcisionen af denne form for søgning kan varierer, alt afhængig hvilken zoom grad brugeren fortager sine klik på. Hvis det er zoomet betydeligt ud, falder præcisionen markant. Når der er zoomet tilpas ind, er dette en udemærket måde at planlægge sin rute på. En udvidelse til denne metode, ville være at markere klikkene med start og slut punkter. 
+
+For en mere nøjagtig ruteplanlægning kan man indtaste fra og til destinationer i sidebaren.
+
+Uanset hvilken måde der benyttes, kunne implementering af hus numre øge præcisionen til ruteplanlægning. 
 
 \subsection{Sidebar}
 
+I sidebaren indtastes fra og til destinationerne, ligeledes udskrives rutevejledningen i denne. 
 
-Hvorfor en sidebar?
-Hvorfor er det godt man kan skjule sidebaren?
-Hvad betyder det for brugeren? få vist meste af kortet
+Sidebaren fylder meget og hvis den er fremvist konstant, kan det ødelægge oplevelsen af programmet. Det er ikke bekvemt at have sidebaren fremme, når man bruger kortet. 
+
+Det skal derfor være muligt at skjule sidebaren, når den ikke bruges og få den fremvist, når den skal benyttes. Brugeren kan få fremvist og skjule sidebaren ved at klikke på mellemrumstasten eller dens knap. Knappen er placeret i nederste venstre hjørne og forstyrre ikke brugeren ved interaktion med kortet.
 
 \subsubsection{adressegenkendelse}
-Programmet vil ikke kunne beregne en rute hvis der er blevet indtastet et vejnavn, der ikke kan findes. For at gøre det for brugeren, sker der en automatisk adressegenkendelse, så snart brugeren begynder at skrive i tekst feltet. 
+
+Programmet vil ikke kunne beregne en rute hvis der er blevet indtastet et vejnavn, der ikke kan findes. Det øger utilfredsheden med programmet hvis brugeren ikke kan foretage en rutevejledning. 
+
+Når der indtastes i tekstfeltet, vil der automatisk komme en Dropdown-boks til syne. Boksen indeholder mulige adresser, som minder om brugerens indtastning. Der må i boksen maks være fem muligheder præsenteret, da det ellers vil virke ubekvemt for brugeren, at få præsenteret for mange muligheder.
+
+Dette er med til at give brugeren hurtigere søgninger, og samtidig fjerne brugerens bekymringer om fejlindtastninger.
 
 \section{Usability}
+Rykke bjørns afsnit fra evaluering af program her?

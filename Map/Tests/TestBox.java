@@ -19,8 +19,6 @@ public class TestBox {
 		);
 	}
 
-	// Constructor
-
 	@Test
 	public void constructor() {
 		assertEquals(box.start.x, 1, delta);
@@ -29,16 +27,12 @@ public class TestBox {
 		assertEquals(box.stop.y, 4, delta);
 	}
 
-	// Dimensions
-
 	@Test
 	public void dimensions() {
 		Vector dimensions = box.dimensions();
 		assertEquals(dimensions.x, 2, delta);
 		assertEquals(dimensions.y, 2, delta);
 	}
-
-	// Relative to absolute
 
 	@Test
 	public void relativeToAbsolute() {
@@ -48,7 +42,13 @@ public class TestBox {
 		assertEquals(absolute.y, 3, delta);
 	}
 
-	// Ratio
+	@Test
+	public void absoluteToRelative() {
+		Vector absolute = new Vector(2, 3);
+		Vector relative = box.absoluteToRelative(absolute);
+		assertEquals(relative.x, 0.5, delta);
+		assertEquals(relative.y, 0.5, delta);
+	}
 
 	@Test
 	public void ratioSquare() {
@@ -73,50 +73,9 @@ public class TestBox {
 		assertEquals(ratio.y, 1, delta);
 	}
 
-	// Scale
-	@Test
-	public void scale() {
-		box.scale(2);
-		assertEquals(box.start.x, 0, delta);
-		assertEquals(box.start.y, 1, delta);
-		assertEquals(box.stop.x, 4, delta);
-		assertEquals(box.stop.y, 5, delta);
-	}
+	// TRANSLATE
 
-	@Test
-	public void flipX() {
-		Box box = new Box(
-			new Vector(11, 0),
-			new Vector(-3, 0)
-		);
-		box.flipX();
-		assertEquals(box.start.x, -3, delta);
-		assertEquals(box.stop.x, 11, delta);
-	}
-
-	@Test
-	public void flipY() {
-		Box box = new Box(
-			new Vector(0, 11),
-			new Vector(0, -3)
-		);
-		box.flipY();
-		assertEquals(box.start.y, -3, delta);
-		assertEquals(box.stop.y, 11, delta);
-	}
-
-	@Test
-	public void properCorners() {
-		Box box = new Box(
-			new Vector(51, -10),
-			new Vector(0, 80)
-		);
-		box.properCorners();
-		assertEquals(box.start.x, 0, delta);
-		assertEquals(box.stop.x, 51, delta);
-		assertEquals(box.start.y, -10, delta);
-		assertEquals(box.stop.y, 80, delta);
-	}
+	// OVERLAPPING
 
 	@Test
 	public void overlappingLine() {
@@ -155,4 +114,55 @@ public class TestBox {
 			assertFalse(overlap);
 		}
 	}
+
+	// GET CENTER
+
+	@Test
+	public void scale() {
+		box.scale(2);
+		assertEquals(box.start.x, 0, delta);
+		assertEquals(box.start.y, 1, delta);
+		assertEquals(box.stop.x, 4, delta);
+		assertEquals(box.stop.y, 5, delta);
+	}
+
+	@Test
+	public void properCorners() {
+		Box box = new Box(
+			new Vector(51, -10),
+			new Vector(0, 80)
+		);
+		box.properCorners();
+		assertEquals(box.start.x, 0, delta);
+		assertEquals(box.stop.x, 51, delta);
+		assertEquals(box.start.y, -10, delta);
+		assertEquals(box.stop.y, 80, delta);
+	}
+
+	@Test
+	public void flipX() {
+		Box box = new Box(
+			new Vector(11, 0),
+			new Vector(-3, 0)
+		);
+		box.flipX();
+		assertEquals(box.start.x, -3, delta);
+		assertEquals(box.stop.x, 11, delta);
+	}
+
+	@Test
+	public void flipY() {
+		Box box = new Box(
+			new Vector(0, 11),
+			new Vector(0, -3)
+		);
+		box.flipY();
+		assertEquals(box.start.y, -3, delta);
+		assertEquals(box.stop.y, 11, delta);
+	}
+
+
+	// GROW
+
+	// IS INSIDE
 }

@@ -86,11 +86,6 @@ public class Box {
 		return start.copy().add(stop).div(2);
 	}
 
-	// Returns box coordinates as two-dimensional array
-	public double[][] toArray() {
-		return new double[][]{start.toArray(), stop.toArray()};
-	}
-
 	// Scales the box keeping the center in place
 	public Box scale(double scalar) {
 		Vector center = getCenter();

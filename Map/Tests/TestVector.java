@@ -16,26 +16,18 @@ public class TestVector {
 		vector = new Vector(1, 2);
 	}
 
-	// Constructor
-
 	@Test
 	public void constructor() {
-		// Vector has been created correctly
 		assertEquals(1, vector.x, delta);
 		assertEquals(2, vector.y, delta);
 	}
 
-	// Set
-
 	@Test
 	public void set() {
 		vector.set(2, 3);
-		// Vector has been modified
 		assertEquals(2, vector.x, delta);
 		assertEquals(3, vector.y, delta);
 	}
-
-	// Copy
 
 	@Test
 	public void copy() {
@@ -48,12 +40,9 @@ public class TestVector {
 		assertEquals(3, copy.y, delta);
 	}
 
-	// Addition
-
 	@Test
 	public void positiveAdd() {
 		vector.add(new Vector(1, 1));
-		// Vector has been added correctly
 		assertEquals(2, vector.x, delta);
 		assertEquals(3, vector.y, delta);
 	}
@@ -61,7 +50,6 @@ public class TestVector {
 	@Test
 	public void negativeAdd() {
 		vector.add(new Vector(-1, -1));
-		// Vector has been added correctly
 		assertEquals(0, vector.x, delta);
 		assertEquals(1, vector.y, delta);
 	}
@@ -69,17 +57,13 @@ public class TestVector {
 	@Test
 	public void zeroAdd() {
 		vector.add(new Vector(0, 0));
-		// Vector has been added correctly
 		assertEquals(1, vector.x, delta);
 		assertEquals(2, vector.y, delta);
 	}
 
-	// Subtraction
-
 	@Test
 	public void positiveSubtract() {
 		vector.sub(new Vector(1, 1));
-		// Vector has been subtracted correctly
 		assertEquals(0, vector.x, delta);
 		assertEquals(1, vector.y, delta);
 	}
@@ -87,7 +71,6 @@ public class TestVector {
 	@Test
 	public void negativeSubtract() {
 		vector.sub(new Vector(-1, -1));
-		// Vector has been subtracted correctly
 		assertEquals(2, vector.x, delta);
 		assertEquals(3, vector.y, delta);
 	}
@@ -95,17 +78,13 @@ public class TestVector {
 	@Test
 	public void zeroSubtract() {
 		vector.sub(new Vector(0, 0));
-		// Vector has been subtracted correctly
 		assertEquals(1, vector.x, delta);
 		assertEquals(2, vector.y, delta);
 	}
 
-	// Multiplication
-
 	@Test
 	public void upscaleMultiplication() {
 		vector.mult(2);
-		// Vector has been multiplied correctly
 		assertEquals(2, vector.x, delta);
 		assertEquals(4, vector.y, delta);
 	}
@@ -113,7 +92,6 @@ public class TestVector {
 	@Test
 	public void downscaleMultiplication() {
 		vector.mult(0.5);
-		// Vector has been multiplied correctly
 		assertEquals(0.5, vector.x, delta);
 		assertEquals(1, vector.y, delta);
 	}
@@ -121,17 +99,13 @@ public class TestVector {
 	@Test
 	public void noscaleMultiplication() {
 		vector.mult(1);
-		// Vector has been multiplied correctly
 		assertEquals(1, vector.x, delta);
 		assertEquals(2, vector.y, delta);
 	}
 
-	// Division
-
 	@Test
 	public void upscaleDivision() {
 		vector.div(0.5);
-		// Vector has been divided correctly
 		assertEquals(2, vector.x, delta);
 		assertEquals(4, vector.y, delta);
 	}
@@ -139,7 +113,6 @@ public class TestVector {
 	@Test
 	public void downscaleDivision() {
 		vector.div(2);
-		// Vector has been divided correctly
 		assertEquals(0.5, vector.x, delta);
 		assertEquals(1, vector.y, delta);
 	}
@@ -147,32 +120,24 @@ public class TestVector {
 	@Test
 	public void noscaleDivision() {
 		vector.div(1);
-		// Vector has been divided correctly
 		assertEquals(1, vector.x, delta);
 		assertEquals(2, vector.y, delta);
 	}
 
-	// Distance
-
 	@Test
 	public void positiveDistance() {
-		// Distance has been calculated correctly
 		assertEquals(Math.sqrt(2), vector.dist(new Vector(2, 3)), delta);
 	}
 
 	@Test
 	public void negativeDistance() {
-		// Distance has been calculated correctly
 		assertEquals(Math.sqrt(2), vector.dist(new Vector(0, 1)), delta);
 	}
 
 	@Test
 	public void zeroDistance() {
-		// Distance has been calculated correctly
 		assertEquals(0, vector.dist(new Vector(1, 2)), delta);
 	}
-
-	// Translate
 
 	@Test
 	public void translate() {
@@ -183,7 +148,22 @@ public class TestVector {
 		assertEquals(4, vector.y, delta);
 	}
 
-	// Mirror
+	@Test
+	public void isInside() {
+		Box container = new Box(new Vector(0, 0), new Vector(1, 1));
+		Vector[] inside = new Vector[] {
+			new Vector(0, 0),
+			new Vector(0.5, 0.5),
+			new Vector(1, 1)
+		};
+		Vector[] outside = new Vector[] {
+			new Vector(0, 1.01),
+			new Vector(1.01, 0),
+			new Vector(1.01, 1.01)
+		};
+		for (Vector vector : inside) assertTrue(vector.isInside(container));
+		for (Vector vector : outside) assertFalse(vector.isInside(container));
+	}
 
 	@Test
 	public void mirrorY() {
@@ -192,7 +172,28 @@ public class TestVector {
 		assertEquals(1, vector.y, delta);
 	}
 
-	// Angle between
+	@Test
+	public void abs() {
+		Vector vector = new Vector(-1, -1);
+		vector.abs();
+		assertEquals(1, vector.x, delta);
+		assertEquals(1, vector.y, delta);
+	}
+
+	// DOT
+
+	// CROSS 
+
+	// MAG
+
+	@Test
+	public void norm() {
+		Vector vector = new Vector(10, 0);
+		vector.norm();
+		assertEquals(1, vector.x, delta);
+		assertEquals(0, vector.y, delta);
+		assertEquals(1, vector.mag(), delta);
+	}
 
 	@Test
 	public void angleBetween() {

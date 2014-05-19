@@ -1,0 +1,10 @@
+\section{Controller}
+\label{sec:controller}
+
+AdressButtonListener og AddressFieldListener tilsammen ansvarlige for at reagere på brugerinput i sidebaren i forbindelse med navigation. Når AddressFieldListener modtager information om at brugeren interagerer med de to tekst-input-felter kalder den AddressFinder for at hente forslag til adresser.
+
+Når der er fundet en rute anvendes klassen Path som datastruktur og til at generere en tekstuel repræsentation af rutevejledningen.
+
+KeyBoardHandler og MouseHandler er ansvarlige for at holde øje med brugerinput relateret til selve kortet. Disse to klasser står blandt andet for at håndtere når udsnittet skal zoomes, flyttes, eller nulstilles.
+
+Tiler er ansvarlig for at tegne kortet, og holde styr på hvilket udsnit af kortet der vises.

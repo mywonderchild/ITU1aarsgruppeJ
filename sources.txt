@@ -22,9 +22,9 @@
 ./Map/saxEventHandler.java
 ./Map/saxFilter.java
 ./Map/saxPurger.java
+./Map/Tests/TestAStar.java
 ./Map/Tests/TestBox.java
 ./Map/Tests/TestPriorityQueue.java
-./Map/Tests/TestAStar.java
 ./Map/Tests/TestVector.java
 ./Map/Vector.java
 ./Map/View/Canvas.java

@@ -64,7 +64,7 @@ public class AddressFinder {
 				else {
 					d[i][j] = min(
 						d[i-1][j] + 1,	// del
-						d[i][j-1] + ((j<c1.length && d[i][j] == 0) ? 1 : 0), 	// ins, free if prefix
+						d[i][j-1] + ((j<c1.length && d[i][j] == 0) ? 1 : 0), 	// ins, free if suffix
 						d[i-1][j-1] + 2 // sub
 					);
 				}

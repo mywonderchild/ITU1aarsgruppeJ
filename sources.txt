@@ -5,6 +5,7 @@
 ./Map/Controller/KeyboardHandler.java
 ./Map/Controller/MouseHandler.java
 ./Map/Controller/Path.java
+./Map/Controller/Tiler.java
 ./Map/Data/krak/KrakPurger.java
 ./Map/Line.java
 ./Map/Main.java
@@ -29,5 +30,4 @@
 ./Map/View/DropTextField.java
 ./Map/View/FirstWindow.java
 ./Map/View/Painter.java
-./Map/View/Tiler.java
 ./Map/View/Window.java

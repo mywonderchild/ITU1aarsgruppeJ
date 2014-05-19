@@ -1,4 +1,4 @@
-package Map.View;
+package Map.Controller;
 
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
@@ -28,7 +28,7 @@ import Map.Model.QuadTree;
 import Map.Model.Groups;
 import Map.Model.Edge;
 import Map.View.Painter;
-import Map.Controller.Path;
+import Map.View.Canvas;
 
 public class Tiler {
 

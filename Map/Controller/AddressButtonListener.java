@@ -8,11 +8,11 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JTextField;
 
-import Map.View.Canvas;
-import Map.View.Window;
-import Map.View.Tiler;
 import Map.Model.Loader;
 import Map.Model.Edge;
+import Map.View.Canvas;
+import Map.View.Window;
+import Map.Controller.Tiler;
 
 public class AddressButtonListener implements ActionListener {
 	private final JTextField tf1, tf2;

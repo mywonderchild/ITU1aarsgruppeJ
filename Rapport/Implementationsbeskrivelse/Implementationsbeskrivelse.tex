@@ -1,7 +1,21 @@
+\section{Model}
+\label{sec:model}
+
+Loader er ansvarlig for at indlæse data for det valgte datasæt og oprette instanser af Node og Edge objekter der anvendes som datastrukturer for henholdsvis punkter og vejstykker. Ligeledes er loader ansvarlig for at indsætte Edges i QuadTrees som gør det hurtigt at finde de Nodes og Edges der ledes efter.
+
+Loader opretter flere forskellige QuadTrees der indeholder grupperinger af Edges. Groups er ansvarlige for at holde styr på hvilke typer af Edges der hører til hvilken gruppe, og hvilke egenskaber hver enkelt gruppe har.
+
+MALTHE PLEASE I NEED HELP:
+Graph
+Bag
+AStar
+Dijkstra
+PriorityQueue
+
 \section{View}
 \label{sec:view}
 
-FirstWindow er et vindue der tilbyder brugeren valget mellem at bruge Krak eller OSM datasættet, er ansvarlig for at resten af programmet startes op og det valgte datasæt indlæses.
+FirstWindow er et vindue der tilbyder brugeren valget mellem at bruge Krak eller OSM datasættet, er ansvarlig for at resten af programmet startes op med det valgte datasæt.
 
 Window er vinduet som indeholder programmet efter at datasættet er indlæst. Canvas er det primære komponent i Window hvori kortet bliver tegnet.
 
@@ -19,3 +33,8 @@ Når der er fundet en rute anvendes klassen Path som datastruktur og til at gene
 KeyBoardHandler og MouseHandler er ansvarlige for at holde øje med brugerinput relateret til selve kortet. Disse to klasser står blandt andet for at håndtere når udsnittet skal zoomes, flyttes, eller nulstilles.
 
 Tiler er ansvarlig for at tegne kortet, og holde styr på hvilket udsnit af kortet der vises.
+
+\section{Tests}
+\label{sec:tests}
+
+Klasserne i denne pakke er tilsammen ansvarlige for at teste udvalgte klasser med JUnit tests.

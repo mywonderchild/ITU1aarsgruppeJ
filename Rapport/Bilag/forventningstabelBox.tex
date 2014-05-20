@@ -1,0 +1,99 @@
+\newcolumntype{L}{>{\centering\arraybackslash}m{4cm}}
+
+\begin{table}[h!]
+	\caption{Box:Constructor}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(1,2) og vec(3,4) & box(1,2;3,4) & box(1,2;3,4)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\caption{Box:Dimensions}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(1,2;3,4) & vec(2,2) & vec(2,2)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\caption{Box:RelativeToAbsolute}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(0.5,0.5) i box(1,2;3,4) & vec(2,3) & vec(2,3)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\caption{Box:Ratio}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(1,2;3,4) & vec(1,1) & vec(1,1)\\
+		box(0,0;2,1) & vec(1,0.5) & vec(1,0.5)\\
+		box(0,0;1,2) & vec(0.5,1) & vec(0.5,1)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\caption{Box:Scale}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(1,2;3,4)*2 & box(0,1;4,5) & box(0,1;4,5)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\caption{Box:FlipX}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(11,0;-3,0) & box(-3,0;11,0) & box(-3,0;11,0)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\caption{Box:FlipY}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(0,11;0,-3) & box(0,-3;0,11) & box(0,-3;0,11)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
+	\caption{Box:ProperCorners}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(51,-10;0,80) & box(0,-10;51,80) & box(0,-10;51,80)\\
+		\hline
+	\end{tabular}
+\end{table}

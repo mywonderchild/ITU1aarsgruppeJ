@@ -1,0 +1,82 @@
+\newcolumntype{L}{>{\centering\arraybackslash}m{4cm}}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Push}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Gren & Input egenskab & Dækket af test\\ [0.5ex]
+		\hline
+		(1)true & \verb?null? & C2\\
+		(1)false & \verb?not null? & B1\\
+		(2)true & \verb?n == a? & B1\\
+		(2)false & \verb?n < a? & B2\\
+		(3)true & \verb?længde af keys != values? & C1\\
+		(3)false & \verb?længde af keys == values? & B1-5\\
+		(4)Kører ikke & \verb?Tom liste? & C3\\
+		(4)Kørers én gang & \verb?Liste med ét element? & C4\\
+		(4)Kørers flere gang & \verb?Liste med flere elementer? & B1-5\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Pop}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Gren & Input egenskab & Dækket af test\\ [0.5ex]
+		\hline
+		(1)true & \verb?PQ tom? & E1\\
+		(1)false & \verb?PQ populeret? & D1-5\\
+		(2)true & \verb?n == a/4? & B1-5 D1-5\\
+		(2)false & \verb?n > a/4? & D1\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Swim}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Gren & Input egenskab & Dækket af test\\ [0.5ex]
+		\hline
+		(1)Kører ikke & \verb?i < 1 || [i/2] < [i]? & B1\\
+		(1)Kørers én gang & \verb?i > 1 && [i/2] > [i], men ikke i/2 > 1 && [i/4] > [i/2]? & F1\\
+		(1)Kørers flere gange & \verb?i/2x > 1 && [i/2x] > [i/2x]? & B4\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Sink}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Gren & Input egenskab & Dækket af test\\ [0.5ex]
+		\hline
+		(1)Kører ikke & \verb?i*2>n? & D5\\
+		(1)Kørers én gang & \verb?i*2>n, men ikke i*4>n? & D2\\
+		(1)Kørers flere gange & \verb?i*2*x>n? & D1\\
+		(2)true & \verb?j < n && [j] > [j+1]? & D1\\
+		(2)false & \verb?j > n || [j] < [j+1]? & D4\\
+		(3)true & \verb?[i] <= [j]? & D1\\
+		(3)false & \verb?[i] > [j]? & D3\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Resize}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Gren & Input egenskab & Dækket af test\\ [0.5ex]
+		\hline
+		(1)Kører ikke & \verb?Ikke muligt? & \verb?-?\\
+		(1)Kørers én gang & \verb?n = 0? & B1\\
+		(1)Kørers flere gange & \verb?n > 0? & B3\\
+		\hline
+	\end{tabular}
+\end{table}

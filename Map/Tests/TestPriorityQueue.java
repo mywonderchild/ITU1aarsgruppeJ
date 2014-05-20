@@ -5,6 +5,8 @@ import org.junit.*;
 
 import Map.Model.PriorityQueue;
 import java.util.NoSuchElementException;
+import java.lang.IllegalArgumentException;
+import java.lang.NullPointerException;
 
 public class TestPriorityQueue {
 	PriorityQueue<Integer, Integer> pq;
@@ -31,6 +33,47 @@ public class TestPriorityQueue {
 		for(int i = 0; i < pqIntKeys.length; i++) {
 			assertEquals((Integer) pq.pop().getKey(), pqIntKeys[i], delta);
 		}
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void malformedPush() {
+		// mismatching key-val length
+		Integer[] intKeys = new Integer[] {
+			0, 1, 1, -1, 2
+		};
+		Integer[] intVals = new Integer[] {
+			1, 2, 3, 4
+		};
+		pq.push(intKeys, intVals);
+	}
+
+	@Test
+	public void emptyPush() {
+		// key-val length 0
+		Integer[] intKeys = new Integer[0];
+		Integer[] intVals = new Integer[0];
+		pq.push(intKeys, intVals);
+		assertEquals(pq.size(), 0, delta);
+	}
+
+	@Test
+	public void singlePush() {
+		// key-val length 0
+		Integer[] intKeys = new Integer[] { 1 };
+		Integer[] intVals = new Integer[] { 1 };
+		pq.push(intKeys, intVals);
+		assertEquals(pq.size(), 1, delta);
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void nullPush() {
+		Integer nullKey = null;
+		pq.push(nullKey, null);
+		pq.push(nullKey, 1);
+		assertEquals(pq.size(), 0, delta);
+
+		pq.push(1, null);
+		assertEquals(pq.size(), 1, delta);
 	}
 
 	@Test

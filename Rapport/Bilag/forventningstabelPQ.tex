@@ -1,0 +1,92 @@
+\newcolumntype{L}{>{\centering\arraybackslash}m{4cm}}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Constructor}
+	\centering
+	\begin{tabular}{L L L L}
+		\hline\hline
+		ID & Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		A1 & Intet & Intet & Ingen fejl\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Push (B1-5 pushes i samme liste med ét metodekald.)}
+	\centering
+	\begin{tabular}{L L L L}
+		\hline\hline
+		ID & Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		B1 & (0,1) & size++ & size++\\
+		B2 & (1,2) & size++ & size++\\
+		B3 & (1,3) & size++ & size++\\
+		B4 & (-1,4) & size++ & size++\\
+		B5 & (2,5) & size++ & size++\\
+		C1 & (0, 1, 1, -1, 2), (1, 2, 3, 4) & Fejl & Fejl\\
+		C2 & null & Fejl & Fejl\\
+		C3 & Tom liste & Intet & Ingen fejl\\
+		C4 & Liste med ét element & size++ & size++\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Pop}
+	\centering
+	\begin{tabular}{L L L L}
+		\hline\hline
+		ID & Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		D1 & Efter B1 & 1 & 1\\
+		D2 & Efter B2 & 2 & 2\\
+		D3 & Efter B3 & 3 & 3\\
+		D4 & Efter B4 & 4 & 4\\
+		D5 & Efter B5 & 5 & 5\\
+		E1 & Intet (tom) & Fejl & Fejl\\
+		E2 & (1,0), pop, pop & Fejl & Fejl\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Peek}
+	\centering
+	\begin{tabular}{L L L L}
+		\hline\hline
+		ID & Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		F1 & push(1,0), push(-1,0) & (-1) & (-1)\\
+		F2 & Intet (tom) & Fejl & Fejl\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:Size}
+	\centering
+	\begin{tabular}{L L L L}
+		\hline\hline
+		ID & Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		G1 & Intet (tom) & 0 & 0\\
+		G2 & push(1,0) & 1 & 1\\
+		G3 & push(1,0), pop & 0 & 0\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{PriorityQueue:isEmpty}
+	\centering
+	\begin{tabular}{L L L L}
+		\hline\hline
+		ID & Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		G1 & Intet (tom) & true & true\\
+		G2 & push(1,0) & false & false\\
+		G3 & push(1,0), pop & true & true\\
+		\hline
+	\end{tabular}
+\end{table}

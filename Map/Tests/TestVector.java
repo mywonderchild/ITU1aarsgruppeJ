@@ -182,7 +182,30 @@ public class TestVector {
 
 	@Test
 	public void dot() {
-		
+		Vector zero = new Vector(0,0);
+		Vector pos = new Vector(1,3);
+		Vector neg = new Vector(-2, -5);
+		Vector posneg = new Vector(-3, 4);
+
+		assertEquals(0, zero.dot(zero), delta);
+		assertEquals(0, zero.dot(pos), delta);
+		assertEquals(0, zero.dot(neg), delta);
+		assertEquals(0, zero.dot(posneg), delta);
+
+		assertEquals(0, pos.dot(zero), delta);
+		assertEquals(10, pos.dot(pos), delta);
+		assertEquals(-17, pos.dot(neg), delta);
+		assertEquals(9, pos.dot(posneg), delta);
+
+		assertEquals(0, neg.dot(zero), delta);
+		assertEquals(-17, neg.dot(pos), delta);
+		assertEquals(29, neg.dot(neg), delta);
+		assertEquals(-14, neg.dot(posneg), delta);
+
+		assertEquals(0, posneg.dot(zero), delta);
+		assertEquals(9, posneg.dot(pos), delta);
+		assertEquals(-14, posneg.dot(neg), delta);
+		assertEquals(25, posneg.dot(posneg), delta);
 	}
 
 	@Test

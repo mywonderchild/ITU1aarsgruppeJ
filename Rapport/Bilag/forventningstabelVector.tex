@@ -119,6 +119,23 @@
 \end{table}
 
 \begin{table}[!h]
+	\caption{Vector:isInside (i box(0,0; 1,1) )}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(0,0) & true & true\\
+		vec(0.5,0.5) & true & true\\
+		vec(1,1) & true & true\\
+		vec(0,1.01) & false & false\\
+		vec(1.01,0) & false & false\\
+		vec(1.01,1.01) & false & false\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
 	\caption{Vector:MirrorY}
 	\centering
 	\begin{tabular}{L L L}
@@ -126,6 +143,120 @@
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
 		vec(1,2) in box(0,0;1,3) & vec(1,1) & vec(1,1)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{Vector:Abs}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(-1,-1) & vec(1,1) & vec(1,1)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{Vector:Dot}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(0,0)$\cdot$vec(0,0) & 0 & 0\\
+		vec(0,0)$\cdot$vec(1,3) & 0 & 0\\
+		vec(0,0)$\cdot$vec(-2,-5) & 0 & 0\\
+		vec(0,0)$\cdot$vec(-3,4) & 0 & 0\\
+		\hline
+		vec(1,3)$\cdot$vec(0,0) & 0 & 0\\
+		vec(1,3)$\cdot$vec(1,3) & 10 & 10\\
+		vec(1,3)$\cdot$vec(-2,-5) & -17 & -17\\
+		vec(1,3)$\cdot$vec(-3,4) & 9 & 9\\
+		\hline
+		vec(-2,-5)$\cdot$vec(0,0) & 0 & 0\\
+		vec(-2,-5)$\cdot$vec(1,3) & -17 & -17\\
+		vec(-2,-5)$\cdot$vec(-2,-5) & 29 & 29\\
+		vec(-2,-5)$\cdot$vec(-3,4) & -14 & -14\\
+		\hline
+		vec(-3,4)$\cdot$vec(0,0) & 0 & 0\\
+		vec(-3,4)$\cdot$vec(1,3) & 9 & 9\\
+		vec(-3,4)$\cdot$vec(-2,-5) & -14 & -14\\
+		vec(-3,4)$\cdot$vec(-3,4) & 25 & 25\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{Vector:Cross}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(0,0)$\times$vec(0,0) & 0 & 0\\
+		vec(0,0)$\times$vec(1,3) & 0 & 0\\
+		vec(0,0)$\times$vec(-2,-5) & 0 & 0\\
+		vec(0,0)$\times$vec(-3,4) & 0 & 0\\
+		\hline
+		vec(1,3)$\times$vec(0,0) & 0 & 0\\
+		vec(1,3)$\times$vec(1,3) & 0 & 0\\
+		vec(1,3)$\times$vec(-2,-5) & 1 & 1\\
+		vec(1,3)$\times$vec(-3,4) & 13 & 13\\
+		\hline
+		vec(-2,-5)$\times$vec(0,0) & 0 & 0\\
+		vec(-2,-5)$\times$vec(1,3) & -1 & -1\\
+		vec(-2,-5)$\times$vec(-2,-5) & 0 & 0\\
+		vec(-2,-5)$\times$vec(-3,4) & -23 & -23\\
+		\hline
+		vec(-3,4)$\times$vec(0,0) & 0 & 0\\
+		vec(-3,4)$\times$vec(1,3) & -13 & -13\\
+		vec(-3,4)$\times$vec(-2,-5) & 23 & 23\\
+		vec(-3,4)$\times$vec(-3,4) & 0 & 0\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{Vector:Mag}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(0,0) & 0 & 0\\
+		vec(1,3)  & $\sqrt{5}$ & $\sqrt{5}$\\
+		vec(-2,-5) & $\sqrt{5}$ & $\sqrt{5}$\\
+		vec(-3,4) & $\sqrt{5}$ & $\sqrt{5}$\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{Vector:Norm}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(10,0) & vec(0,1) & vec(0,1)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\caption{Vector:AngleBetween}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(1,2)$\angle$vec(1,2) & 0 & 0\\
+		vec(1,2)$\angle$vec(2,-1) & $-\pi/2$ & $-\pi/2$\\
+		vec(1,2)$\angle$vec(-1,-2) & $\pi$ & $\pi$\\
+		vec(1,2)$\angle$vec(-2,1) & $\pi/2$ & $\pi/2$\\
 		\hline
 	\end{tabular}
 \end{table}

@@ -124,12 +124,14 @@ Vi havde brug for en algoritme der kunne lave rektangulære grupperinger ud af d
 	\label{figur:visningAfKort5}
 \end{figure}
 
-\subsubsection{Brute force: Lang tid}
+\subsubsection{Brute force}
 \label{subsec:bruteForce}
 
 Vores første løsningsforslag var en simpel brute force algoritme. Indledningsvist opbygger algoritmen en tabel hvor det markeres hvilke tiles der mangler at blive tegnet. Den naive løsning til dette problem er en brute-force algoritme der undersøger alle mulige rektangler i denne tabel. Hvis rektanglet er det største indtil videre, og kun består af tiles der mangler at blive tegnet, gemmes rektanglets position. Denne procedure gentages indtil alle mulige rektanglet er undersøgt.
 
-\subsubsection{Dynamisk programmering: Lineær tid}
+Det tager \textasciitilde$\frac{N^2 * M^2}{4}$ eller $O(N^2 * M^2)$ tid at gennemgå alle rektanglerne i et rektangel af $N * M$ størrelse. Da hvert af cellerne i rektanglerne skal undersøges for at finde ud af om det enkelte rektangel udelukkende består af utegnede tiles, er den estimerede køretid for brute force algoritmen $O(N^3 * M^3)$.
+
+\subsubsection{Dynamisk programmering}
 \label{subsec:dynamiskProgrammering}
 
 Efter at have overvejet brute force algoritmen fandt vi frem til en algoritme der løser problemet mere effektivt ved hjælp af dynamisk programmering. 
@@ -154,11 +156,9 @@ Herefter skannes rækkerne i tabellen fra venstre mod højre, og arealet af det 
 
 Afsluttende tilføjes det største rektangel til listen af rektangler, og de tiles der udgør rektanglet markeres som tegnede.
 
-Denne algoritme kører i lineær tid $O(N)$ hvor $N$ er antallet af tiles, og blev derfor valgt til fordel for brute-force algoritmen som vi formoder ville have resulteret i væsentligt længere køretider. Vi ville gerne have beregnet køretiden for brute-force algoritmen, og sammenlignet de to køretider, men det viste sig at være temmelig kompliceret at beregne køretiden korrekt.
+Denne algoritme kører i $O(N * M)$ for et rektangel der er $N * M$ stort, og blev derfor valgt til fordel for brute force algoritmen der kører i $O(N^3 * M^3)$ tid.
 
-Et logisk argument for at den dynamiske algoritme er væsentligt hurtigere er at den efter et lineært gennemløb af cellerne kun undersøger N forskellige rektangler, hvilket skal ses i kontrast til at undersøge alle mulige rektangler. Ydermere behøver algoritmen ikke tjekke om rektanglerne udelukkende består af tiles der mangler at blive tegnet, da dette på forhånd er garanteret.
-
-\subsubsection{Case analyse: Konstant tid}
+\subsubsection{Case analyse}
 \label{subsec:caseAnalyse}
 
 Efter at have implementeret ovennævnte løsning gik vi i gang med at analysere hvilke cases der opstår ofte i praksis, og hvilke der sjældent eller aldrig opstår (figur \ref{figur:visningAfKort11}).
@@ -191,7 +191,7 @@ Følgende algoritme løser problemet med gruppering af tiles i konstant tid i ty
 
 Det er værd at nævne at algoritmen potentielt giver et forkert svar hvis en af de ``umulige'' cases opstår. Vi ikke observeret nogen umulige cases, og vi formoder derfor at de ikke opstår i praksis.
 
-Altså endte vi med en algoritme der er optimeret til de specifikke forhold der gælder for vores program, og som i en meget stor andel af kørslerne tager konstant tid. Det er ikke muligt at beregne en gennemsnitskøretid for algoritmen eftersom vi ikke kan forudse hvordan brugeren interagerer med kortet (hvilket afgør hvor mange atypiske cases der opstår), og det eneste der kan garanteres er derfor at køretiden i værste fald er lineær.
+Altså endte vi med en algoritme der er optimeret til de specifikke forhold der gælder for vores program, og som i en meget stor andel af kørslerne tager konstant tid. Det er ikke muligt at beregne en gennemsnitskøretid for algoritmen eftersom vi ikke kan forudse hvordan brugeren interagerer med kortet (hvilket afgør hvor mange atypiske cases der opstår), og det eneste der kan garanteres er derfor at køretiden i værste fald er den samme som algoritmen fra afsnit ~\ref{subsec:dynamiskProgrammering}.
 
 \subsection{Tegning af tiles}
 \label{subsec:tegningAfTiles}

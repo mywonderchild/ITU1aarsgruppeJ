@@ -180,11 +180,51 @@ public class TestVector {
 		assertEquals(1, vector.y, delta);
 	}
 
-	// DOT
+	@Test
+	public void dot() {
+		
+	}
 
-	// CROSS 
+	@Test
+	public void cross() {
+		Vector zero = new Vector(0,0);
+		Vector pos = new Vector(1,3);
+		Vector neg = new Vector(-2, -5);
+		Vector posneg = new Vector(-3, 4);
 
-	// MAG
+		assertEquals(0, zero.cross(zero), delta);
+		assertEquals(0, zero.cross(pos), delta);
+		assertEquals(0, zero.cross(neg), delta);
+		assertEquals(0, zero.cross(posneg), delta);
+
+		assertEquals(0, pos.cross(zero), delta);
+		assertEquals(0, pos.cross(pos), delta);
+		assertEquals(1, pos.cross(neg), delta);
+		assertEquals(13, pos.cross(posneg), delta);
+
+		assertEquals(0, neg.cross(zero), delta);
+		assertEquals(-1, neg.cross(pos), delta);
+		assertEquals(0, neg.cross(neg), delta);
+		assertEquals(-23, neg.cross(posneg), delta);
+
+		assertEquals(0, posneg.cross(zero), delta);
+		assertEquals(-13, posneg.cross(pos), delta);
+		assertEquals(23, posneg.cross(neg), delta);
+		assertEquals(0, posneg.cross(posneg), delta);
+	}
+
+	@Test
+	public void mag() {
+		Vector zero = new Vector(0,0);
+		Vector pos = new Vector(1,2);
+		Vector neg = new Vector(-2,-1);
+		Vector posneg = new Vector(-2,1);
+
+		assertEquals(0, zero.mag(), delta);
+		assertEquals(Math.sqrt(5), pos.mag(), delta);
+		assertEquals(Math.sqrt(5), neg.mag(), delta);
+		assertEquals(Math.sqrt(5), posneg.mag(), delta);
+	}
 
 	@Test
 	public void norm() {

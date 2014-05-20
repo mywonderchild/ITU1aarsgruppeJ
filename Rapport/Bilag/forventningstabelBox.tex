@@ -37,6 +37,18 @@
 \end{table}
 
 \begin{table}[h!]
+	\caption{Box:AbsoluteToRelative}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(2,3) i box(1,2;3,4) & vec(0,5) & vec(0,5)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
 	\caption{Box:Ratio}
 	\centering
 	\begin{tabular}{L L L}
@@ -46,6 +58,57 @@
 		box(1,2;3,4) & vec(1,1) & vec(1,1)\\
 		box(0,0;2,1) & vec(1,0.5) & vec(1,0.5)\\
 		box(0,0;1,2) & vec(0.5,1) & vec(0.5,1)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\caption{Box:Overlapping}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(0.5,1.5; 1.5;2.5) og box(1,2;3,4) & true & true\\
+		box(0.5,1.5; 0.99;1.99) og box(1,2;3,4) & false & false\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\caption{Box:OverlappingLine (i box(1,4;3,2) )}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		vec(2,5)$\to$vec(2,3) & true & true\\
+		vec(4,3)$\to$vec(2,3) & true & true\\
+		vec(2,1)$\to$vec(2,3) & true & true\\
+		vec(0,3)$\to$vec(2,3) & true & true\\
+		vec(2,3)$\to$vec(2,3) & true & true\\
+		vec(0,5)$\to$vec(1,4) & true & true\\
+		vec(0,2)$\to$vec(4,4) & true & true\\
+		vec(3,1)$\to$vec(1,5) & true & true\\
+		vec(1,1)$\to$vec(1,5) & true & true\\
+		vec(2,1)$\to$vec(4,3) & true & true\\
+		\hline
+		vec(3,1)$\to$vec(4,2) & false & false\\
+		vec(4,1)$\to$vec(4,5) & false & false\\
+		vec(4,2)$\to$vec(4,4) & false & false\\
+		vec(4,3)$\to$vec(4,3) & false & false\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\caption{Box:getCenter}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(1,2;3,4) & vec(2,3) & vec(2,3)\\
 		\hline
 	\end{tabular}
 \end{table}
@@ -63,6 +126,18 @@
 \end{table}
 
 \begin{table}[h!]
+	\caption{Box:ProperCorners}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(51,-10;0,80) & box(0,-10;51,80) & box(0,-10;51,80)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
 	\caption{Box:FlipX}
 	\centering
 	\begin{tabular}{L L L}
@@ -74,7 +149,7 @@
 	\end{tabular}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[h!]
 	\caption{Box:FlipY}
 	\centering
 	\begin{tabular}{L L L}
@@ -86,14 +161,27 @@
 	\end{tabular}
 \end{table}
 
-\begin{table}[H]
-	\caption{Box:ProperCorners}
+\begin{table}[h!]
+	\caption{Box:Grow}
 	\centering
 	\begin{tabular}{L L L}
 		\hline\hline
 		Input data & Forventet output & Egentligt output \\ [0.5ex]
 		\hline
-		box(51,-10;0,80) & box(0,-10;51,80) & box(0,-10;51,80)\\
+		box(1,2;3,4) grow(1) & box(0,1; 4,5) & box(0,1; 4,5)\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\caption{Box:isInside (i box(1,2;3,4) )}
+	\centering
+	\begin{tabular}{L L L}
+		\hline\hline
+		Input data & Forventet output & Egentligt output \\ [0.5ex]
+		\hline
+		box(0.5,1.5; 3.5,4.5) & true & true\\
+		box(1.5,2.5; 2.5,3.5) & false & false\\
 		\hline
 	\end{tabular}
 \end{table}

@@ -3,14 +3,7 @@
 
 Loader er ansvarlig for at indlæse data for det valgte datasæt og oprette instanser af Node og Edge objekter der anvendes som datastrukturer for henholdsvis punkter og vejstykker. Ligeledes er loader ansvarlig for at indsætte Edges i QuadTrees som gør det hurtigt at finde de Nodes og Edges der ledes efter.
 
-Loader opretter flere forskellige QuadTrees der indeholder grupperinger af Edges. Groups er ansvarlige for at holde styr på hvilke typer af Edges der hører til hvilken gruppe, og hvilke egenskaber hver enkelt gruppe har.
-
-MALTHE PLEASE I NEED HELP:
-Graph
-Bag
-AStar
-Dijkstra
-PriorityQueue
+Loader opretter flere forskellige QuadTrees der indeholder grupperinger af Edges. Groups er ansvarlige for at holde styr på hvilke typer af Edges der hører til hvilken gruppe, og hvilke egenskaber hver enkelt gruppe har. Derudover anvendes Node og Edge objekterne også til generering af både et adressekartotek og en graf til navigation. Grafen anvendes senere af AStar-klassen, som finder den hurtigste rute mellem to Nodes, mens adressekartoteket benyttes til tekstuel angivelse af start- og slutpunktet for rutenavigation.
 
 \section{View}
 \label{sec:view}
@@ -21,7 +14,7 @@ Window er vinduet som indeholder programmet efter at datasættet er indlæst. Ca
 
 Painter er ansvarlig for at tegne linjer og bokse og bliver anvendt af Tiler (se \ref{sec:controller}) og Canvas.
 
-DropTextField is responsible for SWINGLING? EDIT ME PLZ MALTHE :)
+DropTextField tillader brugeren at vælge mellem en række forskellige adresseforslag gennem dennes rullemenu.
 
 \section{Controller}
 \label{sec:controller}

@@ -74,16 +74,6 @@ public class TestBox {
 	}
 
 	@Test
-	public void translate() {
-		Box zero = new Box(new Vector(0,0), new Vector(0,0));
-		Box pos = new Box(new Vector(1,1), new Vector(5,3));
-		Box neg = new Box(new Vector(-2,-4), new Vector(-2,-1));
-		Box posneg = new Box(new Vector(-2,5), new Vector(0,3));
-		System.out.println(zero.copy().translate(pos));
-		System.out.println(pos.copy().translate(zero));
-	}
-
-	@Test
 	public void overlapping() {
 		Box overlapping = new Box(new Vector(0.5, 1.5), new Vector(1.5, 2.5));
 		Box notOverlapping = new Box(new Vector(0.5, 1.5), new Vector(0.99, 1.99));

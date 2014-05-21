@@ -1,9 +1,10 @@
-\section{Grene i Prioritetskø}
-\lstset{
-	language=Java,
-	tabsize=2
-}
-\begin{lstlisting}
+package Map.Model;
+
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.lang.IllegalArgumentException;
+import java.lang.NullPointerException;
+
 public class PriorityQueue<Key extends Comparable<Key>, Value> {
 	private Entry<Key,Value>[] a;
 	private int n;
@@ -20,37 +21,33 @@ public class PriorityQueue<Key extends Comparable<Key>, Value> {
 
 	@SuppressWarnings("unchecked")
 	public void push(Key key, Value value) {
-		/*1*/if(key == null) throw new NullPointerException();
-		/*2*/if(n == a.length-1) resize();
+		if(key == null) throw new NullPointerException();
+		if(n == a.length-1) resize();
 		a[++n] = new PriorityEntry<Key,Value>(key, value);
 		swim(n);
 	}
 
 	public void push(Key[] keys, Value[] values) {
-		/*3*/if(keys.length != values.length)
-					throw new IllegalArgumentException
-					("Mismatch between length of key and value arrays");
-		/*4*/for(int i = 0; i < keys.length; i++) {
+		if(keys.length != values.length) throw new IllegalArgumentException("Mismatch between length of key and value arrays");
+		for(int i = 0; i < keys.length; i++) {
 			push(keys[i], values[i]);
 		}
 	}
 
 	public Entry pop() {
-		/*1*/if(isEmpty())
-					throw new NoSuchElementException("PriorityQueue underflow");
+		if(isEmpty()) throw new NoSuchElementException("PriorityQueue underflow");
 		
 		Entry ret = a[1];
 		exch(1, n--);
 		sink(1);
 
 		a[n+1] = null; // gc
-		/*2*/if(n > 0 && n == (a.length-1)/4) resize();
+		if(n > 0 && n == (a.length-1)/4) resize();
 		return ret;
 	}
 
 	public Entry peek() {
-		/*1*/if(isEmpty()) throw new
-					NoSuchElementException("PriorityQueue underflow");
+		if(isEmpty()) throw new NoSuchElementException("PriorityQueue underflow");
 		return a[1];
 	}
 
@@ -63,17 +60,17 @@ public class PriorityQueue<Key extends Comparable<Key>, Value> {
 	}
 
 	private void swim(int i) {
-		/*1*/while(i > 1 && greater(i/2, i)) {
+		while(i > 1 && greater(i/2, i)) {
 			exch(i/2, i);
 			i = i/2;
 		}
 	}
 
 	private void sink(int i) {
-		/*1*/while(i*2 <= n) {
+		while(i*2 <= n) {
 			int j = 2*i;
-			/*2*/if(j < n && greater(j, j+1)) j++;
-			/*3*/if(!greater(i, j)) break;
+			if(j < n && greater(j, j+1)) j++;
+			if(!greater(i, j)) break;
 			exch(i, j);
 			i = j;
 		}
@@ -92,9 +89,8 @@ public class PriorityQueue<Key extends Comparable<Key>, Value> {
 
 	@SuppressWarnings("unchecked")
 	private void resize() {
-		Entry<Key,Value>[] temp
-			= (PriorityEntry<Key,Value>[]) new PriorityEntry[(n+1)*2];
-		/*1*/for(int i = 0; i <= n; i++) {
+		Entry<Key,Value>[] temp = (PriorityEntry<Key,Value>[]) new PriorityEntry[(n+1)*2];
+		for(int i = 0; i <= n; i++) {
 			temp[i] = a[i];
 		}
 		a = temp;
@@ -112,5 +108,41 @@ public class PriorityQueue<Key extends Comparable<Key>, Value> {
 		}
 		return ret;
 	}
+
+	private class PriorityEntry<K,V> implements Entry {
+		private K key;
+		private V value;
+
+		public PriorityEntry(K key, V value) {
+			this.key = key;
+			this.value = value;
+		}
+
+		@Override
+		public K getKey() {
+			return key;
+		}
+
+		@Override
+		public V getValue() {
+			return value;
+		}
+
+		@Override
+		public V setValue(Object obj) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public int hashCode() {
+			return
+				(getKey()==null   ? 0 : getKey().hashCode()) ^
+				(getValue()==null ? 0 : getValue().hashCode());
+		}
+
+		@Override
+		public String toString() {
+			return "<" + getKey() + "," + getValue() + ">";
+		}
+	}
 }
-\end{lstlisting}

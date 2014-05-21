@@ -28,12 +28,13 @@ Den første løsning, der blev overvejet, var at gemme et billede af det gamle u
 	\item De udsnit, der skal tegnes, er tynde, hvilket skaber stor ineffektivitet som følge af den måde, som vejstykker hentes fra quadtrees.
 \end{itemize}
 
+\newpage
 \subsection{Anden løsning}
 \label{subsec:andenLoesning}
 
 Den anden løsning vi overvejede, og den vi endte med at implementere, var inspireret af online kort-programmer som for eksempel Google Maps og OSM. Det centrale koncept i denne løsning er at dele kortet op i en masse små rektangler bestående af bitmap data (tiles). Når der er zoomet langt ud, udgøres kortet af få tiles, og når der er zoomet langt ind, udgøres kortet af mange tiles (figur \ref{figur:visningAfKort4}). Når der skal tegnes et udsnit, tegnes de tiles, der er indenfor udsnittet.
 
-\begin{figure}[h]
+\begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.9\textwidth]{visningAfKort4}
 	\captionsetup{width=0.8\textwidth}

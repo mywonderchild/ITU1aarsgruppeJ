@@ -1,0 +1,1 @@
+jar cfm map.jar manifest.txt @csources.txt

@@ -17,3 +17,7 @@ Map/Data/kdv*
 Rapport/main.pdf
 Map/Data/osm/purged_edges.txt
 Map/Data/osm/purged_nodes.txt
+jar/Data/osm/purged_nodes.txt
+jar/Data/osm/purged_edges.txt
+jar/Data/krak/purged_nodes.txt
+jar/Data/krak/purged_edges.txt

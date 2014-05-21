@@ -14,4 +14,4 @@ Vi har valgt begrænse os til de punkter, der er en del af en vej, og ud af de v
 	\item \textbf{natural=coast:} Dette mærkat indeholder kystlinjen
 \end{itemize}
 
-For at få et scope 0->1000 på vores xy-koordinatsæt, måtte vi benytte følgende formel på vores UTM-koordinater $newCoordinate = \\(UTMCoordinate-lowestUTMCoordinate) * (1000/(highestUTMCoordinate-lowestUTMCoordinate)) $\\ Derudover spejler vi længdebredderne, så verdenshjørnerne passer til den almindelige kortstandard.
+For at få et scope 0->1000 på vores xy-koordinatsæt, måtte vi benytte følgende formel på vores UTM-koordinater $newCoordinate = \\(UTMCoord-minUTMCoord) * (1000/(maxUTMCoord-minUTMCoord)) $\\ Derudover spejler vi længdebredderne, så verdenshjørnerne passer til den almindelige kortstandard.

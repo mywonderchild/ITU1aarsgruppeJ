@@ -198,12 +198,12 @@ private int count;
 		return Double.parseDouble(node[1]);
 	}
 	private String convertLat(Double l){
-		Double lat = Math.round(10000.0*((l-latmin)*(1000/(latmax-latmin))))/10000.0;
+		Double lat = Math.round(10000.0*(1000-((l-latmin)*(1000/(latmax-latmin)))))/10000.0;
 
 		return String.valueOf(lat);
 	}
 	private String convertLon(Double l){
-		Double lon = Math.round(10000.0*(1000-((l-lonmin)*(1000/(lonmax-lonmin)))))/10000.0;
+		Double lon = Math.round(10000.0*((l-lonmin)*(1000/(lonmax-lonmin))))/10000.0;
 
 		return String.valueOf(lon);
 	}
@@ -420,7 +420,19 @@ private int count;
 					double lon = Double.parseDouble(node[1]);
 					try{
 						double lonlat[] = GeoConvert.toUtm(lon,lat);
-						nodedata.add(String.valueOf(k)+","+convertLon(lonlat[0])+","+convertLat(lonlat[1]));
+						if(lonlat[1]<latmin){
+							latmin = lonlat[1];
+						}
+						if(lonlat[1]>latmax){
+							latmax = lonlat[1];
+						}
+						if(lonlat[0]<lonmin){
+							lonmin = lonlat[0];
+						}
+						if(lonlat[0]>lonmax){
+							lonmax = lonlat[0];
+						}
+						nodedata.add(String.valueOf(k)+","+lonlat[0]+","+lonlat[1]);
 						}catch (Exception e) {
 							System.out.println(e);
 							System.exit(0);
@@ -429,15 +441,22 @@ private int count;
 					q++;
 					k++;
 				}
-				if(q==50000){
-					System.out.println("Parsing nodes and generating node output file");
-					for (int i=0;i<nodedata.size() ; i++) {
-						purgedNodeWriter.write(nodedata.get(i)+"\n");
-					}
-					nodedata.clear();
-					q = 0;
-				}
+				// if(q==50000){
+				// 	System.out.println("Parsing nodes and generating node output file");
+				// 	for (int i=0;i<nodedata.size() ; i++) {
+				// 		purgedNodeWriter.write(nodedata.get(i)+"\n");
+				// 	}
+				// 	nodedata.clear();
+				// 	q = 0;
+				// }
 			}
+			for (int i=0 ; i<nodedata.size() ; i++){
+				String convertstring[] = nodedata.get(i).split(",");
+				nodedata.set(i,(convertstring[0]+","+convertLon(Double.parseDouble(convertstring[1]))+","+convertLat(Double.parseDouble(convertstring[2]))));
+
+			}
+
+
 			for (int i=0;i<nodedata.size() ; i++) {
 				purgedNodeWriter.write(nodedata.get(i)+"\n");
 			}

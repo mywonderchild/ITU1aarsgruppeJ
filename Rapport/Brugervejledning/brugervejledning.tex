@@ -1,25 +1,29 @@
-Programmet kan køres via den udleverede .jar-fil. når programmet er startet op, skal man vælge hvilket data-sæt man vil benytte. BEMÆRK, nogle features er ikke fyldestgørende i OSM-datasættet.
-Efter start af programmet kan det tage op til 5 sekunder før kortet ses på skærmen.
+Programmet kan køres via den udleverede .jar-fil. Det er vigtigt, at .jar-filen køres med flaget ``-Xmx2G'', da programmet eller løber tør for hukommelse under opstart. Når programmet er startet op, skal man vælge hvilket data-sæt man vil benytte.
 
-\begin{center}
-\includegraphics[width=(\textwidth)/2]{brugervejledning/vaelgdata}
-\end{center}
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+	\includegraphics[width=(0.95\textwidth)]{brugervejledning/vaelgdata}
+  \end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[width=(0.95\textwidth)]{brugervejledning/renkort}
+\end{minipage}
+\end{figure}
 
-\begin{center}
-\includegraphics[width=(\textwidth)/2]{brugervejledning/renkort}
-\end{center}
 
 \subsection{kortmanipulation}
 \begin{table}[h!t]
 \centering
 	\caption{Tastaturgenveje}
-	\begin{tabular}{p{3cm} l l l}
+	\begin{tabular}{p{6cm} l l l}
 		\hline\hline
 		Kommando & Tast & Tast & Tast \\ [0.5ex]
 		\hline
 		Zoom kortet ind & i & + & num+\\
 		Zoom kortet ud & o & - & num-\\
-		Returner kortet til startzoomgrad og centrer kortet & r & backspace\\
+		Returner til startzoomgrad og centrer kortet & r & backspace\\
 		Bevæg kortet & piletasterne\\
 		Vis/skjul rutevejledningsmenu & space \\
 		\hline
@@ -29,7 +33,7 @@ Efter start af programmet kan det tage op til 5 sekunder før kortet ses på sk�
 \begin{table}[h!t]
 \centering
 	\caption{Mussemanipulation}
-	\begin{tabular}{p{3cm} l l p{5cm}}
+	\begin{tabular}{p{6cm} l l p{4cm}}
 		\hline\hline
 		Kommando & bruger \\ [0.5ex]
 		\hline
@@ -47,10 +51,14 @@ Efter start af programmet kan det tage op til 5 sekunder før kortet ses på sk�
 
 Man kan enten  benytte musen på kortet for at få en rutevejledning, eller man kan benytte rutevejledningsmenuen. Man benytter musen ved at højreklikke på sin start posisiion, og så klikke med venstre mussetast på sin slutdestination. I tilfælde af at man benytte rutevejledningsmenuen, skriver man addressen på sin startdestination i felt (A) og sin slutdestination i felt (B), hvorefter man trykker på knappen: 'Get route'. Der vil nu vises en rutevejledning i rutevejledningsmenuen, såvel som at ruten vil være tegnet med en lyserød farve på kortet.
 
-\begin{center}
-\includegraphics[width=(\textwidth)/2]{brugervejledning/halvrenkort}
-\end{center}
-
-\begin{center}
-\includegraphics[width=(\textwidth)/2]{brugervejledning/klikkort}
-\end{center}
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+	\includegraphics[width=(0.95\textwidth)]{brugervejledning/halvrenkort}
+  \end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[width=(0.95\textwidth)]{brugervejledning/klikkort}
+\end{minipage}
+\end{figure}

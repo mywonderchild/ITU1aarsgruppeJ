@@ -1,5 +1,5 @@
 \section{Grupper}
-Vi valgte at sortere vores data ud i større grupper. Dette gør, at vi kan differentiere mellem hvilken data fra datasættet, vi vil benytte i forhold til, hvad vi finder mest hensigtsmæssigt. Dette skaber mulighed for tilpasning og større optimering. De valgte grupper er:
+Vi valgte at sortere vores data ud i større grupper. Dette skaber mulighed for tilpasning og større optimering. De valgte grupper er:
 \begin{enumerate}
 \setcounter{enumi}{-1}
 	\item Motorveje
@@ -11,35 +11,22 @@ Vi valgte at sortere vores data ud i større grupper. Dette gør, at vi kan diff
 	\item Andet
 \end{enumerate}
 
-Det er ikke betimeligt at få fremvist alle veje uafladeligt ved en zoomgrad, der er zoomet passende ud. Gågader, stiger og markveje er først relevante at få fremvist, når der er zoomet tilstrækkeligt ind. På baggrund af dette, er det relevant at opstille en løsning, der adskiller detaljegraden på kortet i forhold til zoomgraden.
+Det er ikke betimeligt at få fremvist alle veje uafladeligt når der er zoomet langt ud. Gågader, stier og markveje er først relevante at få fremvist, når der er zoomet tilstrækkeligt ind. På baggrund af dette, er det relevant at opstille en løsning, der adskiller detaljegraden på kortet i forhold til zoomgraden.
 
-Der skal desuden tilknyttes ekstra data til de respektive grupper. Et foruddefineret krav lyder som følgende: 
+Ud fra den viden vi har, om hvilke grupper vi har at gøre med, skal der tilknyttes farvedata til grupperne. Vejtyperne skal også differentieres af deres vejtykkelser, da veje ligeledes har forskellige tykkelser i virkeligheden. Da det ikke er hensigtsmæssigt at definere alle veje til at have ens vejtykkelser, skal der tilknyttes noget ekstra data om vejtykkelsen af de forskellige grupper.
 
-"Draw different segment types with different colours, e.g.
-
-\begin{itemize}
-	\item Highways: {\color{red} Red}
-	\item Main roads: {\color{blue} Blue}
-	\item Paths: {\color{green} Green}
-	\item Other: \textbf{Black} " 
-\end{itemize}
-
-Ud fra den viden vi har, om hvilke vejtyper vi har at gøre med, skal der programmeres noget farve data ind der knytter sig til de vejtyper. 
-
-Vejtyperne skal også differentiere sig på deres vejtykkelser, da veje ligeledes har forskellige tykkelser i realiteten. Da det ikke er hensigtsmæssigt at definere alle veje til at have ens vejtykkelser, skal der tilknyttes noget ekstra data der er ansvarlig for vejtykkelsen af de forskellige vejtyper.  
-
-Ydermere valgte vi at udvide funktionaliteten ved at implementere "dynamiske vejtykkelser ved zoom", dvs. at vejtykkelserne vokser  og skrumper dynamisk alt afhængig af om der zoomes ind eller ud. 
+Ydermere valgte vi at udvide funktionaliteten ved at implementere ``dynamiske vejtykkelser ved zoom''. Dvs. at vejtykkelserne vokser og skrumper dynamisk alt afhængig af om der zoomes ind eller ud.
 
 Da vejtykkelsen skal tilpasse sig relativt til zoomgraden, kan man blive fristet til at benytte sig af formlen:
 
 \begin{equation}
 	dynamisk vejtykkelse = \frac{vejtykkelse}{zoom}
+	\label{eq:DynVej}
 \end{equation}
 
-Formlen gav nogle voldsomme resultater i form af enorme vejtykkelser ved tiltrækkelig tæt zoomgrad. 
-Et alternativ var at man for hver af de respektive vejtyper, hardcodede data for vejtykkelserne ved forskellige zoomgrader. Det ville give et mindre dynamisk look, men tilstrækkeligt opfylde funktionaliteten. 
+Formlen gav nogle voldsomme resultater i form af enorme vejtykkelser ved tiltrækkelig højt zoomniveau. Et alternativ var at man for hver af de respektive grupper definerede vejtykkelserne ved forskellige zoomniveauer. Det ville give et mindre dynamisk look, men tilstrækkeligt opfylde funktionaliteten. 
 
-Det viste sig, at en passende løsning var at lade vejtykkelserne vokse med 5 \% af hvad formlen (3.1)  gav. Dette kommer til udtryk ved følgende formel:  
+Det viste sig, at en passende løsning var, at lade vejtykkelserne vokse med 5\% af hvad formlen \ref{eq:DynVej} gav. Dette kommer til udtryk ved følgende formel:  
 
 \begin{equation}
 	dynamisk vejtykkelse = vejtykkelse * (1+ ( 5\% * \frac{vejtykkelse}{zoom}))

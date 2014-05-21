@@ -1,44 +1,27 @@
 I dette afsnit fordybes der i de designvalg der er blevet foretaget til brugergrænsefladen, samt hvilke overvejelser der lå bag de valg.
 
-\section{Krav}
-
-Følgende krav er opstillet til programmets usability:
-
-\begin{enumerate}
-	\item \textbf{Fit for use}: Brugeren skal kunne udnytte funktionerne optimalt. 
-	\item \textbf{Task effeciency}: Det skal være effektivt at bruge programmet for en bruger, der benytter det ofte. 
-	\item \textbf{Ease of learning}: Programmet skal være let at lære.
-	\item \textbf{Ease of remembering}:  Programmet skal være let at huske for en bruger, der ikke benytter det ofte. 
-\end{enumerate}
-
-Kravene har spillet en væsentlig faktor for valg af løsninger i forhold til brugergrænsefladen. 
-
 \section{Visualisering}
 
 \subsection{Vejfarver og -tykkelser}
 
-Når en bruger benytter sig af kortet, er det en forudsætning, at brugeren skal kunne skelne mellem diverse vejtyper. Særligt relevant bliver dette, når ruteplanlægnings funktionen benyttes, da brugeren skal kunne skelne mellem motorveje og hovedveje. Den oplagte løsning er at adskille vejtyperne fra hinanden ved at tildele vejene forskellige farver. 
+Når en bruger benytter sig af kortet, er det en forudsætning, at brugeren skal kunne skelne mellem forskellige vejtyper. Særligt relevant bliver dette, når ruteplanlægningsfunktionen benyttes, da brugeren skal kunne skelne mellem motorveje og hovedveje. Den oplagte løsning er at adskille vejtyperne fra hinanden ved at tildele vejene forskellige farver, hvilket også er et af kravene stillet i kravsspecifikationen. 
 
-Et kort hvor vejene differenteres efter farver, siger ikke nok om deres vejtyper. Det vil kræve at brugeren på forhånd kender til hvilken farver der er knyttet til vejtyperne. 
+Et kort, hvor vejene differentieres efter farver, siger ikke nok om deres vejtyper. Det vil kræve at brugeren på forhånd kender til hvilke farver, der er knyttet til vejtyperne. 
 
-En større differentering af vejtyper kan opnås ved at designe vejene til at differentiere sig på deres vejtykkelser. Med dette design skabes et virkelighedsnært udtryk, der gøre det lettere for brugeren at forstå hvilke veje der skelnes mellem.  
+En større adskillelse af vejtyperne kan opnås ved at tegne dem med forskellige vejtykkelser. Med dette design skabes et udtryk der reflekterer virkeligheden, hvilket gør det lettere for brugeren at skelne mellem vejene. 
 
 
-\subsection{Panning}
+\subsection{Panorering}
 
-Panning er en central funktion i et kort program. I et kort program vil den naturlige måde at panne på være at trække i kortet eller trykke på visuelle piletaster. En beslutning om at der ikke skal være et visuel interaktionssystem (i form af taster og zoom knapper), blev truffet tidligt i processen. Et visuelt interaktionssystem vil medføre at brugeren til at benytte denne, som den primære måde at interagere med programmet på. Dette er ikke hensigtsmæssigt i vores tilfælde, da vi har funktioner som ruteplanlægning, hvor en rute kan beregnes ved at klikke to på kortet. En bruger vil ikke føle sig tilpas med at benytte denne funktion, hvis den primære interaktion forgår gennem et visuel interaktionssystem. 
+Panorering er en central funktion i et kortprogram. Vi overvejede 2 forskellige måder at implementere panorering på. Dette kunne enten være at trække i kortet eller trykke på visuelle piletaster. En beslutning, om at der ikke skal være et visuel interaktionssystem, i form af taster og zoom knapper, blev truffet tidligt i processen. Et visuelt interaktionssystem kunne blænde brugeren for at benytte andre måder at interagere med programmet på. Derudover benytter en bruger sig typisk af en mus. Det kunne fremstå som værende forstyrrende, hvis der er piletaster på skærmen.  
 
-Derudover benytter en bruger sig typisk af en mus. Det vil fremstå som værende forstyrrende, hvis der er piltaster på skærmen.  
-
-På baggrund af ovenstående overvejelser, valgte vi at panning skal foregå ved at trække i kortet. Piltaster kan også benyttes, da det også vurderes til at være en naturlig måde at navigere i et kort på og det ikke fremstår som forstyrrende. 
+På baggrund af ovenstående overvejelser valgte vi, at panorering skal foregå ved at trække i kortet. Tastaturets piletaster kan også benyttes, der udgør et alternativ, som er en naturlig måde at navigere i kortet, som ikke er forstyrrende. 
 
 
 \subsection{Zoom}
-En af de helt store funktioner er zoom-funktionen. Der skulle her tages højde for, hvordan denne skulle komme til udtryk hos brugeren, samtidig med at gøre det bekvemt at benytte.  
+En af de helt store funktioner er zoom-funktionen. Der skulle her tages højde for, hvordan denne skulle komme til udtryk hos brugeren samtidig med at gøre det bekvemt at benytte.  
 
-\subsubsection{Zoom ind}
-
-Der kan zoomes ind på følgende måder:
+Der kan zoomes på følgende måder:
 
 \begin{itemize}
 	\item Zoom med taster.
@@ -46,24 +29,24 @@ Der kan zoomes ind på følgende måder:
 	\item Rektangulær zoom.
 \end{itemize}
 
-Når der zoomes ind med taster eller mus, så sker det relativt til centrum af kortet. Den optimale løsning havde været hvor der zoomes ind relativt til musemarkør. Da vi ikke kunne implementeret denne løsning, måtte vi nøjes med zoom relativt til centrum.
+Når der zoomes med taster eller mus, så sker det relativt til centrum af det aktuelle udsnit. Den anden mulig løsning havde været, hvor der zoomes relativt til musemarkør. Da vi ikke kunne implementere denne løsning. Von Malthe synes også det er en irriterende zoomfunktion, så det er ok.
 
-Hvis brugeren vil zoome ind på et specifikt sted og på kort tid, så er de to første zoom metoder ikke tilstrækkelige. Det skal være muligt at foretage effektiv zoom i kortest tid. Med rektangulær zoom kommer man hurtigere til et sted. Det er en særdeles gunstig løsning til hurtig og målrettet zoom. 
+Hvis brugeren hurtigt vil zoome ind på et specifikt udsnit af kortet, så er de to første zoom metoder ikke tilstrækkelige. Med rektangulær zoom kommer man hurtigere til det ønskede udsnit. Det er en særdeles gunstig løsning til hurtig og målrettet zoom. 
 
 \subsubsection{Synlige vejtyper}
 
-Ved en zoom grad hvor eksempelvis hele Danmark er synligt, er det kun relevant at få fremvist motorveje og hovedveje. Man kan med fordel undlade at synliggøre mindre og ubetydelige veje i sådan en zoom grad. Brugeren er ikke interesseret i at se de mindre veje, og hvis vejene er fremvist, kan det resulterer i at brugeren føler irritation. 
+Ved et zoomniveau, hvor eksempelvis hele Danmark er synligt, er det kun relevant at få fremvist motorveje og hovedveje. Man kan med fordel undlade at synliggøre mindre og ubetydelige veje i sådan et zoomniveau. Brugeren er ikke interesseret i at se de mindre veje, og det skaber et mere overskueligt billede at undlade dem.
 
-Når der zoomes ind kan man synliggøre de mindre veje, da man kan antage, at det dét hvad brugeren ønsker at få fremvist.   
+Ved større zoomniveau synliggøres de mindre veje, da man må antage, at det er hvad brugeren ønsker at få fremvist.   
 
 \subsubsection{Dynamisk vejtykkelse ved zoom}
 
-For yderligre at give programmet et virkelighedsnært udtryk, har vi tilføjet en mindre visuel funktion. Ved zoom vokser vejtykkelsen dynamisk. Det giver zoom funktionen en lækker detalje og programmet et pænt look. 
+For yderligere at give programmet et overskueligt udtryk, har vi tilføjet en mindre visuel funktion. Ved zoom vokser vejtykkelsen dynamisk. Det giver zoomfunktionen en lækker detalje og programmet et pænt look. 
   
 
 \subsection{Visning af nærmeste vejnavn}
 
-Når musemarkøren kører henover en vej, skal navnet på den pågældende vej blive fremvist.
+Musemarkøren vil altid vise det nærmeste vejnavn.
 
 Vi havde to løsningsforslag til at vise nærmeste vejnavn. 
 
@@ -72,15 +55,10 @@ Vi havde to løsningsforslag til at vise nærmeste vejnavn.
    \item Vise vejnavn i en statusbar.
 \end{enumerate}
 
-Den første løsning kan forstyrre brugeren, da vejnavnene konstant vil være i vejen over kortet ved musemarkøren. I statusbaren er det ikke lige så i øjenfaldende og det anses som en fordel. 
-
-Brugerens oplevelse af programmet er prioriteret højt. Vi valgte derfor at implementere løsning 2.
-
-
+Den første løsning kan forstyrre brugeren, da vejnavnene konstant vil ligge over kortet, nær musemarkøren, og derved være i vejen. I statusbaren er det ikke lige så iøjenfaldende. 
+	
 \subsection{OpenStreetMap eller Krak}
-Et af de obligatoriske krav til programmet er at brugeren kan benytte sig af enten Krak eller OpenStreetMap datasæt. Det oplagte er at brugeren får denne valgmulighed som det første i programmet. Ved tilfælde af at brugeren ønsker at skifte datasæt i et kørende program, kunne man give brugeren mulighed for at skifte datasæt i det kørende program. Vi valgte dog at nedprioritere denne mulighed.
-
-For at skifte mellem datasæt må brugeren lukke programmet ned, og genåbne det og derfra vælge det datasæt, brugeren ønsker at benytte. 
+Et af de obligatoriske krav til programmet er, at brugeren kan benytte sig af enten Krak- eller OpenStreetMap-datasættet. Det oplagte er, at brugeren får denne valgmulighed ved opstart af programmet. I tilfælde af at brugeren ønsker at skifte datasæt i et kørende program, kunne man give brugeren for dette. Vi valgte dog at nedprioritere denne mulighed. For at skifte mellem datasæt må brugeren lukke programmet ned, genåbne det og derfra vælge det datasæt, brugeren ønsker at benytte. 
 
 
 \section{Rutevejledning}
@@ -91,30 +69,24 @@ Brugeren kan få planlagt en rute på følgende to måder:
 
 \begin{itemize}
 	\item Klikke to steder på kortet.
-	\item  Indtastning af fra og til destination.
+	\item  Indtastning af udgangspunkt og destination i sidebaren.
 \end{itemize}
 
-At klikke to steder på kortet er en indlysende måde at få lavet en rutevejledning. Præcisionen af denne form for søgning kan varierer, alt afhængig hvilken zoom grad brugeren fortager sine klik på. Hvis det er zoomet betydeligt ud, falder præcisionen markant. Når der er zoomet tilpas ind, er dette en udemærket måde at planlægge sin rute på. En udvidelse til denne metode, ville være at markere klikkene med start og slut punkter. 
+At klikke to steder på kortet er en indlysende måde at få lavet en rutevejledning. Præcisionen af denne form for søgning kan variere, alt afhængig hvilket zoomniveau brugeren befinder sig på. Hvis der er zoomet betydeligt ud, falder præcisionen markant. Når der er zoomet tilpas ind, er dette en udemærket måde at planlægge sin rute på. En udvidelse til denne metode, ville være at markere klikkene med start og slut punkter. For en mere nøjagtig ruteplanlægning kan man benytte sidebaren.
 
-For en mere nøjagtig ruteplanlægning kan man indtaste fra og til destinationer i sidebaren.
-
-Uanset hvilken måde der benyttes, kunne implementering af hus numre øge præcisionen til ruteplanlægning. 
+Uanset hvilken måde der benyttes, kunne implementering af husnumre øge præcisionen til ruteplanlægning. 
 
 \subsection{Sidebar}
 
-I sidebaren indtastes fra og til destinationerne, ligeledes udskrives rutevejledningen i denne. 
+I sidebaren indtastes udgangspunkt og destination, ligeledes udskrives rutevejledningen i denne. 
 
-Sidebaren fylder meget og hvis den er fremvist konstant, kan det ødelægge oplevelsen af programmet. Det er ikke bekvemt at have sidebaren fremme, når man bruger kortet. 
+Sidebaren fylder meget, og hvis den er fremvist konstant, kan det ødelægge oplevelsen af programmet. Det er ikke bekvemt at have sidebaren fremme, når man navigere i kortet. 
 
-Det skal derfor være muligt at skjule sidebaren, når den ikke bruges og få den fremvist, når den skal benyttes. Brugeren kan få fremvist og skjule sidebaren ved at klikke på mellemrumstasten eller dens knap. Knappen er placeret i nederste venstre hjørne og forstyrre ikke brugeren ved interaktion med kortet.
+Det skal derfor være muligt at skjule sidebaren, når den ikke bruges, og få den fremvist, når den skal benyttes. Til dette er der en diskret knap nede i venstre hjørne.
 
-\subsubsection{adressegenkendelse}
+\subsubsection{Adressegenkendelse}
 
-Programmet vil ikke kunne beregne en rute hvis der er blevet indtastet et vejnavn, der ikke kan findes. Det øger utilfredsheden med programmet hvis brugeren ikke kan foretage en rutevejledning. 
+Programmet vil ikke kunne beregne en rute, hvis der er blevet indtastet et vejnavn, der ikke er defineret i datasættet. Derfor har vi implementeret, at når der indtastes data i tekstfeltet, vil der automatisk komme en rullemenu til syne. Menuen indeholder mulige adresser, som minder om brugerens indtastning. Der vil i menuen altid være fem muligheder præsenteret i prioriteret rækkefølge, da det vil virke ubekvemt for brugeren at få præsenteret for mange muligheder.
 
-Når der indtastes i tekstfeltet, vil der automatisk komme en Dropdown-boks til syne. Boksen indeholder mulige adresser, som minder om brugerens indtastning. Der må i boksen maks være fem muligheder præsenteret, da det ellers vil virke ubekvemt for brugeren, at få præsenteret for mange muligheder.
+Dette er med til at give brugeren hurtigere søgning og samtidig fjerne brugerens bekymringer om fejlindtastninger.
 
-Dette er med til at give brugeren hurtigere søgninger, og samtidig fjerne brugerens bekymringer om fejlindtastninger.
-
-\section{Usability}
-Rykke bjørns afsnit fra evaluering af program her?

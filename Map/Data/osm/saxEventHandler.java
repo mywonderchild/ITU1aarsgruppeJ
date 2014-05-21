@@ -22,29 +22,39 @@ private PrintWriter purgedNodeWriter;
 private HashSet<String> waynodeset;
 private PrintWriter purgededgeWriter;
 private PrintWriter nodeDataWriter;
-private PrintWriter nodeTagWriter;
-private PrintWriter edgeTagWriter;
+private PrintWriter wayNameTagWriter;
+private PrintWriter wayTypeTagWriter;
 private PrintWriter wayDataWriter;
-private BufferedReader readedgetag;
+private PrintWriter waySpeedTagWriter;
+private PrintWriter coastWriter;
+private BufferedReader readwayTypeTag;
 private BufferedReader readedgedata;
-private BufferedReader readnodetag;
+private BufferedReader readwayNametag;
 private BufferedReader readnodedata;
 private BufferedReader readwaydata;
+private BufferedReader readSpeedtag;
+private BufferedReader readCoast;
 private File outputNodeData;
 private File purgedNodefile;
 private File purgedEdgdefile;
-private File outputNodeTag;
-private File outputEdgeTag;
+private File outputwayNameTag;
+private File outputwayTypeTag;
 private File outputWayData;
+private File waySpeedFile;
+private File coastFile;
 private ArrayList<String> nodedata;
 private ArrayList<String> waydata;
 private ArrayList<String> edgedata;
+private ArrayList<String> wayNametag;
+private	ArrayList<String> wayTypeTag;
+private	ArrayList<String> waySpeedTag;
+private	ArrayList<String> coastTag;
 private HashMap<String,Integer> nodeIDs;
 private HashMap<String,String> wayNodes;
-private HashMap<Integer,String> wayTagHash;
-private HashMap<Integer,String> nodeTagHash;
-private ArrayList<String> nodetag;
-private	ArrayList<String> edgetag;
+private HashMap<Integer,String> wayTypeTagHash;
+private HashMap<Integer,String> wayNameTagHash;
+private HashMap<Integer,String> waySpeedTagHash;
+private HashSet<Integer> coastHash;
 private String whatOpen;
 private long nodeID;
 private int wayID;
@@ -55,54 +65,63 @@ private Double latmax;
 private Double lonmax;
 private boolean doneNode;
 private int count;
-private String testString;
+
 
 	public saxEventHandler(){
 		try{
-		outputNodeData = new File("./Data/osm/nodedata.txt");
-		outputNodeTag = new File("./Data/osm/nodetag.txt");
-		outputEdgeTag = new File("./Data/osm/edgetag.txt");
-		outputWayData = new File("./Data/osm/waydata.txt");
-		purgedEdgdefile = new File("./Data/osm/purged_edges.txt");
-		purgedNodefile = new File("./Data/osm/purged_nodes.txt");
-		System.out.printf("File is located at %s%n", outputWayData.getAbsolutePath());
+		outputNodeData = new File("./nodedata.txt");
+		outputwayNameTag = new File("./wayNametag.txt");
+		outputwayTypeTag = new File("./wayTypeTag.txt");
+		outputWayData = new File("./waydata.txt");
+		purgedEdgdefile = new File("./purged_edges.txt");
+		purgedNodefile = new File("./purged_nodes.txt");
+		waySpeedFile = new File("./wayspeed.txt");
+		coastFile = new File("./coast.txt");
 
 		outputNodeData.createNewFile();
-		outputNodeTag.createNewFile();
-		outputEdgeTag.createNewFile();
+		outputwayNameTag.createNewFile();
+		outputwayTypeTag.createNewFile();
 		outputWayData.createNewFile();
 		purgedNodefile.createNewFile();
 		purgedEdgdefile.createNewFile();
+		waySpeedFile.createNewFile();
+		coastFile.createNewFile();
 		
 		nodeDataWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputNodeData)));
-		nodeTagWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputNodeTag)));
-		edgeTagWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputEdgeTag)));
+		wayNameTagWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputwayNameTag)));
+		wayTypeTagWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputwayTypeTag)));
+		waySpeedTagWriter = new PrintWriter(new BufferedWriter(new FileWriter(waySpeedFile)));
 		wayDataWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputWayData)));
 		purgedNodeWriter = new PrintWriter(new BufferedWriter(new FileWriter(purgedNodefile)));
 		purgededgeWriter = new PrintWriter(new BufferedWriter(new FileWriter(purgedEdgdefile)));
+		coastWriter = new PrintWriter(new BufferedWriter(new FileWriter(coastFile)));
 		readwaydata = new BufferedReader(new FileReader(outputWayData));
 		readedgedata = new BufferedReader(new FileReader(outputWayData));
-		readedgetag = new BufferedReader(new FileReader(outputEdgeTag));
-		readnodetag = new BufferedReader(new FileReader(outputNodeTag));
+		readwayTypeTag = new BufferedReader(new FileReader(outputwayTypeTag));
+		readwayNametag = new BufferedReader(new FileReader(outputwayNameTag));
+		readSpeedtag = new BufferedReader(new FileReader(waySpeedFile));
 		readnodedata = new BufferedReader(new FileReader(outputNodeData));
-		System.out.printf("File is located at %s%n", outputWayData.getAbsolutePath());
+		readCoast = new BufferedReader(new FileReader(coastFile));
 
 		}catch (IOException e) {
 			e.printStackTrace();
 		
 		}
 		nodedata = new ArrayList<String>();
-		nodetag = new  ArrayList<String>();
+		wayNametag = new  ArrayList<String>();
 		edgedata = new ArrayList<String>();
-		edgetag = new ArrayList<String>();
+		wayTypeTag = new ArrayList<String>();
+		waySpeedTag = new ArrayList<String>();
 		waydata = new ArrayList<String>();
+		coastTag = new ArrayList<String>();
 		nodeIDs = new HashMap<String,Integer>();
 		wayNodes = new HashMap<String,String>();
-		wayTagHash = new HashMap<Integer,String>();
-		nodeTagHash = new HashMap<Integer,String>();
+		wayTypeTagHash = new HashMap<Integer,String>();
+		wayNameTagHash = new HashMap<Integer,String>();
+		waySpeedTagHash = new HashMap<Integer,String>();
+		coastHash = new HashSet<Integer>();
 		waynodeset = new HashSet<String>();
 
-		testString = "";
 		whatOpen = "";
 		nodeID = 0;
 		wayID = 0;
@@ -117,6 +136,7 @@ private String testString;
 
 	}
 
+	// denne metode er hentet fra: http://www.geodatasource.com/developers/java og mildt omskrevet til at udføre vores behov.
 	private String distance(double lat1, double lon1, double lat2, double lon2) {
   		double theta = lon1 - lon2;
 	 	double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
@@ -140,8 +160,9 @@ private String testString;
 	  	return (rad * 180 / Math.PI);
 	}
 
+	//her stopper den hentede kode
+
 	private String getWaygroup(String s){
-// || s.equals("rest_area") || s.equals("service") || s.equals("services") || s.equals("yes") ||
 
 		if(s.equals("motorway") ||  s.equals("motorway_link")){
 			return "1";
@@ -167,9 +188,7 @@ private String testString;
 	}
 
 	private double getLat(String s){
-		// System.out.println(s);
 		String use = wayNodes.get((s));
-		// System.out.println("dette er use:"+use);
 		String node[]= use.split(",");
 		return Double.parseDouble(node[2]);
 	}
@@ -178,14 +197,17 @@ private String testString;
 		String node[]= use.split(",");
 		return Double.parseDouble(node[1]);
 	}
-	private String convertLat(String s){
-		return String.valueOf(1000-((Double.parseDouble(s)-latmin)*(1000/(latmax-latmin))));
+	private String convertLat(Double l){
+		Double lat = Math.round(10000.0*((l-latmin)*(1000/(latmax-latmin))))/10000.0;
+
+		return String.valueOf(lat);
 	}
-	private String convertLon(String s){
-		double lon =((Double.parseDouble(s)-lonmin)*(1000/(lonmax-lonmin)));
+	private String convertLon(Double l){
+		Double lon = Math.round(10000.0*(1000-((l-lonmin)*(1000/(lonmax-lonmin)))))/10000.0;
 
 		return String.valueOf(lon);
 	}
+
 
 
 	public void startElement(String uri, String localName, String qName,
@@ -198,66 +220,88 @@ private String testString;
 				
 				nodedata.clear();
 				count = 0;
-				System.out.println("flush");
+				System.out.println("Loading nodes from OSM file");
 			}
 			count++;
 			whatOpen = "node";
 			nodeID = Long.parseLong(attributes.getValue(0));
-			// nodeID++;
-			// nodeIDs.put(attributes.getValue(0),nodeID);
 			nodedata.add(nodeID+","+attributes.getValue(2)+","+attributes.getValue(1));
 		}
 		if (localName.equals("tag")){
-			// if(whatOpen.equals("node") && (attributes.getValue(0).equals("name"))){
-			// 	nodetag.add(nodeID+";'"+attributes.getValue(1)+"'");
-			// }
 			if (whatOpen.equals("way") && attributes.getValue(0).equals("highway")){
-				edgetag.add(wayID+","+attributes.getValue(1));
+				wayTypeTag.add(wayID+","+attributes.getValue(1));
 			}
 			if (whatOpen.equals("way") && attributes.getValue(0).equals("name")){
-				nodetag.add(wayID+";'"+attributes.getValue(1).replace("'","")+"'");
+				wayNametag.add(wayID+";'"+attributes.getValue(1).replace("'","")+"'");
+			}
+			if (whatOpen.equals("way") && attributes.getValue(0).equals("maxspeed") && (attributes.getValue(1).equals("DK:rural")) || (attributes.getValue(1).equals("50;80"))){
+				waySpeedTag.add(wayID+",80");
+			}
+			else if (whatOpen.equals("way") && attributes.getValue(0).equals("maxspeed") && (attributes.getValue(1).equals("DK:urban") || attributes.getValue(1).equals("dk:urban"))){
+				waySpeedTag.add(wayID+",50");
+			}
+			else if (whatOpen.equals("way") && attributes.getValue(0).equals("maxspeed") && !(attributes.getValue(1).equals("*")) && !(attributes.getValue(1).equals("signals")) && !(attributes.getValue(1).equals("signal"))){
+				waySpeedTag.add(wayID+","+attributes.getValue(1));
+			}
+			if (whatOpen.equals("way") && attributes.getValue(1).equals("coastline")){
+				coastTag.add(String.valueOf(wayID));
 			}
 		}
 		if (localName.equals("bounds")){
-			latmin = Double.parseDouble(attributes.getValue(0));
-       		lonmin = Double.parseDouble(attributes.getValue(1));
-       		latmax = Double.parseDouble(attributes.getValue(2));
-       		lonmax = Double.parseDouble(attributes.getValue(3));
-       		whatOpen = "bounds";			
+			try{
+			double max[] = GeoConvert.toUtm(Double.parseDouble(attributes.getValue(1)),Double.parseDouble(attributes.getValue(0)));
+			double min[] = GeoConvert.toUtm(Double.parseDouble(attributes.getValue(3)),Double.parseDouble(attributes.getValue(2)));
+			latmax = max[1];
+			latmin = min[1];
+       		lonmin = min[0];
+       		
+       		lonmax = max[0];
+       		whatOpen = "bounds";
+       		}catch (Exception e) {
+				System.out.println(e);
+				System.exit(0);
+			}			
 			}
 		
 		if (localName.equals("way")){
 			whatOpen ="way";
 			if (!doneNode){
-				System.out.println("dinmor");
 				count = 0;
 				for (int i=0;i<nodedata.size() ; i++) {
 					nodeDataWriter.write(nodedata.get(i)+"\n");
 				}
 				
 				nodedata.clear();
-				
+				System.out.println("Done loading nodes from OSM File");
+
 				doneNode = true;
 			}
 			count++;
 			if (count == 100000){
-				for (int i=0;i<edgetag.size() ; i++) {
-					if(!(edgetag.get(i)==null)){
-						edgeTagWriter.write(edgetag.get(i)+"\n");
+				for (int i=0;i<wayTypeTag.size() ; i++) {
+					if(!(wayTypeTag.get(i)==null)){
+						wayTypeTagWriter.write(wayTypeTag.get(i)+"\n");
 					}
 				}
 				for (int i=0;i<waydata.size() ; i++) {
 					wayDataWriter.write(waydata.get(i)+"\n");
 				}
-				for (int i=0;i<nodetag.size() ; i++) {
-					nodeTagWriter.write(nodetag.get(i)+"\n");
-
+				for (int i=0;i<wayNametag.size() ; i++) {
+					wayNameTagWriter.write(wayNametag.get(i)+"\n");
+				}
+				for (int i=0;i<waySpeedTag.size() ; i++) {
+					waySpeedTagWriter.write(waySpeedTag.get(i)+"\n");
+				}
+				for (int i=0;i<coastTag.size() ; i++) {
+					coastWriter.write(coastTag.get(i)+"\n");
 				}
 				count = 0;
 				waydata.clear();
-				edgetag.clear();
-				nodetag.clear();
-				System.out.println("flushway"+wayID);
+				wayTypeTag.clear();
+				waySpeedTag.clear();
+				wayNametag.clear();
+				coastTag.clear();
+				System.out.println("Loading ways from OSM file");
 			}
 			wayID++;
 			tempValue=Integer.toString(wayID);
@@ -295,51 +339,73 @@ private String testString;
 	public void endDocument() throws SAXException{
 		
 		
-		for (int i=0;i<edgetag.size() ; i++) {
-			edgeTagWriter.write(edgetag.get(i)+"\n");
+		for (int i=0;i<wayTypeTag.size() ; i++) {
+			wayTypeTagWriter.write(wayTypeTag.get(i)+"\n");
 		}
 		for (int i=0;i<waydata.size() ; i++) {
 			wayDataWriter.write(waydata.get(i)+"\n");
 		}
-        for (int i=0;i<nodetag.size() ; i++) {
-			nodeTagWriter.write(nodetag.get(i)+"\n");
+        for (int i=0;i<wayNametag.size() ; i++) {
+			wayNameTagWriter.write(wayNametag.get(i)+"\n");
 		}
-        edgeTagWriter.close();
-        nodeTagWriter.close();
+		for (int i=0;i<waySpeedTag.size() ; i++) {
+			waySpeedTagWriter.write(waySpeedTag.get(i)+"\n");
+		}
+		for (int i=0;i<coastTag.size() ; i++) {
+			coastWriter.write(coastTag.get(i)+"\n");
+		}
+        wayTypeTagWriter.close();
+        wayNameTagWriter.close();
         nodeDataWriter.close();
 		wayDataWriter.close();
+		waySpeedTagWriter.close();
+		coastWriter.close();
+		coastTag.clear();
         edgedata.clear();
-        edgetag.clear();
-        waydata.clear();   
+        wayTypeTag.clear();
+        waydata.clear();
+        waySpeedTag.clear();  
 		String s = "";
 		int q = 0;
+		System.out.println("Done loading ways from OSM file\nSorting way tags");
+
 
 		try{
-			while(!((s = readedgetag.readLine()) == null)){
+			while(!((s = readwayTypeTag.readLine()) == null)){
 				String wayTag[]= s.split(",");
-				wayTagHash.put(Integer.parseInt(wayTag[0]),wayTag[1]);
+				wayTypeTagHash.put(Integer.parseInt(wayTag[0]),wayTag[1]);
 			}
-			while(!((s = readnodetag.readLine()) == null)){
-				String nodeTag[]= s.split(";");
-				nodeTagHash.put(Integer.parseInt(nodeTag[0]),nodeTag[1]);
-				// System.out.println(nodeTagHash.get(Integer.parseInt(nodeTag[0])));
+			s = "";
+			while(!((s = readwayNametag.readLine()) == null)){
+				String wayNameTager[]= s.split(";");
+				wayNameTagHash.put(Integer.parseInt(wayNameTager[0]),wayNameTager[1]);
 			}
+			s = "";
+			while(!((s = readSpeedtag.readLine()) == null)){
+				String waySpeedTager[]= s.split(",");
+				waySpeedTagHash.put(Integer.parseInt(waySpeedTager[0]),waySpeedTager[1]);
+			}
+			s = "";
+			while(!((s = readCoast.readLine()) == null)){
+				coastHash.add(Integer.parseInt(s));
+			}
+			System.out.println("Done sorting way tags \nSorting ways");
+			readCoast.close();
 
 			s = "";
 			while(!((s = readwaydata.readLine()) == null)){
-				// System.out.println(s+"\n");
 				String way[] = s.split(",");
 				wayID = Integer.parseInt(way[0]);
-				if(!(wayTagHash.get(wayID) == null)){
-					// waydata.add(s);
+				if((!(wayTypeTagHash.get(wayID) == null)) || ((coastHash.contains(wayID)))){
 					for(int y = 1; y<way.length ; y++){
 						if(!(waynodeset.contains(way[y]))){
 							waynodeset.add(way[y]);
-							// System.out.println(way[y]);
 						}
 					}		
 				}
 			}
+		    System.out.println("Done sorting ways \nParsing nodes and generating node output file");
+
 			s = "";
 			q = 0;
 			nodedata.clear();
@@ -347,23 +413,24 @@ private String testString;
 			purgedNodeWriter.write("1000.0000,1000.0000\n");
 			while(!((s = readnodedata.readLine()) == null)){
 				String node[] = s.split(",");
-				// if (node[0].equals("")){
-				// System.out.println("Nu kommer den:"+node[0]);
-				// }
-				// waynodeset.contains(node[0])
 				if(waynodeset.contains(node[0])){
-					// System.out.println("YAHOOO!");
 					wayNodes.put(String.valueOf(k),String.valueOf(k)+","+node[1]+","+node[2]);
 					nodeIDs.put(node[0],k);
-					nodedata.add(String.valueOf(k)+","+convertLon(node[1])+","+convertLat(node[2]));
+					double lat = Double.parseDouble(node[2]);
+					double lon = Double.parseDouble(node[1]);
+					try{
+						double lonlat[] = GeoConvert.toUtm(lon,lat);
+						nodedata.add(String.valueOf(k)+","+convertLon(lonlat[0])+","+convertLat(lonlat[1]));
+						}catch (Exception e) {
+							System.out.println(e);
+							System.exit(0);
+						}
+					
 					q++;
 					k++;
-					// if(node[0].equals("9415")){
-					// 	System.out.println("DEN ER HER");
-					// }
 				}
-				if(q==100000){
-					System.out.println("purgednodes");
+				if(q==50000){
+					System.out.println("Parsing nodes and generating node output file");
 					for (int i=0;i<nodedata.size() ; i++) {
 						purgedNodeWriter.write(nodedata.get(i)+"\n");
 					}
@@ -375,34 +442,51 @@ private String testString;
 				purgedNodeWriter.write(nodedata.get(i)+"\n");
 			}
 			nodedata.clear();
+			System.out.println("Done parsing nodes and generating node output file \nParsing edges and generating edge output file ");
 			s = "";
 			q = 0;
 			while(!((s = readedgedata.readLine()) == null)){
-				// System.out.println("muuh");
 				String way[] = s.split(",");
 				wayID = Integer.parseInt(way[0]);
-				if(!(wayTagHash.get(wayID) == null)){	
+				if(!(wayTypeTagHash.get(wayID) == null)){	
 					
 					for (int y = 1; y<way.length-1 ; y++) {
 						String one = String.valueOf(nodeIDs.get(way[y]));
 						String two = String.valueOf(nodeIDs.get(way[y+1])); 
 						String distance = distance(getLat(one),getLon(one),getLat(two),getLon(two));
-						String wayName = nodeTagHash.get(wayID);
-						String wayType = getWaygroup(wayTagHash.get(wayID));
-						// System.out.println(onetag+"   "+twotag);
+						String wayName = wayNameTagHash.get(wayID);
+						String wayType = getWaygroup(wayTypeTagHash.get(wayID));
+						String waySpeed = waySpeedTagHash.get(wayID);
+						
+						
 						if(wayName == null){
-							// System.out.println("NO name");
-						 	edgedata.add(one+","+two+","+distance+","+wayType+",'',0,50");
+							if(waySpeed == null){
+						 		edgedata.add(one+","+two+","+distance+","+wayType+",'',0,50");
+						 	}
+						 	else{
+						 		edgedata.add(one+","+two+","+distance+","+wayType+",'',0,"+waySpeed);
+						 	}
 						}
 						else{
-							// System.out.println("noget");							
-							edgedata.add(one+","+two+","+distance+","+wayType+","+wayName+",0,80");
+							if(waySpeed == null){
+								edgedata.add(one+","+two+","+distance+","+wayType+","+wayName+",0,50");
+							}
+							else{
+								edgedata.add(one+","+two+","+distance+","+wayType+","+wayName+",0,"+waySpeed);
+							}
 						}
 					}				
 				}
+				else if(coastHash.contains(wayID)){
+					for (int y = 1; y<way.length-1 ; y++) {
+						String one = String.valueOf(nodeIDs.get(way[y]));
+						String two = String.valueOf(nodeIDs.get(way[y+1])); 
+						edgedata.add(one+","+two+",0,81,'',0,0");
+					}
+				}
 				q++;
-				if(q==100000){
-					System.out.println("dinmor3");
+				if(q==50000){
+					System.out.println("Parsing edges and generating edge output file");
 					for (int i=0;i<edgedata.size() ; i++) {
 						 purgededgeWriter.write(edgedata.get(i)+"\n");
 					}
@@ -413,18 +497,25 @@ private String testString;
 			for (int i=0;i<edgedata.size() ; i++) {
 			purgededgeWriter.write(edgedata.get(i)+"\n");
 			}
+			System.out.println("Done parsing edges and generating edge output file\nStarting cleanup");
 			edgedata.clear();
-			readedgetag.close();
+			readwayTypeTag.close();
 			readedgedata.close();
-			readnodetag.close();
+			readwayNametag.close();
 			readnodedata.close();
+			readSpeedtag.close();
 			readwaydata.close();
 			purgededgeWriter.close();
 			purgedNodeWriter.close();
 			outputNodeData.delete();
-			outputNodeTag.delete();
-			outputEdgeTag.delete();
+			outputwayNameTag.delete();
+			outputwayTypeTag.delete();
 			outputWayData.delete();
+			waySpeedFile.delete();
+			coastFile.delete();
+			System.out.println("Cleanup done!");
+
+			
 
 		}catch (IOException e) {
 			e.printStackTrace();

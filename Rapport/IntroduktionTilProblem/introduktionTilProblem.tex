@@ -1,11 +1,10 @@
-Vores opgave går ud på at lave et interaktivt Danmarkskort med indbyggede zoom og scroll-funktioner. Kortet skal have alle veje og stier i det udleverede KRAK-datasæt markeret og være i stand til at vise navnet på den vej, der er nærmest på musemarkøren. Programmet skal være i stand til at vise den hurtigste rute fra 2 udvalgte punkter på kortet, og skrive en rutevejledning til dette. Programmet skal være inituiativt og være responsivt nok, til ikke at skabe gene. Ud over KRAK-datasættet skal programmet også være kompatibel med Open Street Map (OSM) datasæt. For den præcise kravsspecifikation se \ref{sec:Kravsspecifikation}.
+Vores opgave går ud på at lave et interaktivt danmarkskort med indbyggede zoom og panorering-funktioner. Kortet skal have alle veje og stier i det udleverede Krak-datasæt markeret og være i stand til at vise navnet på den vej, der er nærmest på musemarkøren. Programmet skal være i stand til at vise den hurtigste rute fra to udvalgte punkter på kortet, og skrive en rutevejledning til dette. Programmet skal være intuitivt og være responsivt nok til ikke at skabe gene. Ud over Krak-datasættet skal programmet også være kompatibel med Open Street Map (OSM) datasæt. For den præcise kravsspecifikation se \ref{sec:Kravsspecifikation}.
 \newline \newline
 Ud over de obligatoriske krav, har vi implementeret følgende features:
 \begin{itemize}
-	\item \textbf{udregn hurtigst vej til alle punkter fra givent startpunkt:} Man kan finde den hurtigste vej, ved at højreklikke på sit startspunkt, og herefter vælge sin destination ved at dobbeltklikke der. Vejen findes med det samme uden forsinkelser.
-	\item \textbf{Skjulbar rutevejledningsinterface:} Vi har lavet vores interface skjul-bart, så man kan se mest muligt af kortet når dette er ønskværdigt.
-	\item \textbf{dynamisk vejbredde:} Vejene angives med en bredde, der ændres alt efter zoom-niveau, så man tydeligt kan se hovedveje på kortet.
-	\item \textbf{navneapproksimation:} Når man prøver at finde en rute, ved at indtaste en adresse, vil programmet foreslå adresser der minder om det skrevne, i tilfælde af tastefejl.
-	\item \textbf{søgning imens man skriver:} Når man prøver at finde en rute, ved at indtaste en adresse, vil programmet løbende foreslå adresser der inhdeholder det skrevne.
+	\item \textbf{Udregn hurtigst rute til alle punkter fra givent startpunkt:} Brugeren kan finde den hurtigste vej, ved at højreklikke på sit startspunkt, og herefter vælge  slutdestination ved at venstreklikke der. Ruten findes med det samme uden forsinkelser.
+	\item \textbf{Skjulbar sidebar:} Vi har lavet en sidebar, som kan skjules, så brugeren kan se mest muligt af kortet, når dette er ønskværdigt.
+	\item \textbf{Dynamisk vejbredde:} Vejene angives med en bredde, der ændres alt efter zoom-niveau, så brugeren tydeligt kan se hovedveje på kortet.
+	\item \textbf{Løbende Navneapproksimation:} Når brugeren prøver at finde en rute, ved at indtaste en adresse, vil programmet løbende foreslå adresser, der minder om det skrevne. 
 	\item \textbf{Kystlinje:} Vi har tegnet Danmarks kystlinje.
 \end{itemize}

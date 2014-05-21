@@ -3,16 +3,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import java.lang.Float;
 import java.lang.String;
 
 public class saxFilter extends XMLFilterImpl
 {
 
-	private Float latmin;
-	private Float lonmin;
-	private Float latmax;
-	private Float lonmax;
 	private String lastopen;
 
 	public void endElement(String uri, String localName, String qName) throws SAXException {
@@ -23,7 +18,7 @@ public class saxFilter extends XMLFilterImpl
 		super.endElement(uri, localName, qName);
 		}
 		if (localName.equals("tag")){
-			if(lastopen.equals("addr:street") || lastopen.equals("highway") || lastopen.equals("postal_code") || lastopen.equals("maxspeed") || lastopen.equals("natural")){
+			if(lastopen.equals("addr:street") || lastopen.equals("highway")  || lastopen.equals("maxspeed") || lastopen.equals("natural")){
 				super.endElement(uri, localName, qName);
 			}
 		}
@@ -50,7 +45,7 @@ public class saxFilter extends XMLFilterImpl
        	AttributesImpl newattribute = new AttributesImpl(attributes);
 
        	if (localName.equals("tag")){
-			if (attributes.getValue(0).equals("name") || attributes.getValue(0).equals("highway") || attributes.getValue(0).equals("postal_code") || attributes.getValue(0).equals("maxspeed") || (attributes.getValue(0).equals("natural") && attributes.getValue(1).equals("coastline"))){
+			if (attributes.getValue(0).equals("name") || attributes.getValue(0).equals("highway")  || attributes.getValue(0).equals("maxspeed") || (attributes.getValue(0).equals("natural") && attributes.getValue(1).equals("coastline"))){
 
 				super.startElement(uri, localName, qName, newattribute);
 			}
@@ -60,17 +55,10 @@ public class saxFilter extends XMLFilterImpl
 
        	if (localName.equals("bounds")){
 
-       		// latmin = Float.parseFloat(attributes.getValue(0));
-       		// lonmin = Float.parseFloat(attributes.getValue(1));
-       		// latmax = Float.parseFloat(attributes.getValue(2));
-       		// lonmax = Float.parseFloat(attributes.getValue(3));
        		super.startElement(uri, localName, qName, newattribute);
        	} 
        	if (localName.equals("node")){
 
-			// newattribute.setValue(1,String.valueOf((Float.parseFloat(attributes.getValue(1))-latmin)*(1000/(latmax-latmin))));
-			// newattribute.setValue(2,String.valueOf((Float.parseFloat(attributes.getValue(2))-lonmin)*(1000/(lonmax-lonmin))));
-			// attributesImpl.setValue(1,Float.toString((attributes.getValue(2)-7,7011)*127,8001002));
 			super.startElement(uri, localName, qName, newattribute);
 		}
 		if (localName.equals("way")){

@@ -480,7 +480,15 @@ private int count;
 						
 						if(wayName == null){
 							if(waySpeed == null){
-						 		edgedata.add(one+","+two+","+distance+","+wayType+",'',0,50");
+								if(wayType == null || !wayType.equals(1) || !wayType.equals(2)){
+						 			edgedata.add(one+","+two+","+distance+","+wayType+",'',0,50");
+						 		}
+						 		else if(wayType.equals(1)){
+						 			edgedata.add(one+","+two+","+distance+","+wayType+",'',0,130");
+						 		}
+						 		else if(wayType.equals(2)){
+						 			edgedata.add(one+","+two+","+distance+","+wayType+",'',0,80");
+						 		}
 						 	}
 						 	else{
 						 		edgedata.add(one+","+two+","+distance+","+wayType+",'',0,"+waySpeed);
@@ -488,7 +496,15 @@ private int count;
 						}
 						else{
 							if(waySpeed == null){
-								edgedata.add(one+","+two+","+distance+","+wayType+","+wayName+",0,50");
+								if(wayType == null || !wayType.equals(1) || !wayType.equals(2)){
+						 			edgedata.add(one+","+two+","+distance+","+wayType+","+wayName+",0,50");
+						 		}
+						 		else if(wayType.equals(1)){
+						 			edgedata.add(one+","+two+","+distance+","+wayType+","+wayName+",0,130");
+						 		}
+						 		else if(wayType.equals(2)){
+						 			edgedata.add(one+","+two+","+distance+","+wayType+","+wayName+",0,80");
+						 		}
 							}
 							else{
 								edgedata.add(one+","+two+","+distance+","+wayType+","+wayName+",0,"+waySpeed);

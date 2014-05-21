@@ -1,16 +1,16 @@
 \section{Model}
 \label{sec:model}
 
-Loader er ansvarlig for at indlæse data for det valgte datasæt og oprette instanser af Node og Edge objekter der anvendes som datastrukturer for henholdsvis punkter og vejstykker. Ligeledes er loader ansvarlig for at indsætte Edges i QuadTrees som gør det hurtigt at finde de Nodes og Edges der ledes efter.
+Loader er ansvarlig for at indlæse data for det valgte datasæt og oprette instanser af Node og Edge objekter, der anvendes som datastrukturer for henholdsvis punkter og vejstykker. Ligeledes er loader ansvarlig for at indsætte Edges i QuadTrees, som gør det hurtigt at finde de Nodes og Edges der ledes efter.
 
-Loader opretter flere forskellige QuadTrees der indeholder grupperinger af Edges. Groups er ansvarlige for at holde styr på hvilke typer af Edges der hører til hvilken gruppe, og hvilke egenskaber hver enkelt gruppe har. Derudover anvendes Node og Edge objekterne også til generering af både en symboltabel over adresser og en graf til navigation. Grafen anvendes senere af AStar-klassen, som finder den hurtigste rute mellem to Nodes, mens symboltabellen benyttes til tekstuel angivelse af vejnavne i rutenavigationen.
+Loader opretter flere forskellige QuadTrees der indeholder grupperinger af Edges. Groups er ansvarlige for at holde styr på hvilke typer af Edges, der hører til hvilken gruppe, og hvilke egenskaber hver enkelt gruppe har. Derudover anvendes Node og Edge objekterne også til generering af både en symboltabel over adresser og en graf til navigation. Grafen anvendes senere af AStar-klassen, som finder den hurtigste rute mellem to Nodes, mens symboltabellen benyttes til tekstuel angivelse af vejnavne i rutenavigationen.
 	
 \section{View}
 \label{sec:view}
 
 FirstWindow, som er et vindue der tilbyder brugeren valget mellem at bruge Krak eller OSM datasættet, er ansvarlig for at resten af programmet startes op med det valgte datasæt.
 
-Window er vinduet som indeholder programmet efter at datasættet er indlæst. Canvas er det primære komponent i Window hvori kortet bliver tegnet.
+Window er vinduet som indeholder programmet efter at datasættet er indlæst. Canvas er det primære komponent i Window, hvori kortet bliver tegnet.
 
 Painter er ansvarlig for at tegne linjer og bokse og bliver anvendt af Tiler (se \ref{sec:controller}) og Canvas.
 
@@ -19,13 +19,13 @@ DropTextField tillader brugeren at vælge mellem en række forskellige adressefo
 \section{Controller}
 \label{sec:controller}
 
-AddressButtonListener og AddressFieldListener tilsammen ansvarlige for at reagere på brugerinput i sidebaren i forbindelse med navigation. Når AddressFieldListener modtager information om at brugeren interagerer med de to tekst-input-felter kalder den AddressFinder for at hente forslag til adresser.
+AddressButtonListener og AddressFieldListener tilsammen ansvarlige for at reagere på brugerinput i sidebaren i forbindelse med navigation. Når AddressFieldListener modtager information om at brugeren interagerer med de to tekst-input-felter, kalder den AddressFinder for at hente forslag til adresser.
 
-Når der er fundet en rute anvendes klassen Path som datastruktur samt til at generere en tekstuel repræsentation af rutevejledningen.
+Når der er fundet en rute, anvendes klassen Path som datastruktur samt til at generere en tekstuel repræsentation af rutevejledningen.
 
 KeyboardHandler og MouseHandler er ansvarlige for at holde øje med brugerinput relateret til selve kortet. Disse to klasser står blandt andet for at håndtere når udsnittet skal zoomes, panoereres, eller nulstilles.
 
-Tiler er ansvarlig for at tegne kortet, og holde styr på hvilket udsnit af kortet der vises.
+Tiler er ansvarlig for at tegne kortet og holde styr på hvilket udsnit af kortet der vises.
 
 \section{Tests}
 \label{sec:tests}
@@ -34,8 +34,8 @@ Klasserne i denne pakke er tilsammen ansvarlige for at teste udvalgte klasser me
 
 \section{Utility}
 
-Vector er en repræsentation af en vektor og bruges til vektorberegninger og angivelser af punkter. Box er en repræsentation af et rektangel defineret af to Vectors. Line definerer et linjestrykke, som er klar til at blive tegnet.
+Vector er en repræsentation af en vektor og bruges til vektorberegninger samt angivelser af punkter. Box er en repræsentation af et rektangel defineret af to Vectors. Line definerer et linjestrykke, som er klar til at blive tegnet.
 
 \section{Data}
 
-Ydermere findes to moduler til filtrering og klargøring af kortdata, som alle bevirker til en fælles formatering af dataet. KrakPurger muliggører formatering af Kraks kortdata, mens saxEventHandler og saxFilter understøtter saxPurger, som formaterer OSM-datasættet.
+Ydermere findes to moduler til filtrering og klargøring af kortdata, som alle bevirker til en fælles formatering af dataet. KrakPurger muliggører formatering af Kraks kortdata, mens saxEventHandler, saxFilter og GeoConvert\footnote{\url{https://github.com/Jotschi/geoconvert/blob/master/src/main/java/de/jotschi/geoconvert/GeoConvert.java}} understøtter saxPurger\footnote{Længde- og breddegradsmetoder fra \url{http://www.geodatasource.com/developers/java}}, som formaterer OSM-datasættet.

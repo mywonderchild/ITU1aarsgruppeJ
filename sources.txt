@@ -1,4 +1,7 @@
 ./Map/Box.java
+./Map/Line.java
+./Map/Main.java
+./Map/Vector.java
 ./Map/Controller/AddressButtonListener.java
 ./Map/Controller/AddressFieldListener.java
 ./Map/Controller/AddressFinder.java
@@ -7,8 +10,10 @@
 ./Map/Controller/Path.java
 ./Map/Controller/Tiler.java
 ./Map/Data/krak/KrakPurger.java
-./Map/Line.java
-./Map/Main.java
+./Map/Data/osm/GeoConvert.java
+./Map/Data/osm/saxEventHandler.java
+./Map/Data/osm/saxFilter.java
+./Map/Data/osm/saxPurger.java
 ./Map/Model/AStar.java
 ./Map/Model/Bag.java
 ./Map/Model/Dijkstra.java
@@ -19,14 +24,10 @@
 ./Map/Model/Node.java
 ./Map/Model/PriorityQueue.java
 ./Map/Model/QuadTree.java
-./Map/saxEventHandler.java
-./Map/saxFilter.java
-./Map/saxPurger.java
 ./Map/Tests/TestAStar.java
 ./Map/Tests/TestBox.java
 ./Map/Tests/TestPriorityQueue.java
 ./Map/Tests/TestVector.java
-./Map/Vector.java
 ./Map/View/Canvas.java
 ./Map/View/DropTextField.java
 ./Map/View/FirstWindow.java

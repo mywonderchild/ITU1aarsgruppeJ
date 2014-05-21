@@ -40,7 +40,9 @@ public class Loader {
 		long timer = System.currentTimeMillis();
 
 		try {
-			String dir = String.format("Map/Data/%s/", dataSet);
+			String jar = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+			String parent = new File(jar).getParent();
+			String dir = String.format(parent + "/Data/%s/", dataSet);
 			nodePath = dir + "purged_nodes.txt";
 			edgePath = dir + "purged_edges.txt";
 			cityPath = dir + "zip.txt";

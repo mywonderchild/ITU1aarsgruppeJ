@@ -16,11 +16,6 @@ public class QuadTree
 	private Edge[] edges;
 	private int n = 0;
 
-    // DEBUG
-    static private int carecount = 0;
-    static private int careless = 0;
-    static private int carefull = 0;
-
 	public QuadTree(Box box) {
 		this.box = box;
 		edges = new Edge[NODE_CAPACITY];
@@ -64,23 +59,8 @@ public class QuadTree
 		return result;
 	}
 
-    private void carebugger(boolean lazy) {
-        if(lazy) careless++;
-        else carefull++;
-        carecount++;
-
-        if(carecount%10000==0) {
-            System.out.printf("Bypassing query-check %.2f%% of the time\n",
-                ((double)careless)/(double)(careless+carefull)*100.0);
-            careless = 0;
-            carefull = 0;
-        }
-    }
-
 	private void queryRange(Box query, HashSet<Edge> result, boolean lazy) {
         if(!lazy) lazy = box.isInside(query); // lazy if quad is completely inside query
-
-        carebugger(lazy); // DEBUG
 
         if(lazy) {
             for (int i = 0; i < n; i++)
